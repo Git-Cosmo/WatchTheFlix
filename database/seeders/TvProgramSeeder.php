@@ -43,36 +43,34 @@ class TvProgramSeeder extends Seeder
         $endDate = $startDate->copy()->addDays(7);
 
         $currentTime = $startDate->copy();
-        $programCount = 0;
+        $programsToInsert = [];
 
         while ($currentTime->lt($endDate)) {
             // Generate a realistic TV schedule with varying program lengths
             $duration = $this->getRandomProgramDuration();
             $endTime = $currentTime->copy()->addMinutes($duration);
 
-            // Skip if program already exists
-            $exists = TvProgram::where('tv_channel_id', $channel->id)
-                ->where('start_time', $currentTime)
-                ->exists();
-
-            if (!$exists) {
-                TvProgram::create([
-                    'tv_channel_id' => $channel->id,
-                    'title' => $this->generateProgramTitle($currentTime),
-                    'description' => $this->generateProgramDescription(),
-                    'start_time' => $currentTime,
-                    'end_time' => $endTime,
-                    'genre' => $this->getRandomGenre(),
-                    'rating' => $this->getRandomRating(),
-                    'image_url' => null,
-                ]);
-                $programCount++;
-            }
+            $programsToInsert[] = [
+                'tv_channel_id' => $channel->id,
+                'title' => $this->generateProgramTitle($currentTime),
+                'description' => $this->generateProgramDescription(),
+                'start_time' => $currentTime,
+                'end_time' => $endTime,
+                'genre' => $this->getRandomGenre(),
+                'rating' => $this->getRandomRating(),
+                'image_url' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
 
             $currentTime = $endTime;
         }
 
-        $this->command->info("Seeded {$programCount} programs for {$channel->name}");
+        // Bulk insert programs for better performance
+        if (!empty($programsToInsert)) {
+            TvProgram::insert($programsToInsert);
+            $this->command->info("Seeded " . count($programsToInsert) . " programs for {$channel->name}");
+        }
     }
 
     /**

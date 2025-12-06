@@ -37,6 +37,7 @@ class WelcomeNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'welcome',
             'message' => '🎉 Welcome to WatchTheFlix! Start exploring thousands of movies and TV shows.',
             'action_url' => route('media.index'),
             'action_text' => 'Browse Content',

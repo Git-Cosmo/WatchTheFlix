@@ -102,7 +102,10 @@
                             <div class="p-4 border-b border-dark-700 {{ $notification->read_at ? 'bg-dark-800' : 'bg-dark-750' }} hover:bg-dark-700 transition-colors">
                                 <div class="flex items-start space-x-3">
                                     <div class="flex-shrink-0">
-                                        @if($notification->type === 'App\Notifications\WelcomeNotification' || str_contains($notification->type, 'Welcome'))
+                                        @php
+                                            $notificationType = $notification->data['type'] ?? 'default';
+                                        @endphp
+                                        @if($notificationType === 'welcome')
                                         <div class="w-8 h-8 bg-accent-500/20 rounded-full flex items-center justify-center">
                                             <svg class="h-4 w-4 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />

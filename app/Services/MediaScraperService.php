@@ -132,15 +132,7 @@ class MediaScraperService
 
         if ($existingMedia) {
             // Update existing movie if data has changed
-            $changed = false;
-            foreach ($data as $key => $value) {
-                if ($existingMedia->$key != $value) {
-                    $changed = true;
-                    break;
-                }
-            }
-
-            if ($changed) {
+            if ($this->hasDataChanged($existingMedia, $data)) {
                 $existingMedia->update($data);
                 return 'updated';
             }
@@ -184,15 +176,7 @@ class MediaScraperService
 
         if ($existingMedia) {
             // Update existing TV show if data has changed
-            $changed = false;
-            foreach ($data as $key => $value) {
-                if ($existingMedia->$key != $value) {
-                    $changed = true;
-                    break;
-                }
-            }
-
-            if ($changed) {
+            if ($this->hasDataChanged($existingMedia, $data)) {
                 $existingMedia->update($data);
                 return 'updated';
             }
@@ -204,6 +188,29 @@ class MediaScraperService
         $data['requires_real_debrid'] = false;
         Media::create($data);
         return 'added';
+    }
+
+    /**
+     * Check if media data has changed
+     */
+    protected function hasDataChanged(Media $existingMedia, array $newData): bool
+    {
+        foreach ($newData as $key => $value) {
+            $existingValue = $existingMedia->$key;
+            
+            // Handle array comparison for genres field
+            if (is_array($value) && is_array($existingValue)) {
+                sort($value);
+                sort($existingValue);
+                if ($value !== $existingValue) {
+                    return true;
+                }
+            } elseif ($existingValue !== $value) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**
