@@ -35,6 +35,27 @@
                 </div>
             </div>
 
+            <!-- API Integrations -->
+            <div class="card p-6">
+                <h2 class="text-xl font-semibold mb-4">API Integrations</h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="tmdb_api_key" class="block text-sm font-medium text-dark-300 mb-2">
+                            TMDB API Key
+                            <span class="text-dark-500 text-xs">(Get your API key from <a href="https://www.themoviedb.org/settings/api" target="_blank" class="text-accent-400 hover:text-accent-300">TMDB</a>)</span>
+                        </label>
+                        <input type="text" name="tmdb_api_key" id="tmdb_api_key" 
+                               value="{{ old('tmdb_api_key', $settings['tmdb_api_key'] ?? '') }}"
+                               placeholder="Enter your TMDB API key"
+                               class="input-field w-full font-mono text-sm">
+                        <p class="text-xs text-dark-400 mt-1">
+                            The Movie Database (TMDB) API is used for importing movie and TV show metadata including posters, descriptions, ratings, and streaming availability.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Access Control -->
             <div class="card p-6">
                 <h2 class="text-xl font-semibold mb-4">Access Control</h2>

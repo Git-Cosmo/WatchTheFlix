@@ -44,7 +44,7 @@ class MediaController extends Controller
         }
 
         $media->loadCount(['ratings', 'comments', 'reactions']);
-        $media->load(['comments.user', 'comments.replies.user']);
+        $media->load(['comments.user', 'comments.replies.user', 'platforms']);
 
         $userRating = Auth::check() ? $media->ratings()->where('user_id', Auth::id())->first() : null;
         $userReactions = Auth::check() ? $media->reactions()->where('user_id', Auth::id())->pluck('type')->toArray() : [];

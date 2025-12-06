@@ -12,6 +12,7 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TvGuideController;
 use App\Http\Controllers\WatchlistController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +60,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/forum/thread/{thread:slug}/pin', [ForumController::class, 'togglePin'])->name('forum.pin')->middleware('role:admin');
     Route::post('/forum/thread/{thread:slug}/lock', [ForumController::class, 'toggleLock'])->name('forum.lock')->middleware('role:admin');
     Route::delete('/forum/thread/{thread:slug}', [ForumController::class, 'destroy'])->name('forum.destroy');
+
+    // TV Guide
+    Route::get('/tv-guide', [TvGuideController::class, 'index'])->name('tv-guide.index');
+    Route::get('/tv-guide/{country}', [TvGuideController::class, 'channels'])->name('tv-guide.channels');
+    Route::get('/tv-guide/channel/{channel}', [TvGuideController::class, 'channel'])->name('tv-guide.channel');
+    Route::get('/tv-guide/search', [TvGuideController::class, 'search'])->name('tv-guide.search');
 });
 
 // Admin Routes

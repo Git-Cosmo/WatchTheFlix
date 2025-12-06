@@ -114,4 +114,11 @@ class Media extends Model
     {
         return $query->where('type', $type);
     }
+
+    public function platforms()
+    {
+        return $this->belongsToMany(Platform::class, 'media_platform')
+            ->withPivot('availability_url', 'requires_subscription')
+            ->withTimestamps();
+    }
 }

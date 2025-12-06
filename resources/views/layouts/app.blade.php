@@ -27,6 +27,9 @@
                         <a href="{{ route('media.index') }}" class="nav-link {{ request()->routeIs('media.*') ? 'nav-link-active' : '' }}">
                             Browse
                         </a>
+                        <a href="{{ route('tv-guide.index') }}" class="nav-link {{ request()->routeIs('tv-guide.*') ? 'nav-link-active' : '' }}">
+                            TV Guide
+                        </a>
                         <a href="{{ route('watchlist.index') }}" class="nav-link {{ request()->routeIs('watchlist.*') ? 'nav-link-active' : '' }}">
                             Watchlist
                         </a>

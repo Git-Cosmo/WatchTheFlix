@@ -23,6 +23,7 @@ class SettingsController extends Controller
             'maintenance_mode' => ['nullable', 'boolean'],
             'allow_registration' => ['nullable', 'boolean'],
             'require_email_verification' => ['nullable', 'boolean'],
+            'tmdb_api_key' => ['nullable', 'string', 'max:255'],
         ]);
 
         foreach ($validated as $key => $value) {
