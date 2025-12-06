@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Invite;
 use App\Models\User;
+use App\Notifications\WelcomeNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -96,6 +97,9 @@ class RegisterController extends Controller
                 ->causedBy($user)
                 ->log('User registered with invite code');
         }
+
+        // Send welcome notification
+        $user->notify(new WelcomeNotification());
 
         Auth::login($user);
 

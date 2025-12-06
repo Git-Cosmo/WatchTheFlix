@@ -11,6 +11,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TvGuideController;
 use App\Http\Controllers\WatchlistController;
@@ -66,6 +67,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/tv-guide/{country}', [TvGuideController::class, 'channels'])->name('tv-guide.channels');
     Route::get('/tv-guide/channel/{channel}', [TvGuideController::class, 'channel'])->name('tv-guide.channel');
     Route::get('/tv-guide/search', [TvGuideController::class, 'search'])->name('tv-guide.search');
+
+    // Notifications
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
+        ->name('notifications.mark-all-read');
 });
 
 // Admin Routes

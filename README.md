@@ -28,6 +28,7 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Rich User Profiles**: Customizable profiles with avatar, bio, and statistics
 - **Parental Controls**: PIN-protected content restrictions
 - **Session Management**: Secure authentication with remember me functionality
+- **User Notifications**: In-app notification system with bell icon, unread indicators, and mark-as-read functionality
 
 ### 🎯 Real-Debrid Integration
 - **User-Level Integration**: Each user can enable/disable Real-Debrid
@@ -58,6 +59,8 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Watch Providers**: Automatically detect streaming platform availability
 - **Admin Configuration**: Easily configure API key through admin settings
 - **Documented Service**: Well-documented service class for TMDB API calls
+- **Media Scraper**: Automated scraper command to fetch and update latest content from TMDB
+- **Bulk Seeding**: Seed database with top 50 movies and TV shows instantly
 
 ### 💬 Community Forum
 - **Forum Categories**: Organized discussion sections
@@ -69,6 +72,7 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Admin Management**: Full CRUD for forum categories
 
 ### 👨‍💼 Admin Panel
+- **Quick Access**: Admin panel link available in user dropdown menu for authorized users
 - **Dashboard**: Overview of users, media, and activity
 - **Media Management**: Full CRUD operations for media content with platform assignment
 - **User Management**: View and manage user accounts
@@ -82,7 +86,9 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Responsive Design**: Mobile-first approach with TailwindCSS
 - **Component-Based**: Reusable UI components
 - **Minimal Cookie Consent**: One-time banner with minimal tracking
-- **Clean Navigation**: Intuitive menu structure
+- **Clean Navigation**: Intuitive menu structure with notification bell
+- **Enhanced Home Page**: Beautiful hero section with gradient effects, decorative elements, and feature showcase
+- **Fixed Footer**: Properly positioned footer that stays at the bottom of the page
 
 ### 📦 Spatie Package Integration
 - **laravel-permission**: Role and permission management
@@ -162,11 +168,21 @@ php artisan db:seed
 This creates:
 - Admin user: `admin@watchtheflix.com` / `password`
 - Sample media content
+- Forum categories
 
-To seed platforms and TV channels:
+To seed additional data:
 ```bash
+# Seed streaming platforms (Netflix, Prime, Hulu, etc.)
 php artisan db:seed --class=PlatformSeeder
+
+# Seed TV channels (UK and US)
 php artisan db:seed --class=TvChannelSeeder
+
+# Seed TV program guide (7 days of sample EPG data)
+php artisan db:seed --class=TvProgramSeeder
+
+# Seed top 50 movies and TV shows from TMDB (requires API key)
+php artisan db:seed --class=TmdbMediaSeeder
 ```
 
 8. **Build frontend assets**
@@ -247,6 +263,30 @@ The first registered user automatically becomes an admin with access to:
 4. **Generate Invites**: Create invite codes for new users
 5. **Monitor Activity**: View activity logs and statistics
 6. **Configure Settings**: Adjust platform-wide settings including API integrations
+7. **Scrape Latest Content**: Use the media scraper to automatically fetch and update content
+
+### Media Scraping
+
+WatchTheFlix includes an automated media scraper that fetches the latest movies and TV shows from TMDB:
+
+```bash
+# Scrape both movies and TV shows (20 of each by default)
+php artisan media:scrape
+
+# Scrape only movies
+php artisan media:scrape --type=movies --limit=50
+
+# Scrape only TV shows
+php artisan media:scrape --type=tv --limit=30
+```
+
+The scraper will:
+- Add new content to your database
+- Update existing content with fresh data
+- Skip duplicates automatically
+- Provide detailed statistics on completion
+
+**Note**: Requires TMDB API key to be configured in Admin Settings.
 
 ## Development
 
@@ -285,6 +325,7 @@ php artisan view:cache
 - `invites` - Invite codes for registration
 - `viewing_history` - Watch progress tracking
 - `settings` - Platform configuration (includes TMDB API key)
+- `notifications` - User notifications (welcome messages, updates, etc.)
 - `forum_categories` - Forum discussion categories
 - `forum_threads` - Forum discussion threads
 - `forum_posts` - Thread replies

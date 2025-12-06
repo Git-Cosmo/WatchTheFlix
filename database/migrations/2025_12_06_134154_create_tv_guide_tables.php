@@ -40,6 +40,7 @@ return new class extends Migration
             $table->timestamps();
             
             $table->index(['tv_channel_id', 'start_time', 'end_time']);
+            $table->index(['tv_channel_id', 'start_time']); // Performance optimization for seeder
             $table->index('start_time');
         });
     }
