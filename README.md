@@ -29,11 +29,21 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Content Access Control**: Restrict premium content to Real-Debrid users
 - **Token Validation**: Automatic validation of Real-Debrid API tokens
 
+### 💬 Community Forum
+- **Forum Categories**: Organized discussion sections
+- **Thread Creation**: Start new discussions
+- **Reply System**: Engage in threaded conversations
+- **Pin & Lock**: Admin moderation tools for important threads
+- **Subscriptions**: Get notified of replies to threads you follow
+- **View Tracking**: See how popular each thread is
+- **Admin Management**: Full CRUD for forum categories
+
 ### 👨‍💼 Admin Panel
 - **Dashboard**: Overview of users, media, and activity
 - **Media Management**: Full CRUD operations for media content
 - **User Management**: View and manage user accounts
 - **Invite System**: Generate and manage invite codes
+- **Forum Management**: Create and organize forum categories
 - **Global Settings**: Configure platform-wide settings
 - **Activity Logging**: Track all important actions (powered by Spatie Activity Log)
 
@@ -51,6 +61,8 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **laravel-backup**: Database and file backups
 - **laravel-sitemap**: Automatic sitemap generation
 - **laravel-tags**: Flexible tagging system
+
+**Note on Forum**: The project uses a custom-built forum system designed specifically for Laravel 12 compatibility. The `riari/laravel-forum` package was not used as it only supports Laravel 11.
 
 ## Technology Stack
 
@@ -216,6 +228,10 @@ php artisan view:cache
 - `invites` - Invite codes for registration
 - `viewing_history` - Watch progress tracking
 - `settings` - Platform configuration
+- `forum_categories` - Forum discussion categories
+- `forum_threads` - Forum discussion threads
+- `forum_posts` - Thread replies
+- `forum_thread_subscriptions` - Thread subscription tracking
 
 ## Security
 
