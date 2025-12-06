@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\Invite;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,8 +20,8 @@ class RegisterController extends Controller
 
         if ($inviteCode) {
             $invite = Invite::where('code', $inviteCode)->first();
-            
-            if (!$invite || !$invite->isValid()) {
+
+            if (! $invite || ! $invite->isValid()) {
                 return redirect()->route('login')
                     ->with('error', 'Invalid or expired invite code.');
             }
@@ -40,7 +40,7 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $userCount = User::count();
-        
+
         // Validate invite code if not first user
         if ($userCount > 0) {
             $request->validate([
@@ -49,7 +49,7 @@ class RegisterController extends Controller
 
             $invite = Invite::where('code', $request->invite_code)->first();
 
-            if (!$invite || !$invite->isValid()) {
+            if (! $invite || ! $invite->isValid()) {
                 return back()->withErrors([
                     'invite_code' => 'Invalid or expired invite code.',
                 ])->withInput();
@@ -77,11 +77,11 @@ class RegisterController extends Controller
 
         // First user becomes admin
         if ($userCount === 0) {
-            if (!Role::where('name', 'admin')->exists()) {
+            if (! Role::where('name', 'admin')->exists()) {
                 Role::create(['name' => 'admin']);
             }
             $user->assignRole('admin');
-            
+
             activity()
                 ->causedBy($user)
                 ->log('First user registered as admin');
@@ -91,7 +91,7 @@ class RegisterController extends Controller
                 'used_by' => $user->id,
                 'used_at' => now(),
             ]);
-            
+
             activity()
                 ->causedBy($user)
                 ->log('User registered with invite code');

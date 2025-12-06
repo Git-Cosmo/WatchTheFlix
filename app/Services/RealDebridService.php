@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class RealDebridService
 {
     protected $apiUrl;
+
     protected $token;
 
     public function __construct(?string $token = null)
@@ -19,6 +20,7 @@ class RealDebridService
     public function setToken(string $token): self
     {
         $this->token = $token;
+
         return $this;
     }
 
@@ -26,9 +28,11 @@ class RealDebridService
     {
         try {
             $response = $this->makeRequest('GET', '/user');
+
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('Real-Debrid token validation failed: ' . $e->getMessage());
+            Log::error('Real-Debrid token validation failed: '.$e->getMessage());
+
             return false;
         }
     }
@@ -37,9 +41,11 @@ class RealDebridService
     {
         try {
             $response = $this->makeRequest('GET', '/user');
+
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('Failed to get Real-Debrid user info: ' . $e->getMessage());
+            Log::error('Failed to get Real-Debrid user info: '.$e->getMessage());
+
             return null;
         }
     }
@@ -50,9 +56,11 @@ class RealDebridService
             $response = $this->makeRequest('POST', '/unrestrict/link', [
                 'link' => $link,
             ]);
+
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('Failed to unrestrict link: ' . $e->getMessage());
+            Log::error('Failed to unrestrict link: '.$e->getMessage());
+
             return null;
         }
     }
@@ -61,9 +69,11 @@ class RealDebridService
     {
         try {
             $response = $this->makeRequest('GET', '/torrents');
+
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('Failed to get torrents: ' . $e->getMessage());
+            Log::error('Failed to get torrents: '.$e->getMessage());
+
             return null;
         }
     }
@@ -74,9 +84,11 @@ class RealDebridService
             $response = $this->makeRequest('POST', '/torrents/addMagnet', [
                 'magnet' => $magnet,
             ]);
+
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('Failed to add magnet: ' . $e->getMessage());
+            Log::error('Failed to add magnet: '.$e->getMessage());
+
             return null;
         }
     }
@@ -87,9 +99,11 @@ class RealDebridService
             $response = $this->makeRequest('POST', "/torrents/selectFiles/{$torrentId}", [
                 'files' => $files,
             ]);
+
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('Failed to select files: ' . $e->getMessage());
+            Log::error('Failed to select files: '.$e->getMessage());
+
             return null;
         }
     }
@@ -98,23 +112,25 @@ class RealDebridService
     {
         try {
             $response = $this->makeRequest('GET', "/torrents/info/{$torrentId}");
+
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('Failed to get torrent info: ' . $e->getMessage());
+            Log::error('Failed to get torrent info: '.$e->getMessage());
+
             return null;
         }
     }
 
     protected function makeRequest(string $method, string $endpoint, array $data = [])
     {
-        if (!$this->token) {
+        if (! $this->token) {
             throw new \Exception('Real-Debrid token not set');
         }
 
-        $url = $this->apiUrl . $endpoint;
+        $url = $this->apiUrl.$endpoint;
 
         return Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->token,
+            'Authorization' => 'Bearer '.$this->token,
         ])->{strtolower($method)}($url, $data);
     }
 }

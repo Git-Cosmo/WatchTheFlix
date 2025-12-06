@@ -35,7 +35,7 @@ class InviteController extends Controller
             ->performedOn($invite)
             ->log('Invite created');
 
-        return back()->with('success', 'Invite created successfully. Code: ' . $invite->code);
+        return back()->with('success', 'Invite created successfully. Code: '.$invite->code);
     }
 
     public function destroy(Invite $invite)

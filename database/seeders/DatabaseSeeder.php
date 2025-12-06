@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\User;
-use App\Models\Media;
 use App\Models\ForumCategory;
+use App\Models\Media;
+use App\Models\User;
+use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
                 'real_debrid_enabled' => true,
             ]
         );
-        
-        if (!$admin->hasRole('admin')) {
+
+        if (! $admin->hasRole('admin')) {
             $admin->assignRole('admin');
         }
 

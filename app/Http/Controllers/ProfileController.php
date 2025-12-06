@@ -24,7 +24,7 @@ class ProfileController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'.$user->id],
             'bio' => ['nullable', 'string', 'max:500'],
             'avatar' => ['nullable', 'image', 'max:2048'],
         ]);
@@ -61,8 +61,8 @@ class ProfileController extends Controller
         // Validate Real-Debrid token if provided
         if ($request->filled('real_debrid_token') && $request->boolean('real_debrid_enabled')) {
             $service = new RealDebridService($request->real_debrid_token);
-            
-            if (!$service->validateToken()) {
+
+            if (! $service->validateToken()) {
                 return back()->withErrors([
                     'real_debrid_token' => 'Invalid Real-Debrid token.',
                 ])->withInput();

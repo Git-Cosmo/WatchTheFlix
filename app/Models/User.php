@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Spatie\Permission\Traits\HasRoles;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles, LogsActivity;
+    use HasFactory, HasRoles, LogsActivity, Notifiable;
 
     protected $fillable = [
         'name',
@@ -85,7 +85,7 @@ class User extends Authenticatable
 
     public function hasRealDebridAccess(): bool
     {
-        return $this->real_debrid_enabled && !empty($this->real_debrid_token);
+        return $this->real_debrid_enabled && ! empty($this->real_debrid_token);
     }
 
     public function isAdmin(): bool

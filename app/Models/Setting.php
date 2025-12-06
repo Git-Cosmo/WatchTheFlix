@@ -18,8 +18,8 @@ class Setting extends Model
     public static function get($key, $default = null)
     {
         $setting = static::where('key', $key)->first();
-        
-        if (!$setting) {
+
+        if (! $setting) {
             return $default;
         }
 

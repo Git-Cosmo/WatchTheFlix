@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ForumCategory;
 use App\Models\ForumThread;
-use App\Models\ForumPost;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -66,9 +65,9 @@ class ForumController extends Controller
     public function showThread(ForumThread $thread)
     {
         $thread->incrementViews();
-        
+
         $thread->load(['category', 'user', 'posts.user']);
-        
+
         $isSubscribed = $thread->isSubscribedBy(Auth::user());
 
         return view('forum.thread', compact('thread', 'isSubscribed'));
@@ -76,7 +75,7 @@ class ForumController extends Controller
 
     public function replyToThread(Request $request, ForumThread $thread)
     {
-        if ($thread->is_locked && !Auth::user()->isAdmin()) {
+        if ($thread->is_locked && ! Auth::user()->isAdmin()) {
             return back()->with('error', 'This thread is locked');
         }
 
@@ -95,12 +94,12 @@ class ForumController extends Controller
     public function subscribe(ForumThread $thread)
     {
         $user = Auth::user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return back()->with('error', 'You must be logged in to subscribe');
         }
 
-        if (!$thread->isSubscribedBy($user)) {
+        if (! $thread->isSubscribedBy($user)) {
             $thread->subscribers()->attach($user->id);
             $message = 'Subscribed to thread';
         } else {
@@ -113,14 +112,14 @@ class ForumController extends Controller
 
     public function togglePin(ForumThread $thread)
     {
-        $thread->update(['is_pinned' => !$thread->is_pinned]);
+        $thread->update(['is_pinned' => ! $thread->is_pinned]);
 
         return back()->with('success', $thread->is_pinned ? 'Thread pinned' : 'Thread unpinned');
     }
 
     public function toggleLock(ForumThread $thread)
     {
-        $thread->update(['is_locked' => !$thread->is_locked]);
+        $thread->update(['is_locked' => ! $thread->is_locked]);
 
         return back()->with('success', $thread->is_locked ? 'Thread locked' : 'Thread unlocked');
     }
@@ -128,12 +127,12 @@ class ForumController extends Controller
     public function destroy(ForumThread $thread)
     {
         $user = Auth::user();
-        
-        if (!$user) {
+
+        if (! $user) {
             return back()->with('error', 'Unauthorized');
         }
 
-        if ($user->id !== $thread->user_id && !$user->isAdmin()) {
+        if ($user->id !== $thread->user_id && ! $user->isAdmin()) {
             return back()->with('error', 'Unauthorized');
         }
 

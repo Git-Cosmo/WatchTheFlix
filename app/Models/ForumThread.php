@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\LogOptions;
 
 class ForumThread extends Model
 {
@@ -76,9 +76,10 @@ class ForumThread extends Model
 
     public function isSubscribedBy($user)
     {
-        if (!$user) {
+        if (! $user) {
             return false;
         }
+
         return $this->subscribers()->where('user_id', $user->id)->exists();
     }
 

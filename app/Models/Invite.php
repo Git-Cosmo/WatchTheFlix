@@ -26,7 +26,7 @@ class Invite extends Model
 
     public static function generateCode(): string
     {
-        return strtoupper(Str::random(8) . '-' . Str::random(8));
+        return strtoupper(Str::random(8).'-'.Str::random(8));
     }
 
     public function creator()
@@ -41,7 +41,7 @@ class Invite extends Model
 
     public function isUsed(): bool
     {
-        return !is_null($this->used_at);
+        return ! is_null($this->used_at);
     }
 
     public function isExpired(): bool
@@ -51,6 +51,6 @@ class Invite extends Model
 
     public function isValid(): bool
     {
-        return !$this->isUsed() && !$this->isExpired();
+        return ! $this->isUsed() && ! $this->isExpired();
     }
 }

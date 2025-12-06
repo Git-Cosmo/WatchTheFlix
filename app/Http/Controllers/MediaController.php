@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comment;
 use App\Models\Media;
 use App\Models\Rating;
-use App\Models\Comment;
 use App\Models\Reaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +16,7 @@ class MediaController extends Controller
         $query = Media::published();
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%'.$request->search.'%');
         }
 
         if ($request->filled('type')) {
@@ -34,18 +34,18 @@ class MediaController extends Controller
 
     public function show(Media $media)
     {
-        if (!$media->is_published && (!Auth::check() || !Auth::user()->isAdmin())) {
+        if (! $media->is_published && (! Auth::check() || ! Auth::user()->isAdmin())) {
             abort(404);
         }
 
-        if ($media->requires_real_debrid && (!Auth::check() || !Auth::user()->hasRealDebridAccess())) {
+        if ($media->requires_real_debrid && (! Auth::check() || ! Auth::user()->hasRealDebridAccess())) {
             return redirect()->route('media.index')
                 ->with('error', 'This content requires Real-Debrid access.');
         }
 
         $media->loadCount(['ratings', 'comments', 'reactions']);
         $media->load(['comments.user', 'comments.replies.user']);
-        
+
         $userRating = Auth::check() ? $media->ratings()->where('user_id', Auth::id())->first() : null;
         $userReactions = Auth::check() ? $media->reactions()->where('user_id', Auth::id())->pluck('type')->toArray() : [];
 
