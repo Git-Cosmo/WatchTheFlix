@@ -84,10 +84,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     
     // Forum Management
-    Route::get('/forum', [ForumManagementController::class, 'index'])->name('forum.index');
-    Route::get('/forum/create', [ForumManagementController::class, 'create'])->name('forum.create');
-    Route::post('/forum', [ForumManagementController::class, 'store'])->name('forum.store');
-    Route::get('/forum/{category}/edit', [ForumManagementController::class, 'edit'])->name('forum.edit');
-    Route::put('/forum/{category}', [ForumManagementController::class, 'update'])->name('forum.update');
-    Route::delete('/forum/{category}', [ForumManagementController::class, 'destroy'])->name('forum.destroy');
+    Route::prefix('forum-management')->name('forum.')->group(function () {
+        Route::get('/', [ForumManagementController::class, 'index'])->name('admin.index');
+        Route::get('/create', [ForumManagementController::class, 'create'])->name('admin.create');
+        Route::post('/', [ForumManagementController::class, 'store'])->name('admin.store');
+        Route::get('/{category}/edit', [ForumManagementController::class, 'edit'])->name('admin.edit');
+        Route::put('/{category}', [ForumManagementController::class, 'update'])->name('admin.update');
+        Route::delete('/{category}', [ForumManagementController::class, 'destroy'])->name('admin.destroy');
+    });
 });

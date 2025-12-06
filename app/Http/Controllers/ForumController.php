@@ -94,11 +94,17 @@ class ForumController extends Controller
 
     public function subscribe(ForumThread $thread)
     {
-        if (!$thread->isSubscribedBy(Auth::user())) {
-            $thread->subscribers()->attach(Auth::id());
+        $user = Auth::user();
+        
+        if (!$user) {
+            return back()->with('error', 'You must be logged in to subscribe');
+        }
+
+        if (!$thread->isSubscribedBy($user)) {
+            $thread->subscribers()->attach($user->id);
             $message = 'Subscribed to thread';
         } else {
-            $thread->subscribers()->detach(Auth::id());
+            $thread->subscribers()->detach($user->id);
             $message = 'Unsubscribed from thread';
         }
 
@@ -121,7 +127,13 @@ class ForumController extends Controller
 
     public function destroy(ForumThread $thread)
     {
-        if (Auth::id() !== $thread->user_id && !Auth::user()->isAdmin()) {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return back()->with('error', 'Unauthorized');
+        }
+
+        if ($user->id !== $thread->user_id && !$user->isAdmin()) {
             return back()->with('error', 'Unauthorized');
         }
 
