@@ -31,7 +31,12 @@
         <a href="{{ route('admin.media.create') }}" class="btn-primary text-center">Add Media</a>
         <a href="{{ route('admin.invites.index') }}" class="btn-secondary text-center">Manage Invites</a>
         <a href="{{ route('admin.users.index') }}" class="btn-secondary text-center">Manage Users</a>
+        <a href="{{ route('admin.forum.index') }}" class="btn-secondary text-center">Manage Forum</a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <a href="{{ route('admin.settings.index') }}" class="btn-secondary text-center">Settings</a>
+        <a href="{{ route('forum.index') }}" class="btn-secondary text-center" target="_blank">View Forum</a>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

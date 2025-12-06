@@ -7,11 +7,13 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MediaManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\InviteController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\ForumManagementController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -45,6 +47,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/watchlist/{media}', [WatchlistController::class, 'add'])->name('watchlist.add');
     Route::delete('/watchlist/{media}', [WatchlistController::class, 'remove'])->name('watchlist.remove');
+    
+    // Forum
+    Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
+    Route::get('/forum/category/{category:slug}', [ForumController::class, 'category'])->name('forum.category');
+    Route::get('/forum/category/{category:slug}/create', [ForumController::class, 'createThread'])->name('forum.create-thread');
+    Route::post('/forum/category/{category:slug}/create', [ForumController::class, 'storeThread'])->name('forum.store-thread');
+    Route::get('/forum/thread/{thread:slug}', [ForumController::class, 'showThread'])->name('forum.thread');
+    Route::post('/forum/thread/{thread:slug}/reply', [ForumController::class, 'replyToThread'])->name('forum.reply');
+    Route::post('/forum/thread/{thread:slug}/subscribe', [ForumController::class, 'subscribe'])->name('forum.subscribe');
+    Route::post('/forum/thread/{thread:slug}/pin', [ForumController::class, 'togglePin'])->name('forum.pin')->middleware('role:admin');
+    Route::post('/forum/thread/{thread:slug}/lock', [ForumController::class, 'toggleLock'])->name('forum.lock')->middleware('role:admin');
+    Route::delete('/forum/thread/{thread:slug}', [ForumController::class, 'destroy'])->name('forum.destroy');
 });
 
 // Admin Routes
@@ -68,4 +82,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Settings
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    
+    // Forum Management
+    Route::get('/forum', [ForumManagementController::class, 'index'])->name('forum.index');
+    Route::get('/forum/create', [ForumManagementController::class, 'create'])->name('forum.create');
+    Route::post('/forum', [ForumManagementController::class, 'store'])->name('forum.store');
+    Route::get('/forum/{category}/edit', [ForumManagementController::class, 'edit'])->name('forum.edit');
+    Route::put('/forum/{category}', [ForumManagementController::class, 'update'])->name('forum.update');
+    Route::delete('/forum/{category}', [ForumManagementController::class, 'destroy'])->name('forum.destroy');
 });

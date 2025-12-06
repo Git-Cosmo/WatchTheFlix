@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Media;
+use App\Models\ForumCategory;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -17,14 +18,19 @@ class DatabaseSeeder extends Seeder
         // Create admin role
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
-        // Create admin user
-        $admin = User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@watchtheflix.com',
-            'password' => bcrypt('password'),
-            'real_debrid_enabled' => true,
-        ]);
-        $admin->assignRole('admin');
+        // Create admin user if not exists
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@watchtheflix.com'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+                'real_debrid_enabled' => true,
+            ]
+        );
+        
+        if (!$admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
 
         // Create sample media
         $sampleMedia = [
@@ -90,6 +96,38 @@ class DatabaseSeeder extends Seeder
 
         foreach ($sampleMedia as $mediaData) {
             Media::create($mediaData);
+        }
+
+        // Create sample forum categories
+        $forumCategories = [
+            [
+                'name' => 'General Discussion',
+                'description' => 'Talk about anything related to movies and TV shows',
+                'order' => 0,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Recommendations',
+                'description' => 'Share and discover great content to watch',
+                'order' => 1,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Technical Support',
+                'description' => 'Get help with technical issues and account questions',
+                'order' => 2,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Feature Requests',
+                'description' => 'Suggest new features and improvements',
+                'order' => 3,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($forumCategories as $categoryData) {
+            ForumCategory::create($categoryData);
         }
 
         $this->command->info('Database seeded successfully!');

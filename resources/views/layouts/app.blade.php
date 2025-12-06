@@ -30,6 +30,9 @@
                         <a href="{{ route('watchlist.index') }}" class="nav-link {{ request()->routeIs('watchlist.*') ? 'nav-link-active' : '' }}">
                             Watchlist
                         </a>
+                        <a href="{{ route('forum.index') }}" class="nav-link {{ request()->routeIs('forum.*') ? 'nav-link-active' : '' }}">
+                            Forum
+                        </a>
                         @can('viewAny', App\Models\User::class)
                         <a href="{{ route('admin.dashboard') }}" class="nav-link {{ request()->routeIs('admin.*') ? 'nav-link-active' : '' }}">
                             Admin

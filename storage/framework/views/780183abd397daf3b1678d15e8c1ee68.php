@@ -30,6 +30,9 @@
                         <a href="<?php echo e(route('watchlist.index')); ?>" class="nav-link <?php echo e(request()->routeIs('watchlist.*') ? 'nav-link-active' : ''); ?>">
                             Watchlist
                         </a>
+                        <a href="<?php echo e(route('forum.index')); ?>" class="nav-link <?php echo e(request()->routeIs('forum.*') ? 'nav-link-active' : ''); ?>">
+                            Forum
+                        </a>
                         <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('viewAny', App\Models\User::class)): ?>
                         <a href="<?php echo e(route('admin.dashboard')); ?>" class="nav-link <?php echo e(request()->routeIs('admin.*') ? 'nav-link-active' : ''); ?>">
                             Admin
