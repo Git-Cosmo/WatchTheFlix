@@ -200,9 +200,11 @@ class MediaScraperService
             
             // Handle array comparison for genres field
             if (is_array($value) && is_array($existingValue)) {
-                sort($value);
-                sort($existingValue);
-                if ($value !== $existingValue) {
+                $sortedValue = $value;
+                $sortedExisting = $existingValue;
+                sort($sortedValue);
+                sort($sortedExisting);
+                if ($sortedValue !== $sortedExisting) {
                     return true;
                 }
             } elseif ($existingValue !== $value) {

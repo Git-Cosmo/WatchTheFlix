@@ -6,6 +6,7 @@ use App\Models\TvChannel;
 use App\Models\TvProgram;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TvProgramSeeder extends Seeder
 {
@@ -67,8 +68,9 @@ class TvProgramSeeder extends Seeder
         }
 
         // Bulk insert programs for better performance
+        // Using DB::table() to explicitly bypass Eloquent for performance
         if (!empty($programsToInsert)) {
-            TvProgram::insert($programsToInsert);
+            DB::table('tv_programs')->insert($programsToInsert);
             $this->command->info("Seeded " . count($programsToInsert) . " programs for {$channel->name}");
         }
     }
