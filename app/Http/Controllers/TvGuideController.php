@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 class TvGuideController extends Controller
 {
     /**
+     * Supported TV Guide countries
+     */
+    private const SUPPORTED_COUNTRIES = ['UK', 'US'];
+
+    /**
      * Display TV Guide index with country selection
      */
     public function index()
@@ -23,7 +28,7 @@ class TvGuideController extends Controller
     {
         $country = strtoupper($country);
         
-        if (!in_array($country, ['UK', 'US'])) {
+        if (!in_array($country, self::SUPPORTED_COUNTRIES)) {
             abort(404);
         }
 

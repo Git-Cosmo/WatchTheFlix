@@ -215,7 +215,12 @@ class TmdbService
         $url = $this->apiUrl . $endpoint;
         $params['api_key'] = $this->apiKey;
 
-        return Http::{strtolower($method)}($url, $params);
+        // Use explicit method calls for security
+        return match(strtoupper($method)) {
+            'GET' => Http::get($url, $params),
+            'POST' => Http::post($url, $params),
+            default => throw new \Exception('Unsupported HTTP method')
+        };
     }
 
     /**
