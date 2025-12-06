@@ -76,6 +76,23 @@
                 </div>
             </div>
 
+            <div>
+                <label class="block text-sm font-medium text-dark-300 mb-2">Available Platforms</label>
+                <div class="bg-dark-800 rounded-lg p-4 max-h-64 overflow-y-auto">
+                    <div class="grid grid-cols-2 gap-3">
+                        @foreach($platforms as $platform)
+                            <label class="flex items-center">
+                                <input type="checkbox" name="platforms[]" value="{{ $platform->id }}" 
+                                       {{ in_array($platform->id, old('platforms', $media->platforms->pluck('id')->toArray())) ? 'checked' : '' }}
+                                       class="rounded border-dark-600 text-accent-500 focus:ring-accent-500">
+                                <span class="ml-2 text-sm">{{ $platform->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                <p class="text-xs text-dark-400 mt-1">Select the streaming platforms where this content is available</p>
+            </div>
+
             <div class="flex items-center space-x-6">
                 <label class="flex items-center">
                     <input type="checkbox" name="requires_real_debrid" value="1" 

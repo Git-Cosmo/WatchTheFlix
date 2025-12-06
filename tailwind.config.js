@@ -9,7 +9,7 @@ export default {
     theme: {
         extend: {
             colors: {
-                // GitHub Copilot-inspired dark theme
+                // Modern dark theme with purple accents
                 'dark': {
                     DEFAULT: '#0d1117',
                     50: '#f6f8fa',
@@ -25,17 +25,32 @@ export default {
                     950: '#0d1117',
                 },
                 'accent': {
-                    DEFAULT: '#1f6feb',
-                    50: '#ebf4ff',
-                    100: '#d4e8ff',
-                    200: '#acd4ff',
-                    300: '#7dbdff',
-                    400: '#4ca4ff',
-                    500: '#1f6feb',
-                    600: '#0969da',
-                    700: '#0550ae',
-                    800: '#033d8b',
-                    900: '#0a3069',
+                    DEFAULT: '#8b5cf6',
+                    50: '#f5f3ff',
+                    100: '#ede9fe',
+                    200: '#ddd6fe',
+                    300: '#c4b5fd',
+                    400: '#a78bfa',
+                    500: '#8b5cf6',
+                    600: '#7c3aed',
+                    700: '#6d28d9',
+                    800: '#5b21b6',
+                    900: '#4c1d95',
+                    950: '#2e1065',
+                },
+                'gh': {
+                    'bg': '#0d1117',
+                    'bg-secondary': '#161b22',
+                    'bg-tertiary': '#21262d',
+                    'border': '#30363d',
+                    'border-muted': '#21262d',
+                    'text': '#c9d1d9',
+                    'text-muted': '#8b949e',
+                    'accent': '#58a6ff',
+                    'accent-emphasis': '#1f6feb',
+                    'success': '#3fb950',
+                    'warning': '#d29922',
+                    'danger': '#f85149',
                 },
             },
         },

@@ -1,20 +1,26 @@
 # WatchTheFlix
 
-A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Debrid integration and a sleek dark theme.
+A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Debrid integration, TMDB API, TV Guide, Platform Availability, and a sleek dark theme.
 
-![Homepage](https://github.com/user-attachments/assets/ab82a2c5-10af-4401-870b-a85458cd689a)
-![Login Page](https://github.com/user-attachments/assets/8f7413b1-b4ce-4eab-90c3-07af07290ba1)
+![Homepage](https://github.com/user-attachments/assets/473a1e94-570d-4807-8743-1a3e142dfe22)
+![TV Guide](https://github.com/user-attachments/assets/055322be-0960-4a3e-8774-e7c09d2f3e70)
+![UK TV Channels](https://github.com/user-attachments/assets/2afd8ce4-01af-4e62-8145-d3c7a4081bb4)
+![Platform Availability](https://github.com/user-attachments/assets/149096b6-e378-4269-ae7e-000ff8f5614c)
+![Admin Settings - TMDB API](https://github.com/user-attachments/assets/76b26470-eee9-4132-b600-47b2cbf3960e)
 
 ## Features
 
 ### 🎬 Core Streaming Features
 - **Media Catalog**: Browse movies, TV series, and episodes
+- **Platform Availability**: See which streaming services (Netflix, Prime, Hulu, etc.) offer each title
+- **TV Guide**: Browse UK and US TV channels with program schedules
 - **Watchlists**: Create and manage personal watchlists
 - **Favorites**: Mark your favorite content
 - **Ratings**: Rate content on a 1-10 scale
 - **Comments**: Engage with threaded comments
 - **Reactions**: Express your feelings with reaction emojis (like, love, laugh, sad, angry)
 - **Viewing History**: Track your watching progress
+- **TMDB Integration**: Import rich metadata from The Movie Database API
 
 ### 🔐 Authentication & User Management
 - **Invite-Only Registration**: Controlled user onboarding with one-time invite codes
@@ -29,6 +35,30 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Content Access Control**: Restrict premium content to Real-Debrid users
 - **Token Validation**: Automatic validation of Real-Debrid API tokens
 
+### 📺 TV Guide
+- **Multi-Country Support**: Browse TV channels from UK and US
+- **Live Programs**: See what's currently airing on each channel
+- **Program Schedules**: View upcoming programs with detailed information
+- **Channel Information**: Access channel numbers, descriptions, and logos
+- **Search Functionality**: Find specific programs across all channels
+- **Country Filtering**: Filter programs by country (UK/US)
+
+### 🎯 Platform Availability
+- **Streaming Services**: Track where content is available (Netflix, Prime, Hulu, etc.)
+- **UK Services**: BBC iPlayer, ITV Hub, Channel 4, Sky Go, Now TV, BritBox
+- **US Services**: Netflix, Amazon Prime, Hulu, Disney+, HBO Max, Apple TV+
+- **Platform Links**: Direct links to content on each streaming platform
+- **Subscription Info**: See which platforms require subscriptions
+- **Easy Assignment**: Admins can easily assign platforms to media content
+
+### 🎬 TMDB API Integration
+- **Rich Metadata**: Import movie and TV show details from The Movie Database
+- **Automated Imports**: Fetch posters, backdrops, descriptions, and ratings
+- **Cast & Crew**: Access comprehensive cast and crew information
+- **Watch Providers**: Automatically detect streaming platform availability
+- **Admin Configuration**: Easily configure API key through admin settings
+- **Documented Service**: Well-documented service class for TMDB API calls
+
 ### 💬 Community Forum
 - **Forum Categories**: Organized discussion sections
 - **Thread Creation**: Start new discussions
@@ -40,11 +70,11 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 ### 👨‍💼 Admin Panel
 - **Dashboard**: Overview of users, media, and activity
-- **Media Management**: Full CRUD operations for media content
+- **Media Management**: Full CRUD operations for media content with platform assignment
 - **User Management**: View and manage user accounts
 - **Invite System**: Generate and manage invite codes
 - **Forum Management**: Create and organize forum categories
-- **Global Settings**: Configure platform-wide settings
+- **Global Settings**: Configure platform-wide settings including TMDB API
 - **Activity Logging**: Track all important actions (powered by Spatie Activity Log)
 
 ### 🎨 Modern UI/UX
@@ -133,6 +163,12 @@ This creates:
 - Admin user: `admin@watchtheflix.com` / `password`
 - Sample media content
 
+To seed platforms and TV channels:
+```bash
+php artisan db:seed --class=PlatformSeeder
+php artisan db:seed --class=TvChannelSeeder
+```
+
 8. **Build frontend assets**
 ```bash
 npm run build
@@ -151,6 +187,20 @@ php artisan serve
 Visit `http://localhost:8000` in your browser.
 
 ## Configuration
+
+### TMDB API Setup
+
+1. Get your API key from [TMDB](https://www.themoviedb.org/settings/api)
+2. Log in as an admin
+3. Go to `/admin/settings`
+4. Enter your TMDB API key in the "API Integrations" section
+5. Save settings
+
+The TMDB API enables:
+- Importing rich metadata for movies and TV shows
+- Automatic poster and backdrop downloads
+- Cast and crew information
+- Streaming platform availability detection
 
 ### Real-Debrid Setup
 
@@ -181,19 +231,22 @@ The first registered user automatically becomes an admin with access to:
 ### For Users
 
 1. **Registration**: Use an invite code to sign up (first user doesn't need one)
-2. **Browse Content**: Explore the media catalog
-3. **Watch Content**: Stream movies and series
-4. **Build Your Library**: Add content to your watchlist and favorites
-5. **Engage**: Rate, comment, and react to content
-6. **Real-Debrid**: Enable Real-Debrid in settings for premium content
+2. **Browse Content**: Explore the media catalog with platform availability info
+3. **TV Guide**: Check what's airing now on UK and US TV channels
+4. **Watch Content**: Stream movies and series
+5. **Build Your Library**: Add content to your watchlist and favorites
+6. **Engage**: Rate, comment, and react to content
+7. **Real-Debrid**: Enable Real-Debrid in settings for premium content
+8. **Platform Discovery**: See which streaming services offer specific content
 
 ### For Admins
 
-1. **Add Media**: Create new media entries with metadata
-2. **Manage Users**: View user statistics and manage accounts
-3. **Generate Invites**: Create invite codes for new users
-4. **Monitor Activity**: View activity logs and statistics
-5. **Configure Settings**: Adjust platform-wide settings
+1. **Add Media**: Create new media entries with metadata and assign platforms
+2. **Configure TMDB**: Set up TMDB API for automatic metadata imports
+3. **Manage Users**: View user statistics and manage accounts
+4. **Generate Invites**: Create invite codes for new users
+5. **Monitor Activity**: View activity logs and statistics
+6. **Configure Settings**: Adjust platform-wide settings including API integrations
 
 ## Development
 
@@ -220,6 +273,10 @@ php artisan view:cache
 ### Key Tables
 - `users` - User accounts with Real-Debrid settings
 - `media` - Movies, series, and episodes
+- `platforms` - Streaming platforms (Netflix, Prime, Hulu, etc.)
+- `media_platform` - Many-to-many relationship between media and platforms
+- `tv_channels` - UK and US TV channels
+- `tv_programs` - TV program schedules (EPG data)
 - `watchlists` - User watchlist entries
 - `favorites` - User favorites
 - `ratings` - User ratings (1-10)
@@ -227,7 +284,7 @@ php artisan view:cache
 - `reactions` - User reactions (like, love, laugh, sad, angry)
 - `invites` - Invite codes for registration
 - `viewing_history` - Watch progress tracking
-- `settings` - Platform configuration
+- `settings` - Platform configuration (includes TMDB API key)
 - `forum_categories` - Forum discussion categories
 - `forum_threads` - Forum discussion threads
 - `forum_posts` - Thread replies
@@ -244,6 +301,15 @@ php artisan view:cache
 - Secure session management
 
 ## API Documentation
+
+### TMDB API Integration
+
+The application integrates with The Movie Database (TMDB) API v3:
+- Search for movies and TV shows
+- Retrieve detailed metadata (posters, backdrops, descriptions)
+- Access cast and crew information
+- Detect streaming platform availability
+- Import ratings and release information
 
 ### Real-Debrid Integration
 
@@ -278,6 +344,11 @@ chmod -R 755 storage bootstrap/cache
 - Check for extra spaces when pasting
 - Ensure account is active
 
+**TMDB API not working**
+- Verify API key at themoviedb.org/settings/api
+- Check API key is entered correctly in Admin Settings
+- Ensure no extra spaces or characters in the API key
+
 ## Contributing
 
 1. Fork the repository
@@ -306,8 +377,17 @@ For issues and questions:
 
 ## Roadmap
 
+### Recently Completed ✅
+- [x] **TV Guide**: Browse UK and US TV channels with program schedules
+- [x] **Platform Availability**: See which streaming services offer each title
+- [x] **TMDB API Integration**: Import rich metadata from The Movie Database
+- [x] **Platform Management**: Assign and display streaming platforms for content
+
 ### Planned Features
 - [ ] Advanced search with filters
+- [ ] Platform-based filtering in media browse
+- [ ] TMDB metadata import interface in admin panel
+- [ ] Automated TV guide updates (EPG data integration)
 - [ ] Subtitle support
 - [ ] Multi-language support
 - [ ] Email notifications
@@ -317,8 +397,6 @@ For issues and questions:
 - [ ] Watch party feature
 - [ ] Mobile apps (iOS/Android)
 - [ ] Chromecast/AirPlay support
-- [ ] TMDB API integration for metadata
-- [ ] Automated content imports
 - [ ] Advanced analytics dashboard
 
 ---

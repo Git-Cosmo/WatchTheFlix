@@ -1,15 +1,13 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'Global Settings'); ?>
 
-@section('title', 'Global Settings')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-3xl mx-auto">
         <h1 class="text-3xl font-bold mb-8">Global Settings</h1>
 
-        <form method="POST" action="{{ route('admin.settings.update') }}" class="space-y-6">
-            @csrf
-            @method('PUT')
+        <form method="POST" action="<?php echo e(route('admin.settings.update')); ?>" class="space-y-6">
+            <?php echo csrf_field(); ?>
+            <?php echo method_field('PUT'); ?>
 
             <!-- Site Information -->
             <div class="card p-6">
@@ -21,7 +19,7 @@
                             Site Name
                         </label>
                         <input type="text" name="site_name" id="site_name" 
-                               value="{{ old('site_name', $settings['site_name'] ?? 'WatchTheFlix') }}"
+                               value="<?php echo e(old('site_name', $settings['site_name'] ?? 'WatchTheFlix')); ?>"
                                class="input-field w-full">
                     </div>
 
@@ -30,7 +28,7 @@
                             Site Description
                         </label>
                         <textarea name="site_description" id="site_description" rows="3"
-                                  class="input-field w-full">{{ old('site_description', $settings['site_description'] ?? '') }}</textarea>
+                                  class="input-field w-full"><?php echo e(old('site_description', $settings['site_description'] ?? '')); ?></textarea>
                     </div>
                 </div>
             </div>
@@ -46,7 +44,7 @@
                             <span class="text-dark-500 text-xs">(Get your API key from <a href="https://www.themoviedb.org/settings/api" target="_blank" class="text-accent-400 hover:text-accent-300">TMDB</a>)</span>
                         </label>
                         <input type="text" name="tmdb_api_key" id="tmdb_api_key" 
-                               value="{{ old('tmdb_api_key', $settings['tmdb_api_key'] ?? '') }}"
+                               value="<?php echo e(old('tmdb_api_key', $settings['tmdb_api_key'] ?? '')); ?>"
                                placeholder="Enter your TMDB API key"
                                class="input-field w-full font-mono text-sm">
                         <p class="text-xs text-dark-400 mt-1">
@@ -63,21 +61,24 @@
                 <div class="space-y-4">
                     <label class="flex items-center">
                         <input type="checkbox" name="maintenance_mode" value="1" 
-                               {{ ($settings['maintenance_mode'] ?? false) ? 'checked' : '' }}
+                               <?php echo e(($settings['maintenance_mode'] ?? false) ? 'checked' : ''); ?>
+
                                class="rounded border-dark-600 text-accent-500 focus:ring-accent-500">
                         <span class="ml-2">Maintenance Mode</span>
                     </label>
 
                     <label class="flex items-center">
                         <input type="checkbox" name="allow_registration" value="1" 
-                               {{ ($settings['allow_registration'] ?? true) ? 'checked' : '' }}
+                               <?php echo e(($settings['allow_registration'] ?? true) ? 'checked' : ''); ?>
+
                                class="rounded border-dark-600 text-accent-500 focus:ring-accent-500">
                         <span class="ml-2">Allow Registration (with invites)</span>
                     </label>
 
                     <label class="flex items-center">
                         <input type="checkbox" name="require_email_verification" value="1" 
-                               {{ ($settings['require_email_verification'] ?? false) ? 'checked' : '' }}
+                               <?php echo e(($settings['require_email_verification'] ?? false) ? 'checked' : ''); ?>
+
                                class="rounded border-dark-600 text-accent-500 focus:ring-accent-500">
                         <span class="ml-2">Require Email Verification</span>
                     </label>
@@ -86,9 +87,11 @@
 
             <div class="flex space-x-4">
                 <button type="submit" class="btn-primary">Save Settings</button>
-                <a href="{{ route('admin.dashboard') }}" class="btn-secondary">Cancel</a>
+                <a href="<?php echo e(route('admin.dashboard')); ?>" class="btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /home/runner/work/WatchTheFlix/WatchTheFlix/resources/views/admin/settings/index.blade.php ENDPATH**/ ?>

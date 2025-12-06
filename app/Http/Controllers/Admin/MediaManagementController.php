@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Media;
+use App\Models\Platform;
 use Illuminate\Http\Request;
 
 class MediaManagementController extends Controller
@@ -17,7 +18,8 @@ class MediaManagementController extends Controller
 
     public function create()
     {
-        return view('admin.media.create');
+        $platforms = Platform::active()->ordered()->get();
+        return view('admin.media.create', compact('platforms'));
     }
 
     public function store(Request $request)
@@ -47,6 +49,11 @@ class MediaManagementController extends Controller
             $media->syncTags(explode(',', $request->tags));
         }
 
+        // Sync platforms
+        if ($request->filled('platforms')) {
+            $media->platforms()->sync($request->platforms);
+        }
+
         activity()
             ->causedBy(auth()->user())
             ->performedOn($media)
@@ -63,7 +70,9 @@ class MediaManagementController extends Controller
 
     public function edit(Media $media)
     {
-        return view('admin.media.edit', compact('media'));
+        $platforms = Platform::active()->ordered()->get();
+        $media->load('platforms');
+        return view('admin.media.edit', compact('media', 'platforms'));
     }
 
     public function update(Request $request, Media $media)
@@ -91,6 +100,11 @@ class MediaManagementController extends Controller
 
         if ($request->filled('tags')) {
             $media->syncTags(explode(',', $request->tags));
+        }
+
+        // Sync platforms
+        if ($request->has('platforms')) {
+            $media->platforms()->sync($request->platforms ?? []);
         }
 
         activity()

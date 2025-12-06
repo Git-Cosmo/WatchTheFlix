@@ -74,6 +74,26 @@
                 </div>
             </div>
             @endif
+
+            @if($media->platforms && $media->platforms->isNotEmpty())
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-2">Available On</h3>
+                <div class="flex flex-wrap gap-3">
+                    @foreach($media->platforms as $platform)
+                    <a href="{{ $platform->website_url }}" target="_blank" 
+                       class="flex items-center gap-2 px-4 py-2 bg-dark-800 hover:bg-dark-700 rounded-lg transition-colors border border-dark-700 hover:border-accent-500">
+                        @if($platform->logo_url)
+                            <img src="{{ $platform->logo_url }}" alt="{{ $platform->name }}" class="w-5 h-5 object-contain">
+                        @endif
+                        <span class="text-sm font-medium">{{ $platform->name }}</span>
+                        @if($platform->pivot->requires_subscription)
+                            <span class="text-xs text-dark-400">(Subscription)</span>
+                        @endif
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 
