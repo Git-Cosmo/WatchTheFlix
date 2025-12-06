@@ -27,6 +27,9 @@
                         <a href="<?php echo e(route('media.index')); ?>" class="nav-link <?php echo e(request()->routeIs('media.*') ? 'nav-link-active' : ''); ?>">
                             Browse
                         </a>
+                        <a href="<?php echo e(route('tv-guide.index')); ?>" class="nav-link <?php echo e(request()->routeIs('tv-guide.*') ? 'nav-link-active' : ''); ?>">
+                            TV Guide
+                        </a>
                         <a href="<?php echo e(route('watchlist.index')); ?>" class="nav-link <?php echo e(request()->routeIs('watchlist.*') ? 'nav-link-active' : ''); ?>">
                             Watchlist
                         </a>
