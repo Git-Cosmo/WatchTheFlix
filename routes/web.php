@@ -66,6 +66,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/tv-guide/{country}', [TvGuideController::class, 'channels'])->name('tv-guide.channels');
     Route::get('/tv-guide/channel/{channel}', [TvGuideController::class, 'channel'])->name('tv-guide.channel');
     Route::get('/tv-guide/search', [TvGuideController::class, 'search'])->name('tv-guide.search');
+
+    // Notifications
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back()->with('success', 'All notifications marked as read');
+    })->name('notifications.mark-all-read');
 });
 
 // Admin Routes

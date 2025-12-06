@@ -9,7 +9,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-dark-950 text-dark-100">
+<body class="min-h-screen bg-dark-950 text-dark-100 flex flex-col">
     <!-- Navigation -->
     <nav class="bg-gh-bg-secondary border-b border-gh-border sticky top-0 z-50 backdrop-blur-sm bg-gh-bg-secondary/95">
         <div class="container mx-auto px-4">
@@ -69,6 +69,76 @@
                     <a href="{{ route('login') }}" class="btn-secondary">Login</a>
                     <a href="{{ route('register') }}" class="btn-primary">Sign Up</a>
                     @else
+                    <!-- Notifications -->
+                    <div class="relative">
+                        <button onclick="toggleDropdown('notifications-menu')" class="relative text-dark-300 hover:text-dark-100 p-2">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                            <span class="absolute top-1 right-1 flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
+                            </span>
+                            @endif
+                        </button>
+                        
+                        <div id="notifications-menu" class="hidden absolute right-0 mt-2 w-80 bg-dark-800 border border-dark-700 rounded-lg shadow-lg z-10 max-h-96 overflow-y-auto">
+                            <div class="p-4 border-b border-dark-700">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-sm font-semibold text-dark-100">Notifications</h3>
+                                    @if(auth()->user()->unreadNotifications->count() > 0)
+                                    <form method="POST" action="{{ route('notifications.mark-all-read') }}" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-xs text-accent-400 hover:text-accent-300">
+                                            Mark all read
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            @forelse(auth()->user()->notifications->take(10) as $notification)
+                            <div class="p-4 border-b border-dark-700 {{ $notification->read_at ? 'bg-dark-800' : 'bg-dark-750' }} hover:bg-dark-700 transition-colors">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0">
+                                        @if($notification->type === 'App\Notifications\WelcomeNotification' || str_contains($notification->type, 'Welcome'))
+                                        <div class="w-8 h-8 bg-accent-500/20 rounded-full flex items-center justify-center">
+                                            <svg class="h-4 w-4 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                                            </svg>
+                                        </div>
+                                        @else
+                                        <div class="w-8 h-8 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                            <svg class="h-4 w-4 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        </div>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm text-dark-100">{{ $notification->data['message'] ?? 'New notification' }}</p>
+                                        <p class="text-xs text-dark-400 mt-1">{{ $notification->created_at->diffForHumans() }}</p>
+                                    </div>
+                                    @if(!$notification->read_at)
+                                    <div class="flex-shrink-0">
+                                        <span class="inline-block w-2 h-2 bg-accent-500 rounded-full"></span>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                            @empty
+                            <div class="p-8 text-center">
+                                <svg class="mx-auto h-12 w-12 text-dark-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                </svg>
+                                <p class="mt-2 text-sm text-dark-400">No notifications yet</p>
+                            </div>
+                            @endforelse
+                        </div>
+                    </div>
+                    
+                    <!-- User Menu -->
                     <div class="relative">
                         <button onclick="toggleDropdown('user-menu')" class="flex items-center space-x-2 text-dark-300 hover:text-dark-100">
                             <div class="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center">
@@ -80,7 +150,16 @@
                         <div id="user-menu" class="hidden absolute right-0 mt-2 w-48 bg-dark-800 border border-dark-700 rounded-lg shadow-lg z-10">
                             <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-dark-300 hover:bg-dark-700 hover:text-dark-100">Profile</a>
                             <a href="{{ route('profile.settings') }}" class="block px-4 py-2 text-sm text-dark-300 hover:bg-dark-700 hover:text-dark-100">Settings</a>
-                            <form method="POST" action="{{ route('logout') }}" class="block">
+                            @can('viewAny', App\Models\User::class)
+                            <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-dark-300 hover:bg-dark-700 hover:text-dark-100 border-t border-dark-700">
+                                <svg class="h-4 w-4 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Admin Panel
+                            </a>
+                            @endcan
+                            <form method="POST" action="{{ route('logout') }}" class="block border-t border-dark-700">
                                 @csrf
                                 <button type="submit" class="w-full text-left px-4 py-2 text-sm text-dark-300 hover:bg-dark-700 hover:text-dark-100">
                                     Logout
@@ -112,7 +191,7 @@
     @endif
 
     <!-- Main Content -->
-    <main>
+    <main class="flex-grow">
         @yield('content')
     </main>
 
