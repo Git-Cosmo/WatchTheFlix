@@ -59,6 +59,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/watchlist/{media}', [WatchlistController::class, 'add'])->name('watchlist.add');
     Route::delete('/watchlist/{media}', [WatchlistController::class, 'remove'])->name('watchlist.remove');
 
+    // Playlists
+    Route::resource('playlists', \App\Http\Controllers\PlaylistController::class);
+    Route::post('/playlists/{playlist}/add-media', [\App\Http\Controllers\PlaylistController::class, 'addMedia'])->name('playlists.add-media');
+    Route::delete('/playlists/{playlist}/remove-media/{media}', [\App\Http\Controllers\PlaylistController::class, 'removeMedia'])->name('playlists.remove-media');
+    Route::post('/playlists/{playlist}/reorder', [\App\Http\Controllers\PlaylistController::class, 'reorder'])->name('playlists.reorder');
+
     // Forum
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
     Route::get('/forum/category/{category:slug}', [ForumController::class, 'category'])->name('forum.category');

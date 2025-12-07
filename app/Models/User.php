@@ -92,6 +92,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Invite::class, 'created_by');
     }
 
+    public function playlists()
+    {
+        return $this->hasMany(Playlist::class);
+    }
+
     public function hasRealDebridAccess(): bool
     {
         return $this->real_debrid_enabled && ! empty($this->real_debrid_token);
