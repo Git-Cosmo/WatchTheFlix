@@ -31,7 +31,7 @@
         <a href="{{ route('admin.media.create') }}" class="btn-primary text-center">Add Media</a>
         <a href="{{ route('admin.invites.index') }}" class="btn-secondary text-center">Manage Invites</a>
         <a href="{{ route('admin.users.index') }}" class="btn-secondary text-center">Manage Users</a>
-        <a href="{{ route('forum.admin.index') }}" class="btn-secondary text-center">Manage Forum</a>
+        <a href="{{ route('admin.forum.admin.index') }}" class="btn-secondary text-center">Manage Forum</a>
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
