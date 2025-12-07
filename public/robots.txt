@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login
+Disallow: /register
+Disallow: /profile/settings
+Disallow: /api/
+
+Sitemap: https://watchtheflix.com/sitemap.xml
