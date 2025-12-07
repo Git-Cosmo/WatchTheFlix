@@ -2,6 +2,24 @@
 
 A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Debrid integration, TMDB API, TV Guide, Platform Availability, and a sleek dark theme.
 
+> **📋 Documentation Accuracy**: This README clearly distinguishes between **implemented features** (✅ working now) and **planned features** (📋 roadmap). See the [Current Limitations](#current-limitations) and [Roadmap](#roadmap) sections for complete transparency.
+
+## Quick Start
+
+**What you get out of the box:**
+- 🎬 Media catalog with watchlists, favorites, ratings, comments, and reactions
+- 📺 TV Guide for UK and US channels (manual data seeding)
+- 🌐 Platform availability tracking (Netflix, Prime, Hulu, etc.)
+- 💬 Custom forum system with categories, threads, and subscriptions
+- 👤 User profiles with parental controls (PIN-protected)
+- 🔐 Invite-only registration system
+- 👨‍💼 Comprehensive admin panel
+- 🎨 Dark theme with responsive design
+
+**Optional integrations:**
+- 🎬 TMDB API for rich metadata and automated content scraping
+- 🚀 Real-Debrid for premium content access (user-level setting)
+
 ![Homepage](https://github.com/user-attachments/assets/473a1e94-570d-4807-8743-1a3e142dfe22)
 ![TV Guide](https://github.com/user-attachments/assets/055322be-0960-4a3e-8774-e7c09d2f3e70)
 ![UK TV Channels](https://github.com/user-attachments/assets/2afd8ce4-01af-4e62-8145-d3c7a4081bb4)
@@ -26,9 +44,10 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Invite-Only Registration**: Controlled user onboarding with one-time invite codes
 - **First User Admin**: The first registered user automatically becomes an admin
 - **Rich User Profiles**: Customizable profiles with avatar, bio, and statistics
-- **Parental Controls**: PIN-protected content restrictions
+- **Parental Controls**: PIN-protected content restrictions with 4-digit PIN
 - **Session Management**: Secure authentication with remember me functionality
-- **User Notifications**: In-app notification system with bell icon, unread indicators, and mark-as-read functionality
+- **In-App Notifications**: Real-time notification system with bell icon, unread indicators, and mark-as-read functionality
+  - *Note: Email notifications are not yet implemented (see [Roadmap](#roadmap))*
 
 ### 🎯 Real-Debrid Integration
 - **User-Level Integration**: Each user can enable/disable Real-Debrid
@@ -38,11 +57,12 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 ### 📺 TV Guide
 - **Multi-Country Support**: Browse TV channels from UK and US
-- **Live Programs**: See what's currently airing on each channel
-- **Program Schedules**: View upcoming programs with detailed information
+- **Program Schedules**: View program schedules with detailed information
 - **Channel Information**: Access channel numbers, descriptions, and logos
 - **Search Functionality**: Find specific programs across all channels
 - **Country Filtering**: Filter programs by country (UK/US)
+- **Manual Data Seeding**: TV Guide data is seeded via database seeders
+  - *Note: Automated EPG (Electronic Program Guide) updates are planned (see [Roadmap](#roadmap))*
 
 ### 🎯 Platform Availability
 - **Streaming Services**: Track where content is available (Netflix, Prime, Hulu, etc.)
@@ -99,6 +119,44 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **laravel-tags**: Flexible tagging system
 
 **Note on Forum**: The project uses a custom-built forum system designed specifically for Laravel 12 compatibility. The `riari/laravel-forum` package was not used as it only supports Laravel 11.
+
+## Current Limitations
+
+While WatchTheFlix offers a comprehensive feature set, there are some current limitations to be aware of:
+
+### Notifications
+- ✅ **In-App Notifications**: Fully functional with bell icon and real-time updates
+- ❌ **Email Notifications**: Not yet implemented - all notifications are in-app only
+
+### TV Guide Data
+- ✅ **Manual Seeding**: TV channels and programs can be seeded via database seeders
+- ❌ **Automated EPG**: Real-time Electronic Program Guide updates are not yet implemented
+- **Workaround**: Use the included seeders to populate 7 days of sample TV program data
+
+### Internationalization
+- ✅ **English Interface**: Fully functional English UI
+- ❌ **Multi-Language**: UI translation and subtitle support not yet available
+
+### Security
+- ✅ **Standard Authentication**: Secure password-based authentication with session management
+- ✅ **Parental Controls**: PIN-protected content restrictions
+- ❌ **Two-Factor Authentication**: Not yet implemented
+
+### Mobile Access
+- ✅ **Responsive Web Design**: Mobile-optimized web interface
+- ❌ **Native Mobile Apps**: iOS and Android apps not yet available
+- ❌ **Casting Support**: Chromecast/AirPlay integration not yet implemented
+
+### Content Discovery
+- ✅ **Basic Search**: Search for media titles
+- ❌ **Advanced Filters**: Genre, year, rating, and platform-based filtering planned
+- ✅ **Platform Availability**: See which streaming services offer content
+- ❌ **Smart Recommendations**: AI-powered recommendations not yet available
+
+### Performance Notes
+- The application uses SQLite by default, which is suitable for small to medium deployments
+- For production deployments with high traffic, switching to MySQL or PostgreSQL is recommended
+- TV Guide queries with large datasets may benefit from database optimization and caching
 
 ## Technology Stack
 
@@ -217,14 +275,22 @@ The TMDB API enables:
 - Automatic poster and backdrop downloads
 - Cast and crew information
 - Streaming platform availability detection
+- Using the `media:scrape` command to fetch latest content
+- Using the `TmdbMediaSeeder` to bulk import popular content
 
-### Real-Debrid Setup
+**Note**: The application works without TMDB API - you can manually add media through the admin panel. TMDB integration is optional but recommended for rich metadata.
+
+### Real-Debrid Setup (Optional)
+
+Real-Debrid integration is **optional** - the platform works fully without it. Enable it only if you want premium content access.
 
 1. Get your API token from [Real-Debrid](https://real-debrid.com/apitoken)
 2. Log in to your WatchTheFlix account
 3. Go to Settings
 4. Enable Real-Debrid and paste your API token
 5. Save settings
+
+**Note**: Real-Debrid is a user-level setting. Each user decides whether to enable it for their account.
 
 ### Admin Features
 
@@ -248,12 +314,13 @@ The first registered user automatically becomes an admin with access to:
 
 1. **Registration**: Use an invite code to sign up (first user doesn't need one)
 2. **Browse Content**: Explore the media catalog with platform availability info
-3. **TV Guide**: Check what's airing now on UK and US TV channels
+3. **TV Guide**: Browse UK and US TV channel schedules (populated via database seeders)
 4. **Watch Content**: Stream movies and series
 5. **Build Your Library**: Add content to your watchlist and favorites
 6. **Engage**: Rate, comment, and react to content
-7. **Real-Debrid**: Enable Real-Debrid in settings for premium content
-8. **Platform Discovery**: See which streaming services offer specific content
+7. **Forum Participation**: Join discussions, subscribe to threads, and engage with the community
+8. **Real-Debrid**: Enable Real-Debrid in settings for premium content
+9. **Platform Discovery**: See which streaming services offer specific content
 
 ### For Admins
 
@@ -333,13 +400,23 @@ php artisan view:cache
 
 ## Security
 
-- CSRF protection on all forms
-- SQL injection prevention via Eloquent ORM
-- XSS protection via Blade templating
-- Password hashing with bcrypt
-- API token encryption
-- Rate limiting on authentication
-- Secure session management
+### Implemented Security Features ✅
+- **CSRF Protection**: All forms protected against Cross-Site Request Forgery attacks
+- **SQL Injection Prevention**: Eloquent ORM with parameterized queries
+- **XSS Protection**: Blade templating engine with automatic output escaping
+- **Password Security**: bcrypt hashing with secure password requirements
+- **API Token Encryption**: Secure storage of Real-Debrid and TMDB API tokens
+- **Authentication Rate Limiting**: Brute force protection on login attempts
+- **Session Management**: Secure session handling with configurable timeouts
+- **Parental Controls**: PIN-protected content restrictions (4-digit PIN)
+- **Role-Based Access**: Admin and user roles with permission management (Spatie)
+- **Activity Logging**: Comprehensive audit trail of admin actions (Spatie Activity Log)
+
+### Planned Security Enhancements 📋
+- **Two-Factor Authentication (2FA)**: Additional authentication layer (see [Roadmap](#roadmap))
+- **API Rate Limiting**: Granular rate limiting for API endpoints
+- **Content Security Policy (CSP)**: Enhanced XSS protection headers
+- **IP-Based Restrictions**: Configurable IP whitelisting for admin panel
 
 ## API Documentation
 
@@ -423,22 +500,33 @@ For issues and questions:
 - [x] **Platform Availability**: See which streaming services offer each title
 - [x] **TMDB API Integration**: Import rich metadata from The Movie Database
 - [x] **Platform Management**: Assign and display streaming platforms for content
+- [x] **Forum System**: Custom-built forum with categories, threads, and replies
+- [x] **Forum Subscriptions**: Subscribe to threads and get in-app notifications
+- [x] **View Tracking**: Track thread views and engagement
+- [x] **Parental Controls**: PIN-protected content restrictions
 
-### Planned Features
-- [ ] Advanced search with filters
-- [ ] Platform-based filtering in media browse
-- [ ] TMDB metadata import interface in admin panel
-- [ ] Automated TV guide updates (EPG data integration)
-- [ ] Subtitle support
-- [ ] Multi-language support
-- [ ] Email notifications
-- [ ] Two-factor authentication
-- [ ] Social sharing
-- [ ] Playlist creation
-- [ ] Watch party feature
-- [ ] Mobile apps (iOS/Android)
-- [ ] Chromecast/AirPlay support
-- [ ] Advanced analytics dashboard
+### High Priority Features 🎯
+- [ ] **Email Notifications**: Send email notifications for important events (currently only in-app)
+- [ ] **Two-Factor Authentication (2FA)**: Add an extra layer of account security
+- [ ] **Automated EPG Updates**: Real-time TV guide data integration from external sources
+- [ ] **Advanced Search**: Enhanced search with filters for genre, year, rating, platform
+- [ ] **Platform-Based Filtering**: Filter media by streaming service availability
+
+### Medium Priority Features 🔨
+- [ ] **Subtitle Support**: Multi-language subtitle parsing and display in video player
+- [ ] **Multi-Language UI**: Internationalization support for the entire interface
+- [ ] **Social Sharing**: Share content to social media platforms
+- [ ] **Playlist Creation**: Create and manage custom playlists
+- [ ] **Advanced Analytics**: Comprehensive admin dashboard with user engagement metrics
+- [ ] **TMDB Bulk Import UI**: Admin interface for bulk importing content from TMDB
+
+### Future Enhancements 🚀
+- [ ] **Watch Party**: Synchronized viewing with friends
+- [ ] **Mobile Apps**: Native iOS and Android applications
+- [ ] **Chromecast/AirPlay**: Cast content to TVs and streaming devices
+- [ ] **Content Recommendations**: AI-powered personalized recommendations
+- [ ] **User Reviews**: Full review system with helpful votes
+- [ ] **Advanced Parental Controls**: Content rating-based automatic restrictions
 
 ---
 
