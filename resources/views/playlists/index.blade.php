@@ -45,7 +45,8 @@
             </div>
 
             <div class="flex items-center justify-between text-sm text-dark-400 mb-4">
-                <span>{{ $playlist->media_count ?? 0 }} {{ ($playlist->media_count ?? 0) === 1 ? 'item' : 'items' }}</span>
+                @php $count = $playlist->media_count ?? 0; @endphp
+                <span>{{ $count }} {{ $count === 1 ? 'item' : 'items' }}</span>
                 <span>{{ $playlist->created_at->diffForHumans() }}</span>
             </div>
 

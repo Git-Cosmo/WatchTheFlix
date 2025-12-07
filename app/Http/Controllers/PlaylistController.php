@@ -135,7 +135,7 @@ class PlaylistController extends Controller
         }
 
         // Get the next position
-        $nextPosition = $playlist->media()->max('position') + 1;
+        $nextPosition = ($playlist->media()->max('position') ?? -1) + 1;
 
         $playlist->media()->attach($media->id, ['position' => $nextPosition]);
 
