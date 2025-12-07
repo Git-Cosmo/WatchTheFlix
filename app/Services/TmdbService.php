@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * TMDB (The Movie Database) API Service
- * 
+ *
  * This service provides methods to interact with TMDB API for fetching
  * movie and TV show metadata, including:
  * - Basic information (title, description, release date)
@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Log;
 class TmdbService
 {
     protected $apiUrl = 'https://api.themoviedb.org/3';
+
     protected $apiKey;
+
     protected $imageBaseUrl = 'https://image.tmdb.org/t/p';
 
     public function __construct()
@@ -35,6 +37,7 @@ class TmdbService
     public function setApiKey(string $apiKey): self
     {
         $this->apiKey = $apiKey;
+
         return $this;
     }
 
@@ -51,7 +54,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB search movies failed: ' . $e->getMessage());
+            Log::error('TMDB search movies failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -69,7 +73,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB search TV shows failed: ' . $e->getMessage());
+            Log::error('TMDB search TV shows failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -86,7 +91,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB get movie details failed: ' . $e->getMessage());
+            Log::error('TMDB get movie details failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -103,7 +109,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB get TV show details failed: ' . $e->getMessage());
+            Log::error('TMDB get TV show details failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -120,7 +127,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB get popular movies failed: ' . $e->getMessage());
+            Log::error('TMDB get popular movies failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -137,7 +145,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB get popular TV shows failed: ' . $e->getMessage());
+            Log::error('TMDB get popular TV shows failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -152,7 +161,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB get movie watch providers failed: ' . $e->getMessage());
+            Log::error('TMDB get movie watch providers failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -167,7 +177,8 @@ class TmdbService
 
             return $response->successful() ? $response->json() : null;
         } catch (\Exception $e) {
-            Log::error('TMDB get TV show watch providers failed: ' . $e->getMessage());
+            Log::error('TMDB get TV show watch providers failed: '.$e->getMessage());
+
             return null;
         }
     }
@@ -186,9 +197,10 @@ class TmdbService
      */
     public function getPosterUrl(?string $path, string $size = 'w500'): ?string
     {
-        if (!$path) {
+        if (! $path) {
             return null;
         }
+
         return $this->getImageUrl($path, $size);
     }
 
@@ -197,9 +209,10 @@ class TmdbService
      */
     public function getBackdropUrl(?string $path, string $size = 'original'): ?string
     {
-        if (!$path) {
+        if (! $path) {
             return null;
         }
+
         return $this->getImageUrl($path, $size);
     }
 
@@ -208,15 +221,15 @@ class TmdbService
      */
     protected function makeRequest(string $method, string $endpoint, array $params = [])
     {
-        if (!$this->apiKey) {
+        if (! $this->apiKey) {
             throw new \Exception('TMDB API key not configured. Please set it in Admin Settings.');
         }
 
-        $url = $this->apiUrl . $endpoint;
+        $url = $this->apiUrl.$endpoint;
         $params['api_key'] = $this->apiKey;
 
         // Use explicit method calls for security
-        return match(strtoupper($method)) {
+        return match (strtoupper($method)) {
             'GET' => Http::get($url, $params),
             'POST' => Http::post($url, $params),
             default => throw new \Exception('Unsupported HTTP method')
@@ -228,7 +241,7 @@ class TmdbService
      */
     public function isConfigured(): bool
     {
-        return !empty($this->apiKey);
+        return ! empty($this->apiKey);
     }
 
     /**
@@ -238,9 +251,11 @@ class TmdbService
     {
         try {
             $response = $this->makeRequest('GET', '/configuration');
+
             return $response->successful();
         } catch (\Exception $e) {
-            Log::error('TMDB connection test failed: ' . $e->getMessage());
+            Log::error('TMDB connection test failed: '.$e->getMessage());
+
             return false;
         }
     }

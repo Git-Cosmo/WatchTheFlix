@@ -23,7 +23,7 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
             $table->timestamps();
-            
+
             $table->index(['type', 'is_active']);
         });
 
@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('availability_url')->nullable(); // Direct link to content on platform
             $table->boolean('requires_subscription')->default(true);
             $table->timestamps();
-            
+
             $table->unique(['media_id', 'platform_id']);
         });
     }

@@ -33,6 +33,7 @@ class TvProgram extends Model
     public function isCurrentlyAiring()
     {
         $now = now();
+
         return $this->start_time <= $now && $this->end_time >= $now;
     }
 

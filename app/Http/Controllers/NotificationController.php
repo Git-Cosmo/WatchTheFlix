@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
 class NotificationController extends Controller
 {
     /**
@@ -12,7 +10,7 @@ class NotificationController extends Controller
     public function markAllAsRead()
     {
         auth()->user()->unreadNotifications->markAsRead();
-        
+
         return back()->with('success', 'All notifications marked as read');
     }
 }

@@ -50,15 +50,18 @@ class ScrapeMediaCommand extends Command
                 $this->newLine();
             }
 
-            if (!in_array($type, ['all', 'movies', 'tv'])) {
+            if (! in_array($type, ['all', 'movies', 'tv'])) {
                 $this->error('Invalid type. Use "movies", "tv", or "all".');
+
                 return self::FAILURE;
             }
 
             $this->info('✓ Media scraping completed successfully!');
+
             return self::SUCCESS;
         } catch (\Exception $e) {
-            $this->error('Failed to scrape media: ' . $e->getMessage());
+            $this->error('Failed to scrape media: '.$e->getMessage());
+
             return self::FAILURE;
         }
     }
@@ -69,7 +72,7 @@ class ScrapeMediaCommand extends Command
     protected function displayStats(string $label, array $stats): void
     {
         $this->table(
-            [$label . ' Statistics'],
+            [$label.' Statistics'],
             [
                 ['Added', $stats['added']],
                 ['Updated', $stats['updated']],

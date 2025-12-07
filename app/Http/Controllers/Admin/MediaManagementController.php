@@ -19,6 +19,7 @@ class MediaManagementController extends Controller
     public function create()
     {
         $platforms = Platform::active()->ordered()->get();
+
         return view('admin.media.create', compact('platforms'));
     }
 
@@ -72,6 +73,7 @@ class MediaManagementController extends Controller
     {
         $platforms = Platform::active()->ordered()->get();
         $media->load('platforms');
+
         return view('admin.media.edit', compact('media', 'platforms'));
     }
 

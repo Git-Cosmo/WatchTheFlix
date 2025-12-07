@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\TvChannel;
-use App\Models\TvProgram;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +21,7 @@ class TvProgramSeeder extends Seeder
 
         if ($channels->isEmpty()) {
             $this->command->warn('No TV channels found. Run TvChannelSeeder first.');
+
             return;
         }
 
@@ -69,9 +69,9 @@ class TvProgramSeeder extends Seeder
 
         // Bulk insert programs for better performance
         // Using DB::table() to explicitly bypass Eloquent for performance
-        if (!empty($programsToInsert)) {
+        if (! empty($programsToInsert)) {
             DB::table('tv_programs')->insert($programsToInsert);
-            $this->command->info("Seeded " . count($programsToInsert) . " programs for {$channel->name}");
+            $this->command->info('Seeded '.count($programsToInsert)." programs for {$channel->name}");
         }
     }
 
@@ -81,6 +81,7 @@ class TvProgramSeeder extends Seeder
     protected function getRandomProgramDuration(): int
     {
         $durations = [30, 30, 60, 60, 60, 90, 120]; // Weighted towards common lengths
+
         return $durations[array_rand($durations)];
     }
 
@@ -93,22 +94,22 @@ class TvProgramSeeder extends Seeder
 
         $morningShows = [
             'Good Morning Live', 'Breakfast News', 'Morning Show', 'Early Start',
-            'Wake Up Today', 'Sunrise Special', 'The Morning Brief'
+            'Wake Up Today', 'Sunrise Special', 'The Morning Brief',
         ];
 
         $afternoonShows = [
             'Afternoon Live', 'Daytime Talk', 'The Chat Show', 'Cooking Today',
-            'Home & Garden', 'Quiz Time', 'Drama: The Series'
+            'Home & Garden', 'Quiz Time', 'Drama: The Series',
         ];
 
         $eveningShows = [
             'Evening News', 'Prime Time Drama', 'Documentary Hour', 'Crime Investigation',
-            'Comedy Night', 'Game Show', 'Reality Check', 'Sports Tonight'
+            'Comedy Night', 'Game Show', 'Reality Check', 'Sports Tonight',
         ];
 
         $nightShows = [
             'Late Night Show', 'Night News', 'Late Movie', 'Thriller: Episode',
-            'Comedy Specials', 'Music Hour', 'Night Talk'
+            'Comedy Specials', 'Music Hour', 'Night Talk',
         ];
 
         if ($hour >= 6 && $hour < 12) {
@@ -150,7 +151,7 @@ class TvProgramSeeder extends Seeder
     {
         $genres = [
             'News', 'Drama', 'Comedy', 'Documentary', 'Sports',
-            'Reality', 'Talk Show', 'Game Show', 'Music', 'Children'
+            'Reality', 'Talk Show', 'Game Show', 'Music', 'Children',
         ];
 
         return $genres[array_rand($genres)];
@@ -162,6 +163,7 @@ class TvProgramSeeder extends Seeder
     protected function getRandomRating(): string
     {
         $ratings = ['G', 'PG', 'PG-13', 'TV-14', 'TV-MA'];
+
         return $ratings[array_rand($ratings)];
     }
 }

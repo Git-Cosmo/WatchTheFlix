@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            
+
             $table->index(['country', 'is_active']);
         });
 
@@ -38,7 +38,7 @@ return new class extends Migration
             $table->string('rating')->nullable(); // G, PG, etc.
             $table->string('image_url')->nullable();
             $table->timestamps();
-            
+
             $table->index(['tv_channel_id', 'start_time', 'end_time']);
             $table->index(['tv_channel_id', 'start_time']); // Performance optimization for seeder
             $table->index('start_time');
