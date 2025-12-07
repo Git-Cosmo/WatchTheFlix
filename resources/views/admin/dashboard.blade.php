@@ -7,22 +7,56 @@
     <h1 class="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
     <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="card p-6">
-            <div class="text-4xl font-bold text-accent-500 mb-2">{{ $stats['total_users'] }}</div>
-            <div class="text-dark-400">Total Users</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="card p-6 hover:border-accent-500/50 transition-all">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-4xl font-bold text-accent-500">{{ $stats['total_users'] }}</div>
+                <div class="w-12 h-12 bg-accent-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="text-dark-400 text-sm">Total Users</div>
         </div>
-        <div class="card p-6">
-            <div class="text-4xl font-bold text-accent-500 mb-2">{{ $stats['total_media'] }}</div>
-            <div class="text-dark-400">Total Media</div>
+        <div class="card p-6 hover:border-accent-500/50 transition-all">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-4xl font-bold text-accent-500">{{ $stats['total_media'] }}</div>
+                <div class="w-12 h-12 bg-accent-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="text-dark-400 text-sm">Total Media</div>
+            <div class="mt-2 text-xs text-dark-500">
+                {{ $stats['published_media'] }} published • {{ $stats['draft_media'] }} draft
+            </div>
         </div>
-        <div class="card p-6">
-            <div class="text-4xl font-bold text-accent-500 mb-2">{{ $stats['active_invites'] }}</div>
-            <div class="text-dark-400">Active Invites</div>
+        <div class="card p-6 hover:border-accent-500/50 transition-all">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-4xl font-bold text-accent-500">{{ $stats['active_invites'] }}</div>
+                <div class="w-12 h-12 bg-accent-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="text-dark-400 text-sm">Active Invites</div>
         </div>
-        <div class="card p-6">
-            <div class="text-4xl font-bold text-accent-500 mb-2">{{ $stats['total_views'] }}</div>
-            <div class="text-dark-400">Total Views</div>
+        <div class="card p-6 hover:border-accent-500/50 transition-all">
+            <div class="flex items-center justify-between mb-2">
+                <div class="text-4xl font-bold text-accent-500">{{ $stats['movies_count'] + $stats['series_count'] }}</div>
+                <div class="w-12 h-12 bg-accent-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="text-dark-400 text-sm">Content Library</div>
+            <div class="mt-2 text-xs text-dark-500">
+                {{ $stats['movies_count'] }} movies • {{ $stats['series_count'] }} series
+            </div>
         </div>
     </div>
 

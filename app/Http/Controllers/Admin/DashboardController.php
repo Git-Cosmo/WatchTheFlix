@@ -17,6 +17,10 @@ class DashboardController extends Controller
             'total_media' => Media::count(),
             'active_invites' => Invite::whereNull('used_at')->count(),
             'total_views' => 0, // Can be calculated from viewing history
+            'published_media' => Media::where('is_published', true)->count(),
+            'draft_media' => Media::where('is_published', false)->count(),
+            'movies_count' => Media::where('type', 'movie')->count(),
+            'series_count' => Media::where('type', 'series')->count(),
         ];
 
         $recentActivity = Activity::latest()->take(10)->get();
