@@ -24,6 +24,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'real_debrid_enabled',
         'parental_control_enabled',
         'parental_control_pin',
+        'two_factor_enabled',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
         'preferences',
     ];
 
@@ -32,6 +36,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'remember_token',
         'real_debrid_token',
         'parental_control_pin',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
     ];
 
     protected $casts = [
@@ -39,6 +45,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
         'real_debrid_enabled' => 'boolean',
         'parental_control_enabled' => 'boolean',
+        'two_factor_enabled' => 'boolean',
+        'two_factor_confirmed_at' => 'datetime',
         'preferences' => 'array',
     ];
 

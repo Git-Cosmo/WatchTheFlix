@@ -37,6 +37,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
     Route::put('/profile/settings', [ProfileController::class, 'updateSettings'])->name('profile.settings.update');
 
+    // Two-Factor Authentication
+    Route::prefix('two-factor')->name('two-factor.')->group(function () {
+        Route::post('/enable', [\App\Http\Controllers\TwoFactorAuthController::class, 'enable'])->name('enable');
+        Route::post('/confirm', [\App\Http\Controllers\TwoFactorAuthController::class, 'confirm'])->name('confirm');
+        Route::post('/disable', [\App\Http\Controllers\TwoFactorAuthController::class, 'disable'])->name('disable');
+        Route::get('/recovery-codes', [\App\Http\Controllers\TwoFactorAuthController::class, 'showRecoveryCodes'])->name('recovery-codes');
+        Route::post('/recovery-codes/regenerate', [\App\Http\Controllers\TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('recovery-codes.regenerate');
+    });
+
     // Media
     Route::get('/media', [MediaController::class, 'index'])->name('media.index');
     Route::get('/media/{media}', [MediaController::class, 'show'])->name('media.show');

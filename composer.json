@@ -12,15 +12,16 @@
     ],
     "require": {
         "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10",
-        "spatie/laravel-permission": "^6.0",
+        "pragmarx/google2fa-laravel": "^2.3",
         "spatie/laravel-activitylog": "^4.8",
-        "spatie/laravel-sluggable": "^3.6",
         "spatie/laravel-backup": "^9.0",
+        "spatie/laravel-permission": "^6.0",
         "spatie/laravel-sitemap": "^7.0",
-        "spatie/laravel-tags": "^4.6",
-        "guzzlehttp/guzzle": "^7.8"
+        "spatie/laravel-sluggable": "^3.6",
+        "spatie/laravel-tags": "^4.6"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
