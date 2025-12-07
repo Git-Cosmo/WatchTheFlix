@@ -2,7 +2,23 @@
 
 A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Debrid integration, TMDB API, TV Guide, Platform Availability, and a sleek dark theme.
 
-> **📋 Status Note**: This README accurately distinguishes between **implemented features** (✅ working now) and **planned features** (📋 roadmap). See the [Roadmap](#roadmap) section for upcoming features.
+> **📋 Documentation Accuracy**: This README clearly distinguishes between **implemented features** (✅ working now) and **planned features** (📋 roadmap). See the [Current Limitations](#current-limitations) and [Roadmap](#roadmap) sections for complete transparency.
+
+## Quick Start
+
+**What you get out of the box:**
+- 🎬 Media catalog with watchlists, favorites, ratings, comments, and reactions
+- 📺 TV Guide for UK and US channels (manual data seeding)
+- 🌐 Platform availability tracking (Netflix, Prime, Hulu, etc.)
+- 💬 Custom forum system with categories, threads, and subscriptions
+- 👤 User profiles with parental controls (PIN-protected)
+- 🔐 Invite-only registration system
+- 👨‍💼 Comprehensive admin panel
+- 🎨 Dark theme with responsive design
+
+**Optional integrations:**
+- 🎬 TMDB API for rich metadata and automated content scraping
+- 🚀 Real-Debrid for premium content access (user-level setting)
 
 ![Homepage](https://github.com/user-attachments/assets/473a1e94-570d-4807-8743-1a3e142dfe22)
 ![TV Guide](https://github.com/user-attachments/assets/055322be-0960-4a3e-8774-e7c09d2f3e70)
@@ -259,14 +275,22 @@ The TMDB API enables:
 - Automatic poster and backdrop downloads
 - Cast and crew information
 - Streaming platform availability detection
+- Using the `media:scrape` command to fetch latest content
+- Using the `TmdbMediaSeeder` to bulk import popular content
 
-### Real-Debrid Setup
+**Note**: The application works without TMDB API - you can manually add media through the admin panel. TMDB integration is optional but recommended for rich metadata.
+
+### Real-Debrid Setup (Optional)
+
+Real-Debrid integration is **optional** - the platform works fully without it. Enable it only if you want premium content access.
 
 1. Get your API token from [Real-Debrid](https://real-debrid.com/apitoken)
 2. Log in to your WatchTheFlix account
 3. Go to Settings
 4. Enable Real-Debrid and paste your API token
 5. Save settings
+
+**Note**: Real-Debrid is a user-level setting. Each user decides whether to enable it for their account.
 
 ### Admin Features
 
@@ -290,12 +314,13 @@ The first registered user automatically becomes an admin with access to:
 
 1. **Registration**: Use an invite code to sign up (first user doesn't need one)
 2. **Browse Content**: Explore the media catalog with platform availability info
-3. **TV Guide**: Check what's airing now on UK and US TV channels
+3. **TV Guide**: Browse UK and US TV channel schedules (populated via database seeders)
 4. **Watch Content**: Stream movies and series
 5. **Build Your Library**: Add content to your watchlist and favorites
 6. **Engage**: Rate, comment, and react to content
-7. **Real-Debrid**: Enable Real-Debrid in settings for premium content
-8. **Platform Discovery**: See which streaming services offer specific content
+7. **Forum Participation**: Join discussions, subscribe to threads, and engage with the community
+8. **Real-Debrid**: Enable Real-Debrid in settings for premium content
+9. **Platform Discovery**: See which streaming services offer specific content
 
 ### For Admins
 
