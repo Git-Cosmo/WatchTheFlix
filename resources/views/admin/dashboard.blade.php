@@ -70,7 +70,129 @@
     
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <a href="{{ route('admin.settings.index') }}" class="btn-secondary text-center">Settings</a>
+        <a href="{{ route('admin.tmdb-import.index') }}" class="btn-secondary text-center">TMDB Bulk Import</a>
         <a href="{{ route('forum.index') }}" class="btn-secondary text-center" target="_blank">View Forum</a>
+    </div>
+
+    <!-- User Engagement Metrics -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">User Engagement</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['total_comments'] }}</div>
+                <div class="text-sm text-dark-400">Comments</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['total_ratings'] }}</div>
+                <div class="text-sm text-dark-400">Ratings</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['total_favorites'] }}</div>
+                <div class="text-sm text-dark-400">Favorites</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['total_watchlist_items'] }}</div>
+                <div class="text-sm text-dark-400">Watchlist Items</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['forum_threads'] }}</div>
+                <div class="text-sm text-dark-400">Forum Threads</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['forum_posts'] }}</div>
+                <div class="text-sm text-dark-400">Forum Posts</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['total_playlists'] }}</div>
+                <div class="text-sm text-dark-400">Playlists</div>
+            </div>
+            <div class="card p-4">
+                <div class="text-2xl font-bold text-accent-400">{{ $engagement['total_reactions'] }}</div>
+                <div class="text-sm text-dark-400">Reactions</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Growth Metrics -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">30-Day Growth</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="card p-4 border-l-4 border-green-500">
+                <div class="text-2xl font-bold text-green-400">+{{ $growth['new_users'] }}</div>
+                <div class="text-sm text-dark-400">New Users</div>
+            </div>
+            <div class="card p-4 border-l-4 border-blue-500">
+                <div class="text-2xl font-bold text-blue-400">+{{ $growth['new_media'] }}</div>
+                <div class="text-sm text-dark-400">New Media</div>
+            </div>
+            <div class="card p-4 border-l-4 border-purple-500">
+                <div class="text-2xl font-bold text-purple-400">+{{ $growth['new_comments'] }}</div>
+                <div class="text-sm text-dark-400">New Comments</div>
+            </div>
+            <div class="card p-4 border-l-4 border-yellow-500">
+                <div class="text-2xl font-bold text-yellow-400">+{{ $growth['new_ratings'] }}</div>
+                <div class="text-sm text-dark-400">New Ratings</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- Top Rated Media -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold mb-4">Top Rated Content</h2>
+            <div class="space-y-3">
+                @forelse($topRated as $media)
+                <div class="flex items-center justify-between border-b border-dark-700 pb-3">
+                    <div class="flex-1">
+                        <p class="font-medium">{{ $media->title }}</p>
+                        <p class="text-xs text-dark-400">{{ $media->ratings_count }} ratings</p>
+                    </div>
+                    <span class="text-lg font-bold text-accent-400">
+                        {{ number_format($media->ratings_avg_rating, 1) }}/10
+                    </span>
+                </div>
+                @empty
+                <p class="text-dark-400">No rated content yet</p>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Most Viewed Media -->
+        <div class="card p-6">
+            <h2 class="text-xl font-semibold mb-4">Most Viewed</h2>
+            <div class="space-y-3">
+                @forelse($mostViewed as $media)
+                <div class="flex items-center justify-between border-b border-dark-700 pb-3">
+                    <div class="flex-1">
+                        <p class="font-medium">{{ $media->title }}</p>
+                        <p class="text-xs text-dark-400">{{ $media->type }}</p>
+                    </div>
+                    <span class="text-lg font-bold text-accent-400">
+                        {{ $media->viewing_history_count }} views
+                    </span>
+                </div>
+                @empty
+                <p class="text-dark-400">No viewing history yet</p>
+                @endforelse
+            </div>
+        </div>
+    </div>
+
+    <!-- Platform Statistics -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Platform Distribution</h2>
+        <div class="card p-6">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                @forelse($platformStats as $platform)
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-accent-400">{{ $platform->media_count }}</div>
+                    <div class="text-sm text-dark-400">{{ $platform->name }}</div>
+                </div>
+                @empty
+                <p class="text-dark-400 col-span-full">No platform data available</p>
+                @endforelse
+            </div>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">

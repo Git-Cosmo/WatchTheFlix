@@ -119,4 +119,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::put('/{category}', [ForumManagementController::class, 'update'])->name('admin.update');
         Route::delete('/{category}', [ForumManagementController::class, 'destroy'])->name('admin.destroy');
     });
+
+    // TMDB Import
+    Route::prefix('tmdb-import')->name('tmdb-import.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TmdbImportController::class, 'index'])->name('index');
+        Route::post('/search', [\App\Http\Controllers\Admin\TmdbImportController::class, 'search'])->name('search');
+        Route::post('/import', [\App\Http\Controllers\Admin\TmdbImportController::class, 'import'])->name('import');
+        Route::post('/bulk-import', [\App\Http\Controllers\Admin\TmdbImportController::class, 'bulkImport'])->name('bulk-import');
+    });
 });
