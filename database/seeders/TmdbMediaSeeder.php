@@ -14,11 +14,12 @@ class TmdbMediaSeeder extends Seeder
      */
     public function run(): void
     {
-        $tmdbService = new TmdbService();
+        $tmdbService = new TmdbService;
 
-        if (!$tmdbService->isConfigured()) {
+        if (! $tmdbService->isConfigured()) {
             $this->command->error('TMDB API key is not configured. Please set it in Admin Settings.');
             $this->command->info('Skipping TMDB media seeding...');
+
             return;
         }
 
@@ -42,7 +43,7 @@ class TmdbMediaSeeder extends Seeder
         while ($moviesSeeded < 50 && $page <= 3) {
             $response = $tmdbService->getPopularMovies($page);
 
-            if (!$response || !isset($response['results'])) {
+            if (! $response || ! isset($response['results'])) {
                 $this->command->warn("Failed to fetch movies from page {$page}");
                 break;
             }
@@ -59,7 +60,7 @@ class TmdbMediaSeeder extends Seeder
                     }
 
                     $releaseYear = null;
-                    if (!empty($movie['release_date'])) {
+                    if (! empty($movie['release_date'])) {
                         $releaseYear = (int) substr($movie['release_date'], 0, 4);
                     }
 
@@ -80,7 +81,7 @@ class TmdbMediaSeeder extends Seeder
                     $moviesSeeded++;
                     $this->command->info("Seeded movie: {$movie['title']} ({$moviesSeeded}/50)");
                 } catch (\Exception $e) {
-                    Log::error('Failed to seed movie: ' . $e->getMessage(), ['movie' => $movie]);
+                    Log::error('Failed to seed movie: '.$e->getMessage(), ['movie' => $movie]);
                     $this->command->warn("Failed to seed movie: {$movie['title']}");
                 }
             }
@@ -102,7 +103,7 @@ class TmdbMediaSeeder extends Seeder
         while ($tvShowsSeeded < 50 && $page <= 3) {
             $response = $tmdbService->getPopularTvShows($page);
 
-            if (!$response || !isset($response['results'])) {
+            if (! $response || ! isset($response['results'])) {
                 $this->command->warn("Failed to fetch TV shows from page {$page}");
                 break;
             }
@@ -119,7 +120,7 @@ class TmdbMediaSeeder extends Seeder
                     }
 
                     $releaseYear = null;
-                    if (!empty($tvShow['first_air_date'])) {
+                    if (! empty($tvShow['first_air_date'])) {
                         $releaseYear = (int) substr($tvShow['first_air_date'], 0, 4);
                     }
 
@@ -140,7 +141,7 @@ class TmdbMediaSeeder extends Seeder
                     $tvShowsSeeded++;
                     $this->command->info("Seeded TV show: {$tvShow['name']} ({$tvShowsSeeded}/50)");
                 } catch (\Exception $e) {
-                    Log::error('Failed to seed TV show: ' . $e->getMessage(), ['tvShow' => $tvShow]);
+                    Log::error('Failed to seed TV show: '.$e->getMessage(), ['tvShow' => $tvShow]);
                     $this->command->warn("Failed to seed TV show: {$tvShow['name']}");
                 }
             }

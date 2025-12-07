@@ -78,7 +78,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Media Management
-    Route::resource('media', MediaManagementController::class);
+    Route::resource('media', MediaManagementController::class)->parameters(['media' => 'media']);
 
     // User Management
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');

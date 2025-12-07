@@ -10,7 +10,7 @@ class HomeController extends Controller
     {
         $featured = Media::published()
             ->latest()
-            ->take(6)
+            ->take(8)
             ->get();
 
         $trending = Media::published()
@@ -19,6 +19,22 @@ class HomeController extends Controller
             ->take(12)
             ->get();
 
-        return view('home', compact('featured', 'trending'));
+        $recentlyAdded = Media::published()
+            ->latest('created_at')
+            ->take(8)
+            ->get();
+
+        // Stats for logged-in users
+        $stats = null;
+        if (auth()->check()) {
+            $stats = [
+                'total_media' => Media::published()->count(),
+                'movies' => Media::published()->where('type', 'movie')->count(),
+                'series' => Media::published()->where('type', 'series')->count(),
+                'watchlist_count' => auth()->user()->watchlist()->count(),
+            ];
+        }
+
+        return view('home', compact('featured', 'trending', 'recentlyAdded', 'stats'));
     }
 }

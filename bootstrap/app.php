@@ -15,6 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
         ]);
+
+        // Rate limiting for production security
+        $middleware->throttleApi();
+
+        // Only use Redis throttling if Redis is configured
+        if (config('cache.default') === 'redis') {
+            $middleware->throttleWithRedis();
+        }
+
+        // Add security headers for all requests
+        $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

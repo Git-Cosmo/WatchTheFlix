@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 /**
  * Media Scraper Service
- * 
+ *
  * This service fetches the latest movies and TV shows from TMDB API
  * and updates the database accordingly.
  */
@@ -27,14 +27,14 @@ class MediaScraperService
     {
         $stats = ['added' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
 
-        if (!$this->tmdbService->isConfigured()) {
+        if (! $this->tmdbService->isConfigured()) {
             throw new \Exception('TMDB API key is not configured');
         }
 
         try {
             $response = $this->tmdbService->getPopularMovies(1);
 
-            if (!$response || !isset($response['results'])) {
+            if (! $response || ! isset($response['results'])) {
                 throw new \Exception('Failed to fetch movies from TMDB');
             }
 
@@ -50,11 +50,11 @@ class MediaScraperService
                     $count++;
                 } catch (\Exception $e) {
                     $stats['errors']++;
-                    Log::error('Failed to process movie: ' . $e->getMessage(), ['movie' => $movie]);
+                    Log::error('Failed to process movie: '.$e->getMessage(), ['movie' => $movie]);
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Failed to scrape movies: ' . $e->getMessage());
+            Log::error('Failed to scrape movies: '.$e->getMessage());
             throw $e;
         }
 
@@ -68,14 +68,14 @@ class MediaScraperService
     {
         $stats = ['added' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
 
-        if (!$this->tmdbService->isConfigured()) {
+        if (! $this->tmdbService->isConfigured()) {
             throw new \Exception('TMDB API key is not configured');
         }
 
         try {
             $response = $this->tmdbService->getPopularTvShows(1);
 
-            if (!$response || !isset($response['results'])) {
+            if (! $response || ! isset($response['results'])) {
                 throw new \Exception('Failed to fetch TV shows from TMDB');
             }
 
@@ -91,11 +91,11 @@ class MediaScraperService
                     $count++;
                 } catch (\Exception $e) {
                     $stats['errors']++;
-                    Log::error('Failed to process TV show: ' . $e->getMessage(), ['tvShow' => $tvShow]);
+                    Log::error('Failed to process TV show: '.$e->getMessage(), ['tvShow' => $tvShow]);
                 }
             }
         } catch (\Exception $e) {
-            Log::error('Failed to scrape TV shows: ' . $e->getMessage());
+            Log::error('Failed to scrape TV shows: '.$e->getMessage());
             throw $e;
         }
 
@@ -113,7 +113,7 @@ class MediaScraperService
             ->first();
 
         $releaseYear = null;
-        if (!empty($movie['release_date'])) {
+        if (! empty($movie['release_date'])) {
             $releaseYear = (int) substr($movie['release_date'], 0, 4);
         }
 
@@ -134,6 +134,7 @@ class MediaScraperService
             // Update existing movie if data has changed
             if ($this->hasDataChanged($existingMedia, $data)) {
                 $existingMedia->update($data);
+
                 return 'updated';
             }
 
@@ -143,6 +144,7 @@ class MediaScraperService
         // Create new movie
         $data['requires_real_debrid'] = false;
         Media::create($data);
+
         return 'added';
     }
 
@@ -157,7 +159,7 @@ class MediaScraperService
             ->first();
 
         $releaseYear = null;
-        if (!empty($tvShow['first_air_date'])) {
+        if (! empty($tvShow['first_air_date'])) {
             $releaseYear = (int) substr($tvShow['first_air_date'], 0, 4);
         }
 
@@ -178,6 +180,7 @@ class MediaScraperService
             // Update existing TV show if data has changed
             if ($this->hasDataChanged($existingMedia, $data)) {
                 $existingMedia->update($data);
+
                 return 'updated';
             }
 
@@ -187,6 +190,7 @@ class MediaScraperService
         // Create new TV show
         $data['requires_real_debrid'] = false;
         Media::create($data);
+
         return 'added';
     }
 
@@ -197,7 +201,7 @@ class MediaScraperService
     {
         foreach ($newData as $key => $value) {
             $existingValue = $existingMedia->$key;
-            
+
             // Handle array comparison for genres field
             if (is_array($value) && is_array($existingValue)) {
                 $sortedValue = $value;
@@ -211,7 +215,7 @@ class MediaScraperService
                 return true;
             }
         }
-        
+
         return false;
     }
 

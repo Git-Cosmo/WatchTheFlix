@@ -27,9 +27,37 @@ class MediaController extends Controller
             $query->whereJsonContains('genres', $request->genre);
         }
 
-        $media = $query->paginate(24);
+        // Add sorting
+        $sortBy = $request->get('sort', 'latest');
+        switch ($sortBy) {
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'rating':
+                $query->orderBy('imdb_rating', 'desc');
+                break;
+            case 'year':
+                $query->orderBy('release_year', 'desc');
+                break;
+            case 'oldest':
+                $query->oldest();
+                break;
+            default:
+                $query->latest();
+        }
 
-        return view('media.index', compact('media'));
+        $media = $query->paginate(24)->withQueryString();
+
+        // Get available genres for filter
+        $allGenres = Media::published()
+            ->get()
+            ->pluck('genres')
+            ->flatten()
+            ->unique()
+            ->sort()
+            ->values();
+
+        return view('media.index', compact('media', 'allGenres'));
     }
 
     public function show(Media $media)

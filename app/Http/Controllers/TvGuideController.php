@@ -27,8 +27,8 @@ class TvGuideController extends Controller
     public function channels(string $country)
     {
         $country = strtoupper($country);
-        
-        if (!in_array($country, self::SUPPORTED_COUNTRIES)) {
+
+        if (! in_array($country, self::SUPPORTED_COUNTRIES)) {
             abort(404);
         }
 

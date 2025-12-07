@@ -112,6 +112,34 @@
     </div>
     @endauth
 
+    <!-- Reactions Section -->
+    @auth
+    <div class="card p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">React to this {{ $media->type }}</h2>
+        <div class="flex gap-4">
+            @php
+                $reactions = [
+                    'like' => ['emoji' => '👍', 'label' => 'Like'],
+                    'love' => ['emoji' => '❤️', 'label' => 'Love'],
+                    'laugh' => ['emoji' => '😂', 'label' => 'Laugh'],
+                    'sad' => ['emoji' => '😢', 'label' => 'Sad'],
+                    'angry' => ['emoji' => '😠', 'label' => 'Angry'],
+                ];
+            @endphp
+            @foreach($reactions as $type => $reaction)
+            <form method="POST" action="{{ route('media.react', $media) }}" class="inline-block">
+                @csrf
+                <input type="hidden" name="type" value="{{ $type }}">
+                <button type="submit" class="flex flex-col items-center gap-1 px-4 py-3 rounded-lg border transition-colors {{ in_array($type, $userReactions) ? 'bg-accent-500 border-accent-500' : 'bg-dark-800 border-dark-700 hover:border-accent-500' }}">
+                    <span class="text-2xl">{{ $reaction['emoji'] }}</span>
+                    <span class="text-xs font-medium">{{ $reaction['label'] }}</span>
+                </button>
+            </form>
+            @endforeach
+        </div>
+    </div>
+    @endauth
+
     <!-- Comments Section -->
     <div class="card p-6">
         <h2 class="text-2xl font-bold mb-6">Comments ({{ $media->comments_count }})</h2>

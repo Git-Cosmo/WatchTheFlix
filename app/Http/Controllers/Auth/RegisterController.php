@@ -99,7 +99,7 @@ class RegisterController extends Controller
         }
 
         // Send welcome notification
-        $user->notify(new WelcomeNotification());
+        $user->notify(new WelcomeNotification);
 
         Auth::login($user);
 
