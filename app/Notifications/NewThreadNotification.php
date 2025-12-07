@@ -2,20 +2,22 @@
 
 namespace App\Notifications;
 
+use App\Models\ForumThread;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WelcomeNotification extends Notification implements ShouldQueue
+class NewThreadNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
+    public function __construct(
+        public ForumThread $thread
+    ) {
         //
     }
 
@@ -35,12 +37,13 @@ class WelcomeNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Welcome to WatchTheFlix!')
+            ->subject('New Thread in '.$this->thread->category->name)
             ->greeting('Hello '.$notifiable->name.'!')
-            ->line('Welcome to WatchTheFlix! We\'re excited to have you join our community.')
-            ->line('Start exploring thousands of movies and TV shows, create watchlists, join forum discussions, and much more.')
-            ->action('Browse Content', route('media.index'))
-            ->line('Thank you for joining WatchTheFlix!');
+            ->line('A new thread has been created in '.$this->thread->category->name.'.')
+            ->line('Thread: '.$this->thread->title)
+            ->line('By: '.$this->thread->user->name)
+            ->action('View Thread', route('forum.thread', $this->thread))
+            ->line('Join the discussion now!');
     }
 
     /**
@@ -51,10 +54,11 @@ class WelcomeNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'welcome',
-            'message' => '🎉 Welcome to WatchTheFlix! Start exploring thousands of movies and TV shows.',
-            'action_url' => route('media.index'),
-            'action_text' => 'Browse Content',
+            'type' => 'new_thread',
+            'message' => '📝 New thread in '.$this->thread->category->name.': "'.$this->thread->title.'"',
+            'action_url' => route('forum.thread', $this->thread),
+            'action_text' => 'View Thread',
+            'thread_id' => $this->thread->id,
         ];
     }
 }

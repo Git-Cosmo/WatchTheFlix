@@ -37,6 +37,42 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gh-text-muted mb-2">Platform</label>
+                    <select name="platform" class="input-field w-full">
+                        <option value="">All Platforms</option>
+                        @foreach($platforms as $platform)
+                        <option value="{{ $platform->id }}" {{ request('platform') == $platform->id ? 'selected' : '' }}>{{ $platform->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <!-- Advanced Filters Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gh-text-muted mb-2">Year From</label>
+                    <input type="number" name="year_from" value="{{ request('year_from') }}" 
+                           min="{{ $yearRange['min'] }}" max="{{ $yearRange['max'] }}" 
+                           placeholder="{{ $yearRange['min'] }}" class="input-field w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gh-text-muted mb-2">Year To</label>
+                    <input type="number" name="year_to" value="{{ request('year_to') }}" 
+                           min="{{ $yearRange['min'] }}" max="{{ $yearRange['max'] }}" 
+                           placeholder="{{ $yearRange['max'] }}" class="input-field w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gh-text-muted mb-2">Min Rating</label>
+                    <select name="min_rating" class="input-field w-full">
+                        <option value="">Any Rating</option>
+                        <option value="7.0" {{ request('min_rating') == '7.0' ? 'selected' : '' }}>7.0+</option>
+                        <option value="7.5" {{ request('min_rating') == '7.5' ? 'selected' : '' }}>7.5+</option>
+                        <option value="8.0" {{ request('min_rating') == '8.0' ? 'selected' : '' }}>8.0+</option>
+                        <option value="8.5" {{ request('min_rating') == '8.5' ? 'selected' : '' }}>8.5+</option>
+                        <option value="9.0" {{ request('min_rating') == '9.0' ? 'selected' : '' }}>9.0+</option>
+                    </select>
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gh-text-muted mb-2">Sort By</label>
                     <select name="sort" class="input-field w-full">
                         <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Latest Added</option>
@@ -47,6 +83,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="flex gap-3">
                 <button type="submit" class="btn-primary">
                     <svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,7 +91,7 @@
                     </svg>
                     Apply Filters
                 </button>
-                @if(request()->hasAny(['search', 'type', 'genre', 'sort']))
+                @if(request()->hasAny(['search', 'type', 'genre', 'sort', 'platform', 'year_from', 'year_to', 'min_rating']))
                 <a href="{{ route('media.index') }}" class="btn-secondary">
                     <svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />

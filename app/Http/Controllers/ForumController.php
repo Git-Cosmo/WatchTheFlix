@@ -88,6 +88,15 @@ class ForumController extends Controller
             'body' => $validated['body'],
         ]);
 
+        // Notify all subscribers except the person who posted
+        $subscribers = $thread->subscribers()
+            ->where('user_id', '!=', Auth::id())
+            ->get();
+
+        foreach ($subscribers as $subscriber) {
+            $subscriber->notify(new \App\Notifications\ForumReplyNotification($thread, $post));
+        }
+
         return back()->with('success', 'Reply posted successfully');
     }
 

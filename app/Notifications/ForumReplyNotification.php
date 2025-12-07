@@ -2,20 +2,24 @@
 
 namespace App\Notifications;
 
+use App\Models\ForumPost;
+use App\Models\ForumThread;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class WelcomeNotification extends Notification implements ShouldQueue
+class ForumReplyNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct()
-    {
+    public function __construct(
+        public ForumThread $thread,
+        public ForumPost $post
+    ) {
         //
     }
 
@@ -35,12 +39,12 @@ class WelcomeNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Welcome to WatchTheFlix!')
+            ->subject('New Reply in: '.$this->thread->title)
             ->greeting('Hello '.$notifiable->name.'!')
-            ->line('Welcome to WatchTheFlix! We\'re excited to have you join our community.')
-            ->line('Start exploring thousands of movies and TV shows, create watchlists, join forum discussions, and much more.')
-            ->action('Browse Content', route('media.index'))
-            ->line('Thank you for joining WatchTheFlix!');
+            ->line($this->post->user->name.' replied to a thread you\'re subscribed to.')
+            ->line('Thread: '.$this->thread->title)
+            ->action('View Thread', route('forum.thread', $this->thread))
+            ->line('You can unsubscribe from this thread at any time.');
     }
 
     /**
@@ -51,10 +55,12 @@ class WelcomeNotification extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'welcome',
-            'message' => '🎉 Welcome to WatchTheFlix! Start exploring thousands of movies and TV shows.',
-            'action_url' => route('media.index'),
-            'action_text' => 'Browse Content',
+            'type' => 'forum_reply',
+            'message' => '💬 '.$this->post->user->name.' replied to "'.$this->thread->title.'"',
+            'action_url' => route('forum.thread', $this->thread),
+            'action_text' => 'View Thread',
+            'thread_id' => $this->thread->id,
+            'post_id' => $this->post->id,
         ];
     }
 }
