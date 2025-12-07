@@ -67,27 +67,78 @@
     </div>
 
     <!-- Media Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
         @forelse($media as $item)
-        <a href="{{ route('media.show', $item) }}" class="card overflow-hidden hover:border-accent-500 transition">
-            @if($item->poster_url)
-            <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-64 object-cover">
-            @else
-            <div class="w-full h-64 bg-dark-800 flex items-center justify-center">
-                <span class="text-dark-500 text-4xl">🎬</span>
-            </div>
-            @endif
-            <div class="p-3">
-                <h3 class="text-sm font-semibold truncate">{{ $item->title }}</h3>
-                <p class="text-xs text-dark-400">{{ $item->release_year }}</p>
-                @if($item->imdb_rating)
-                <p class="text-xs text-accent-500 mt-1">⭐ {{ $item->imdb_rating }}</p>
-                @endif
+        <a href="{{ route('media.show', $item) }}" class="group">
+            <div class="relative overflow-hidden rounded-xl bg-gh-bg-secondary border border-gh-border hover:border-accent-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-accent-500/20 hover:-translate-y-1">
+                <!-- Poster -->
+                <div class="relative aspect-[2/3] overflow-hidden">
+                    @if($item->poster_url)
+                    <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500">
+                    @else
+                    <div class="w-full h-full bg-gradient-to-br from-gh-bg-tertiary to-gh-bg flex items-center justify-center">
+                        <svg class="h-16 w-16 text-gh-text-muted opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                        </svg>
+                    </div>
+                    @endif
+                    
+                    <!-- Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    
+                    <!-- Rating Badge -->
+                    @if($item->imdb_rating)
+                    <div class="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 bg-black/80 backdrop-blur-md rounded-lg border border-white/10">
+                        <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                        <span class="text-sm font-bold text-white">{{ number_format($item->imdb_rating, 1) }}</span>
+                    </div>
+                    @endif
+
+                    <!-- Type Badge -->
+                    <div class="absolute top-3 left-3 px-2.5 py-1 bg-accent-600/90 backdrop-blur-md rounded-md">
+                        <span class="text-xs font-bold text-white uppercase tracking-wider">{{ $item->type }}</span>
+                    </div>
+                    
+                    <!-- Play Icon (on hover) -->
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <div class="w-16 h-16 bg-accent-600 rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300 shadow-2xl">
+                            <svg class="h-8 w-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Info Section -->
+                <div class="p-4 space-y-2">
+                    <h3 class="text-sm font-bold text-white group-hover:text-accent-400 transition-colors line-clamp-2 leading-tight">{{ $item->title }}</h3>
+                    <div class="flex items-center justify-between text-xs text-gh-text-muted">
+                        <span>{{ $item->release_year }}</span>
+                        @if($item->runtime)
+                        <span>{{ $item->runtime }} min</span>
+                        @endif
+                    </div>
+                    @if($item->genres && count($item->genres) > 0)
+                    <div class="flex flex-wrap gap-1 pt-1">
+                        @foreach(array_slice($item->genres, 0, 2) as $genre)
+                        <span class="text-xs px-2 py-0.5 bg-gh-bg-tertiary rounded-full text-gh-text-muted">{{ $genre }}</span>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
             </div>
         </a>
         @empty
-        <div class="col-span-full text-center py-12">
-            <p class="text-dark-400">No content found.</p>
+        <div class="col-span-full text-center py-20">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gh-bg-secondary rounded-full mb-6">
+                <svg class="h-10 w-10 text-gh-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                </svg>
+            </div>
+            <p class="text-gh-text-muted text-lg mb-2">No content found</p>
+            <p class="text-gh-text-muted text-sm">Try adjusting your filters or search query</p>
         </div>
         @endforelse
     </div>
