@@ -127,7 +127,15 @@
             <script>
             function copyToClipboard(text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('Link copied to clipboard!');
+                    // Show a temporary success message
+                    const btn = event.target.closest('button');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>Copied!';
+                    btn.classList.add('bg-green-600', 'border-green-500');
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('bg-green-600', 'border-green-500');
+                    }, 2000);
                 }).catch(err => {
                     console.error('Failed to copy:', err);
                 });

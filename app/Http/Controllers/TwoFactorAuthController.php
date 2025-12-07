@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use PragmaRX\Google2FA\Google2FA;
 
 class TwoFactorAuthController extends Controller
@@ -98,7 +99,7 @@ class TwoFactorAuthController extends Controller
         $user = Auth::user();
 
         // Verify password
-        if (! password_verify($request->password, $user->password)) {
+        if (! Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Invalid password.');
         }
 
@@ -170,7 +171,7 @@ class TwoFactorAuthController extends Controller
         $user = Auth::user();
 
         // Verify password
-        if (! password_verify($request->password, $user->password)) {
+        if (! Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Invalid password.');
         }
 

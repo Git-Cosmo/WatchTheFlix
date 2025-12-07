@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Services\TmdbService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class TmdbImportController extends Controller
 {
@@ -161,7 +162,7 @@ class TmdbImportController extends Controller
                 $imported++;
             } catch (\Exception $e) {
                 $errors++;
-                \Log::error('TMDB import error: '.$e->getMessage());
+                Log::error('TMDB import error: '.$e->getMessage());
             }
         }
 
