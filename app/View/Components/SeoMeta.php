@@ -71,9 +71,6 @@ class SeoMeta extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.seo-meta', [
-            'isVideoType' => $this->isVideoType(),
-            'schemaType' => $this->getSchemaType(),
-        ]);
+        return view('components.seo-meta');
     }
 }
