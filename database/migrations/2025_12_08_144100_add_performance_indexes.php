@@ -14,15 +14,16 @@ return new class extends Migration
         // Add indexes to media table
         Schema::table('media', function (Blueprint $table) {
             $table->index('type', 'idx_media_type');
-            $table->index('status', 'idx_media_status');
-            $table->index(['type', 'status'], 'idx_media_type_status');
+            // Note: media table doesn't have a status column, using is_published instead
+            $table->index('is_published', 'idx_media_published');
+            $table->index(['type', 'is_published'], 'idx_media_type_published');
             $table->index('created_at', 'idx_media_created_at');
             $table->index('release_year', 'idx_media_release_year');
         });
 
         // Add indexes to users table
         Schema::table('users', function (Blueprint $table) {
-            $table->index('role', 'idx_users_role');
+            // Note: role is managed by Spatie Permission package, not a column in users table
             $table->index('email_verified_at', 'idx_users_email_verified');
             $table->index('created_at', 'idx_users_created_at');
         });
@@ -49,18 +50,13 @@ return new class extends Migration
         // Add indexes to comments table
         if (Schema::hasTable('comments')) {
             Schema::table('comments', function (Blueprint $table) {
-                $table->index(['commentable_type', 'commentable_id'], 'idx_comments_morph');
-                $table->index('created_at', 'idx_comments_created_at');
+                // Note: comments table already has foreign key indexes for user_id and media_id
+                // Just add index for created_at queries
+                $table->index('created_at', 'idx_comments_created');
             });
         }
 
-        // Add indexes to reactions table
-        if (Schema::hasTable('reactions')) {
-            Schema::table('reactions', function (Blueprint $table) {
-                $table->index(['reactable_type', 'reactable_id'], 'idx_reactions_morph');
-                $table->index(['user_id', 'reactable_type', 'reactable_id'], 'idx_reactions_user_morph');
-            });
-        }
+        // Note: reactions table already has appropriate indexes through foreign keys and unique constraint
 
         // Add indexes to tv_programs table
         // Note: tv_programs already has indexes for ['tv_channel_id', 'start_time'] and 'start_time'
@@ -84,15 +80,14 @@ return new class extends Migration
         // Drop indexes from media table
         Schema::table('media', function (Blueprint $table) {
             $table->dropIndex('idx_media_type');
-            $table->dropIndex('idx_media_status');
-            $table->dropIndex('idx_media_type_status');
+            $table->dropIndex('idx_media_published');
+            $table->dropIndex('idx_media_type_published');
             $table->dropIndex('idx_media_created_at');
             $table->dropIndex('idx_media_release_year');
         });
 
         // Drop indexes from users table
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex('idx_users_role');
             $table->dropIndex('idx_users_email_verified');
             $table->dropIndex('idx_users_created_at');
         });
@@ -118,16 +113,7 @@ return new class extends Migration
         // Drop indexes from comments table
         if (Schema::hasTable('comments')) {
             Schema::table('comments', function (Blueprint $table) {
-                $table->dropIndex('idx_comments_morph');
-                $table->dropIndex('idx_comments_created_at');
-            });
-        }
-
-        // Drop indexes from reactions table
-        if (Schema::hasTable('reactions')) {
-            Schema::table('reactions', function (Blueprint $table) {
-                $table->dropIndex('idx_reactions_morph');
-                $table->dropIndex('idx_reactions_user_morph');
+                $table->dropIndex('idx_comments_created');
             });
         }
 
