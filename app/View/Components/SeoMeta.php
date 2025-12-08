@@ -10,17 +10,27 @@ class SeoMeta extends Component
 {
     // Content type constants
     public const TYPE_WEBSITE = 'website';
+
     public const TYPE_VIDEO_MOVIE = 'video.movie';
+
     public const TYPE_VIDEO_TV_SHOW = 'video.tv_show';
+
     public const TYPE_ARTICLE = 'article';
 
     public string $title;
+
     public ?string $description;
+
     public ?string $keywords;
+
     public ?string $canonicalUrl;
+
     public ?string $imageUrl;
+
     public ?array $ogTags;
+
     public ?array $twitterTags;
+
     public string $type;
 
     /**
@@ -37,7 +47,7 @@ class SeoMeta extends Component
         string $type = self::TYPE_WEBSITE
     ) {
         $this->title = $title;
-        $this->description = $description ?? config('app.name') . ' - Stream your favorite movies and TV shows';
+        $this->description = $description ?? config('app.name').' - Stream your favorite movies and TV shows';
         $this->keywords = $keywords;
         $this->canonicalUrl = $canonicalUrl ?? url()->current();
         $this->imageUrl = $imageUrl;
@@ -59,7 +69,7 @@ class SeoMeta extends Component
      */
     public function getSchemaType(): string
     {
-        return match($this->type) {
+        return match ($this->type) {
             self::TYPE_VIDEO_MOVIE => 'Movie',
             self::TYPE_VIDEO_TV_SHOW => 'TVSeries',
             default => 'WebPage',

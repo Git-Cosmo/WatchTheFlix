@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 
 /**
  * EPG Reminder Service
- * 
+ *
  * Manages TV program reminders and notifications
  */
 class EpgReminderService
@@ -26,25 +26,25 @@ class EpgReminderService
         ?string $notes = null
     ): ?EpgReminder {
         $program = TvProgram::find($programId);
-        
-        if (!$program) {
+
+        if (! $program) {
             return null;
         }
-        
+
         // Calculate reminder time
         $reminderTime = $program->start_time->copy()->subMinutes($remindBeforeMinutes);
-        
+
         // Don't create if program already started
         if ($reminderTime->isPast()) {
             return null;
         }
-        
+
         // Check if reminder already exists
         $existing = EpgReminder::where('user_id', $user->id)
             ->where('tv_program_id', $programId)
             ->where('is_sent', false)
             ->first();
-        
+
         if ($existing) {
             // Update existing reminder
             $existing->update([
@@ -53,10 +53,10 @@ class EpgReminderService
                 'notification_method' => $notificationMethod,
                 'notes' => $notes,
             ]);
-            
+
             return $existing;
         }
-        
+
         // Create new reminder
         return EpgReminder::create([
             'user_id' => $user->id,
@@ -91,11 +91,11 @@ class EpgReminderService
         $reminder = EpgReminder::where('id', $reminderId)
             ->where('user_id', $user->id)
             ->first();
-        
-        if (!$reminder) {
+
+        if (! $reminder) {
             return false;
         }
-        
+
         return $reminder->delete();
     }
 
@@ -107,10 +107,10 @@ class EpgReminderService
         $reminders = EpgReminder::with(['user', 'program', 'channel'])
             ->dueNow()
             ->get();
-        
+
         $sent = 0;
         $failed = 0;
-        
+
         foreach ($reminders as $reminder) {
             try {
                 $this->sendReminderNotification($reminder);
@@ -120,11 +120,11 @@ class EpgReminderService
                 $failed++;
                 \Log::error('Failed to send EPG reminder', [
                     'reminder_id' => $reminder->id,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
             }
         }
-        
+
         return [
             'processed' => $reminders->count(),
             'sent' => $sent,
@@ -140,7 +140,7 @@ class EpgReminderService
         $user = $reminder->user;
         $program = $reminder->program;
         $channel = $reminder->channel;
-        
+
         // Create notification data
         $data = [
             'title' => 'Program Reminder',
@@ -158,7 +158,7 @@ class EpgReminderService
             ],
             'action_url' => route('tv-guide.show', $channel->id),
         ];
-        
+
         // Send based on notification method
         switch ($reminder->notification_method) {
             case 'email':
@@ -166,11 +166,11 @@ class EpgReminderService
                     $user->notify(new EpgReminderNotification($data));
                 }
                 break;
-                
+
             case 'push':
                 // TODO: Implement push notifications
                 break;
-                
+
             case 'in_app':
             default:
                 // Store in database notifications table
@@ -209,10 +209,10 @@ class EpgReminderService
             ->where('start_time', '>', now())
             ->orderBy('start_time')
             ->get();
-        
+
         $created = 0;
         $skipped = 0;
-        
+
         foreach ($programs as $program) {
             $reminder = $this->createReminder(
                 $user,
@@ -220,14 +220,14 @@ class EpgReminderService
                 $remindBeforeMinutes,
                 $notificationMethod
             );
-            
+
             if ($reminder) {
                 $created++;
             } else {
                 $skipped++;
             }
         }
-        
+
         return [
             'created' => $created,
             'skipped' => $skipped,
@@ -267,7 +267,7 @@ class EpgReminderService
     {
         // Get user's favorite channels from viewing history
         $favoriteChannels = \App\Models\ViewingHistory::where('user_id', $user->id)
-            ->whereHas('media', function($query) {
+            ->whereHas('media', function ($query) {
                 $query->where('type', 'live_tv');
             })
             ->select('media_id')
@@ -275,13 +275,13 @@ class EpgReminderService
             ->orderByRaw('COUNT(*) DESC')
             ->limit(5)
             ->pluck('media_id');
-        
+
         // Get upcoming programs on favorite channels
         return TvProgram::with('channel')
             ->whereIn('tv_channel_id', $favoriteChannels)
             ->where('start_time', '>', now())
             ->where('start_time', '<', now()->addDays(7))
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('is_premiere', true)
                     ->orWhere('rating', '>=', 7.0);
             })

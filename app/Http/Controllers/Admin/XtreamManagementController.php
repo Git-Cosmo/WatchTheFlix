@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * ⚠️ FEATURE ON HOLD: Xtream Codes API
- * 
+ *
  * This feature is currently postponed until a future release (no ETA).
  * The Xtream Codes API functionality remains in the codebase for reference
  * and future development, but is not actively maintained or recommended for
  * production use at this time.
- * 
+ *
  * See README.md for more information about the project's current focus on
  * TMDB-based content catalog and TV Guide features.
  */
@@ -32,7 +32,7 @@ class XtreamManagementController extends Controller
 
     /**
      * Show Xtream Codes management dashboard
-     * 
+     *
      * ⚠️ NOTE: This feature is on hold - see class documentation
      */
     public function index()
@@ -69,13 +69,13 @@ class XtreamManagementController extends Controller
     public function apiConfiguration()
     {
         $baseUrl = config('app.url');
-        
+
         $endpoints = [
-            'Player API' => $baseUrl . '/api/xtream/player_api.php',
-            'Panel API' => $baseUrl . '/api/xtream/panel_api.php',
-            'M3U Playlist' => $baseUrl . '/api/xtream/playlist.m3u',
-            'EPG XML' => $baseUrl . '/api/xtream/epg.xml',
-            'Server Info' => $baseUrl . '/api/xtream/server_info',
+            'Player API' => $baseUrl.'/api/xtream/player_api.php',
+            'Panel API' => $baseUrl.'/api/xtream/panel_api.php',
+            'M3U Playlist' => $baseUrl.'/api/xtream/playlist.m3u',
+            'EPG XML' => $baseUrl.'/api/xtream/epg.xml',
+            'Server Info' => $baseUrl.'/api/xtream/server_info',
         ];
 
         return view('admin.xtream.configuration', compact('endpoints', 'baseUrl'));
@@ -104,7 +104,7 @@ class XtreamManagementController extends Controller
         // Create new token
         $token = $user->createToken('xtream-api');
 
-        return back()->with('success', 'API token generated successfully for ' . $user->name);
+        return back()->with('success', 'API token generated successfully for '.$user->name);
     }
 
     /**
@@ -114,7 +114,7 @@ class XtreamManagementController extends Controller
     {
         $user->tokens()->where('name', 'xtream-api')->delete();
 
-        return back()->with('success', 'API token revoked for ' . $user->name);
+        return back()->with('success', 'API token revoked for '.$user->name);
     }
 
     /**
@@ -141,8 +141,8 @@ class XtreamManagementController extends Controller
 
         try {
             $auth = $this->xtreamService->authenticate($request->username, $request->password);
-            
-            if (!$auth) {
+
+            if (! $auth) {
                 return back()->with('error', 'Authentication failed. Invalid credentials.');
             }
 
@@ -154,7 +154,7 @@ class XtreamManagementController extends Controller
 
             return back()->with('success', 'API test successful!')->with('test_result', $result);
         } catch (\Exception $e) {
-            return back()->with('error', 'API test failed: ' . $e->getMessage());
+            return back()->with('error', 'API test failed: '.$e->getMessage());
         }
     }
 
@@ -168,9 +168,9 @@ class XtreamManagementController extends Controller
 
             return response($epg)
                 ->header('Content-Type', 'application/xml')
-                ->header('Content-Disposition', 'attachment; filename="epg-' . now()->format('Y-m-d') . '.xml"');
+                ->header('Content-Disposition', 'attachment; filename="epg-'.now()->format('Y-m-d').'.xml"');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to generate EPG: ' . $e->getMessage());
+            return back()->with('error', 'Failed to generate EPG: '.$e->getMessage());
         }
     }
 
@@ -184,9 +184,9 @@ class XtreamManagementController extends Controller
 
             return response($m3u)
                 ->header('Content-Type', 'audio/x-mpegurl')
-                ->header('Content-Disposition', 'attachment; filename="playlist-' . $user->id . '.m3u"');
+                ->header('Content-Disposition', 'attachment; filename="playlist-'.$user->id.'.m3u"');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to generate M3U: ' . $e->getMessage());
+            return back()->with('error', 'Failed to generate M3U: '.$e->getMessage());
         }
     }
 

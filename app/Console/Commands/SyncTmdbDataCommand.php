@@ -36,8 +36,9 @@ class SyncTmdbDataCommand extends Command
      */
     public function handle()
     {
-        if (!$this->tmdbService->isConfigured()) {
+        if (! $this->tmdbService->isConfigured()) {
             $this->error('TMDB API is not configured. Please set the API key in Admin Settings.');
+
             return Command::FAILURE;
         }
 
@@ -45,12 +46,12 @@ class SyncTmdbDataCommand extends Command
 
         $query = Media::whereNotNull('tmdb_id');
 
-        if (!$this->option('all')) {
+        if (! $this->option('all')) {
             $days = (int) $this->option('days');
             $cutoffDate = now()->subDays($days);
             $query->where(function ($q) use ($cutoffDate) {
                 $q->whereNull('tmdb_last_synced_at')
-                  ->orWhere('tmdb_last_synced_at', '<', $cutoffDate);
+                    ->orWhere('tmdb_last_synced_at', '<', $cutoffDate);
             });
         }
 
@@ -59,6 +60,7 @@ class SyncTmdbDataCommand extends Command
 
         if ($total === 0) {
             $this->info('No media items need syncing.');
+
             return Command::SUCCESS;
         }
 
@@ -72,7 +74,7 @@ class SyncTmdbDataCommand extends Command
 
         foreach ($mediaItems as $media) {
             try {
-                $tmdbData = $media->type === 'movie' 
+                $tmdbData = $media->type === 'movie'
                     ? $this->tmdbService->getMovieDetails($media->tmdb_id)
                     : $this->tmdbService->getTvShowDetails($media->tmdb_id);
 
@@ -108,7 +110,7 @@ class SyncTmdbDataCommand extends Command
         $progressBar->finish();
         $this->newLine(2);
 
-        $this->info("Synchronization complete!");
+        $this->info('Synchronization complete!');
         $this->info("Successfully synced: {$synced}");
         if ($failed > 0) {
             $this->warn("Failed: {$failed}");

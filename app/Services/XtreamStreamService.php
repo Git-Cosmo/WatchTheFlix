@@ -3,20 +3,18 @@
 namespace App\Services;
 
 use App\Models\Media;
+use App\Models\StreamConnection;
 use App\Models\TvChannel;
 use App\Models\User;
-use App\Models\StreamConnection;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 /**
  * Xtream Stream URL Service
- * 
+ *
  * ⚠️ FEATURE ON HOLD: This service is currently postponed until a future release (no ETA).
- * 
+ *
  * Handles stream URL generation, validation, and access control.
  * Originally enhanced with StreamTokenService for IP-bound secure tokens.
- * 
+ *
  * See README.md for information about the project's current focus.
  */
 class XtreamStreamService
@@ -27,31 +25,32 @@ class XtreamStreamService
     {
         $this->tokenService = $tokenService;
     }
+
     /**
      * Generate authenticated stream URL for live TV - Now with enhanced token security
      */
     public function generateLiveStreamUrl(User $user, int $channelId, string $format = 'm3u8'): ?string
     {
         $channel = TvChannel::find($channelId);
-        
-        if (!$channel || !$channel->is_active) {
+
+        if (! $channel || ! $channel->is_active) {
             return null;
         }
 
         // Check connection limits
-        if (!$this->checkConnectionLimit($user)) {
+        if (! $this->checkConnectionLimit($user)) {
             return null;
         }
 
         // Generate secure IP-bound token
         $ipAddress = request()->ip();
         $token = $this->tokenService->generateToken($user, 'live', $channelId, $ipAddress);
-        
+
         return route('api.xtream.live.stream', [
             'user' => $user->email,
             'pass' => $token,
             'id' => $channelId,
-            'ext' => $format
+            'ext' => $format,
         ]);
     }
 
@@ -61,25 +60,25 @@ class XtreamStreamService
     public function generateVodStreamUrl(User $user, int $mediaId, string $format = 'mp4'): ?string
     {
         $media = Media::find($mediaId);
-        
-        if (!$media) {
+
+        if (! $media) {
             return null;
         }
 
         // Check connection limits
-        if (!$this->checkConnectionLimit($user)) {
+        if (! $this->checkConnectionLimit($user)) {
             return null;
         }
 
         // Generate secure IP-bound token
         $ipAddress = request()->ip();
         $token = $this->tokenService->generateToken($user, 'vod', $mediaId, $ipAddress);
-        
+
         return route('api.xtream.vod.stream', [
             'user' => $user->email,
             'pass' => $token,
             'id' => $mediaId,
-            'ext' => $format
+            'ext' => $format,
         ]);
     }
 
@@ -89,21 +88,21 @@ class XtreamStreamService
     public function generateTimeshiftUrl(User $user, int $channelId, int $duration, string $start): ?string
     {
         $channel = TvChannel::find($channelId);
-        
-        if (!$channel || !config('xtream.enable_timeshift', true)) {
+
+        if (! $channel || ! config('xtream.enable_timeshift', true)) {
             return null;
         }
 
         // Generate secure IP-bound token
         $ipAddress = request()->ip();
         $token = $this->tokenService->generateToken($user, 'timeshift', $channelId, $ipAddress);
-        
+
         return route('api.xtream.timeshift', [
             'user' => $user->email,
             'pass' => $token,
             'duration' => $duration,
             'start' => $start,
-            'id' => $channelId
+            'id' => $channelId,
         ]);
     }
 
@@ -113,6 +112,7 @@ class XtreamStreamService
     public function validateStreamToken(string $username, string $token, string $type, int $streamId): bool
     {
         $ipAddress = request()->ip();
+
         return $this->tokenService->validateToken($token, $type, $streamId, $ipAddress);
     }
 
@@ -122,11 +122,11 @@ class XtreamStreamService
     protected function checkConnectionLimit(User $user): bool
     {
         $maxConnections = $user->max_connections ?? config('xtream.max_connections_per_user', 3);
-        
+
         $activeConnections = StreamConnection::where('user_id', $user->id)
             ->where('expires_at', '>', now())
             ->count();
-        
+
         return $activeConnections < $maxConnections;
     }
 
@@ -140,7 +140,7 @@ class XtreamStreamService
             ->where('stream_type', $type)
             ->where('stream_id', $streamId)
             ->delete();
-        
+
         return StreamConnection::create([
             'user_id' => $user->id,
             'stream_type' => $type,
@@ -170,7 +170,7 @@ class XtreamStreamService
     public function endConnection(int $connectionId): void
     {
         $connection = StreamConnection::find($connectionId);
-        
+
         if ($connection) {
             $connection->update([
                 'ended_at' => now(),

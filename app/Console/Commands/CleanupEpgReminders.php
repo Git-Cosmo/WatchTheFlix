@@ -27,13 +27,13 @@ class CleanupEpgReminders extends Command
     public function handle(EpgReminderService $reminderService): int
     {
         $days = (int) $this->option('days');
-        
+
         $this->info("Cleaning up reminders older than {$days} days...");
-        
+
         $deleted = $reminderService->cleanupOldReminders($days);
-        
+
         $this->info("Deleted {$deleted} old reminders");
-        
+
         return Command::SUCCESS;
     }
 }

@@ -74,6 +74,6 @@ class Bouquet extends Model
      */
     public function getFormattedPriceAttribute(): string
     {
-        return $this->price == 0 ? 'Free' : '$' . number_format($this->price, 2);
+        return $this->price == 0 ? 'Free' : '$'.number_format($this->price, 2);
     }
 }

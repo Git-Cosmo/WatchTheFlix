@@ -99,30 +99,30 @@ class TvProgram extends Model
         $minutes = $this->duration;
         $hours = floor($minutes / 60);
         $mins = $minutes % 60;
-        
+
         if ($hours > 0) {
-            return $hours . 'h ' . $mins . 'm';
+            return $hours.'h '.$mins.'m';
         }
-        
-        return $mins . 'm';
+
+        return $mins.'m';
     }
 
     public function getFullTitleAttribute()
     {
         $title = $this->title;
-        
+
         if ($this->season_number && $this->episode_number) {
             $title .= " - S{$this->season_number}E{$this->episode_number}";
         }
-        
+
         if ($this->is_repeat) {
             $title .= ' (Repeat)';
         }
-        
+
         if ($this->is_premiere) {
             $title .= ' (Premiere)';
         }
-        
+
         return $title;
     }
 }

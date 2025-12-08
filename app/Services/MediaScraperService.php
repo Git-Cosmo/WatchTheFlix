@@ -129,7 +129,7 @@ class MediaScraperService
                 try {
                     // Determine if it's a movie or TV show
                     $mediaType = $item['media_type'] ?? null;
-                    
+
                     if ($mediaType === 'movie') {
                         $result = $this->processMovie($item);
                     } elseif ($mediaType === 'tv') {
@@ -137,7 +137,7 @@ class MediaScraperService
                     } else {
                         continue; // Skip person entries
                     }
-                    
+
                     $stats[$result]++;
                     $count++;
                 } catch (\Exception $e) {

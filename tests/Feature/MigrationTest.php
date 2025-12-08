@@ -26,7 +26,7 @@ class MigrationTest extends TestCase
     public function test_subscription_plan_bouquets_table_exists(): void
     {
         $this->assertTrue(Schema::hasTable('subscription_plan_bouquets'));
-        
+
         $this->assertTrue(Schema::hasColumn('subscription_plan_bouquets', 'id'));
         $this->assertTrue(Schema::hasColumn('subscription_plan_bouquets', 'subscription_plan_id'));
         $this->assertTrue(Schema::hasColumn('subscription_plan_bouquets', 'bouquet_id'));
@@ -40,7 +40,7 @@ class MigrationTest extends TestCase
     public function test_bouquets_table_has_subscription_fields(): void
     {
         $this->assertTrue(Schema::hasTable('bouquets'));
-        
+
         $this->assertTrue(Schema::hasColumn('bouquets', 'price'));
         $this->assertTrue(Schema::hasColumn('bouquets', 'duration_days'));
         $this->assertTrue(Schema::hasColumn('bouquets', 'requires_subscription'));

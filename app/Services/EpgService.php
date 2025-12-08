@@ -16,15 +16,18 @@ class EpgService
         try {
             $response = Http::timeout(60)->get($url);
 
-            if (!$response->successful()) {
+            if (! $response->successful()) {
                 Log::error('EPG fetch failed', ['status' => $response->status()]);
+
                 return [];
             }
 
             $xmlContent = $response->body();
+
             return $this->parseXmltvData($xmlContent);
         } catch (\Exception $e) {
             Log::error('EPG fetch error', ['error' => $e->getMessage()]);
+
             return [];
         }
     }
@@ -39,6 +42,7 @@ class EpgService
 
             if ($xml === false) {
                 Log::error('Failed to parse XML');
+
                 return [];
             }
 
@@ -62,7 +66,7 @@ class EpgService
                     $endTime = $this->parseXmltvTime((string) $programme['stop']);
 
                     // Skip if times are invalid
-                    if (!$startTime || !$endTime) {
+                    if (! $startTime || ! $endTime) {
                         continue;
                     }
 
@@ -82,6 +86,7 @@ class EpgService
             return $programs;
         } catch (\Exception $e) {
             Log::error('XML parsing error', ['error' => $e->getMessage()]);
+
             return [];
         }
     }
@@ -115,6 +120,7 @@ class EpgService
             return $parsed;
         } catch (\Exception $e) {
             Log::warning('Failed to parse time', ['time' => $time, 'error' => $e->getMessage()]);
+
             return null;
         }
     }

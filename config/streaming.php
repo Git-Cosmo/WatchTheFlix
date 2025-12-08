@@ -25,7 +25,7 @@ return [
 
     'strict_ip_binding' => env('STREAM_STRICT_IP_BINDING', true),
     'token_lifetime' => env('STREAM_TOKEN_LIFETIME', 7200), // 2 hours in seconds
-    
+
     /*
     |--------------------------------------------------------------------------
     | Connection Limits
@@ -36,7 +36,7 @@ return [
     */
 
     'max_connections_per_user' => env('STREAM_MAX_CONNECTIONS', 3),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Timeshift / Catch-up TV
@@ -48,7 +48,7 @@ return [
 
     'enable_timeshift' => env('STREAM_ENABLE_TIMESHIFT', true),
     'timeshift_max_hours' => env('STREAM_TIMESHIFT_MAX_HOURS', 72), // 3 days
-    
+
     /*
     |--------------------------------------------------------------------------
     | EPG Settings
@@ -60,7 +60,7 @@ return [
 
     'epg_reminder_default_minutes' => env('EPG_REMINDER_DEFAULT_MINUTES', 15),
     'epg_reminder_notification_methods' => ['in_app', 'email', 'push'],
-    
+
     /*
     |--------------------------------------------------------------------------
     | WebSocket Broadcasting
@@ -72,7 +72,7 @@ return [
 
     'websocket_enabled' => env('WEBSOCKET_ENABLED', true),
     'websocket_driver' => env('BROADCAST_DRIVER', 'log'), // reverb, pusher, etc.
-    
+
     /*
     |--------------------------------------------------------------------------
     | Transcoding Settings
@@ -89,5 +89,5 @@ return [
         'segment_duration' => env('TRANSCODING_SEGMENT_DURATION', 4), // seconds
         'qualities' => ['360p', '480p', '720p', '1080p', '4k'],
     ],
-    
+
 ];

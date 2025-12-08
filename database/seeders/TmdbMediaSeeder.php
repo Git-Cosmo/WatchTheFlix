@@ -62,9 +62,10 @@ class TmdbMediaSeeder extends Seeder
 
                     // Fetch full movie details with extended data
                     $fullDetails = $tmdbService->getMovieDetails($movie['id']);
-                    
-                    if (!$fullDetails) {
+
+                    if (! $fullDetails) {
                         $this->command->warn("Could not fetch details for movie ID: {$movie['id']}");
+
                         continue;
                     }
 
@@ -122,9 +123,10 @@ class TmdbMediaSeeder extends Seeder
 
                     // Fetch full TV show details with extended data
                     $fullDetails = $tmdbService->getTvShowDetails($tvShow['id']);
-                    
-                    if (!$fullDetails) {
+
+                    if (! $fullDetails) {
                         $this->command->warn("Could not fetch details for TV show ID: {$tvShow['id']}");
+
                         continue;
                     }
 
@@ -158,14 +160,14 @@ class TmdbMediaSeeder extends Seeder
      */
     protected function attachPlatforms(Media $media, ?array $watchProviders): void
     {
-        if (!$watchProviders || !isset($watchProviders['results'])) {
+        if (! $watchProviders || ! isset($watchProviders['results'])) {
             return;
         }
 
         // Try US providers first, fallback to other regions
         $providers = $watchProviders['results']['US'] ?? $watchProviders['results'][array_key_first($watchProviders['results'])] ?? null;
-        
-        if (!$providers) {
+
+        if (! $providers) {
             return;
         }
 
@@ -193,14 +195,14 @@ class TmdbMediaSeeder extends Seeder
             $providerId = $provider['provider_id'] ?? null;
             $providerName = $providerMapping[$providerId] ?? $provider['provider_name'] ?? null;
 
-            if (!$providerName) {
+            if (! $providerName) {
                 continue;
             }
 
             // Find or skip platform
             $platform = Platform::where('name', $providerName)->first();
-            
-            if ($platform && !$media->platforms->contains($platform->id)) {
+
+            if ($platform && ! $media->platforms->contains($platform->id)) {
                 $media->platforms()->attach($platform->id, [
                     'requires_subscription' => true,
                 ]);

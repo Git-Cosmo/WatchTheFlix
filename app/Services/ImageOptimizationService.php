@@ -19,15 +19,15 @@ class ImageOptimizationService
     /**
      * Generate thumbnails for an image
      *
-     * @param string $imagePath Original image path
-     * @param string $disk Storage disk (default: 'public')
+     * @param  string  $imagePath  Original image path
+     * @param  string  $disk  Storage disk (default: 'public')
      * @return array Generated thumbnail paths
      */
     public function generateThumbnails(string $imagePath, string $disk = 'public'): array
     {
         $thumbnails = [];
-        
-        if (!Storage::disk($disk)->exists($imagePath)) {
+
+        if (! Storage::disk($disk)->exists($imagePath)) {
             return $thumbnails;
         }
 
@@ -44,7 +44,7 @@ class ImageOptimizationService
 
                 // Create thumbnails directory if it doesn't exist
                 $thumbnailDir = dirname($thumbnailFullPath);
-                if (!file_exists($thumbnailDir)) {
+                if (! file_exists($thumbnailDir)) {
                     mkdir($thumbnailDir, 0755, true);
                 }
 
@@ -53,13 +53,13 @@ class ImageOptimizationService
                 $image->fit($dimensions['width'], $dimensions['height'], function ($constraint) {
                     $constraint->upsize();
                 });
-                
+
                 // Optimize quality
                 $image->save($thumbnailFullPath, 85);
 
                 $thumbnails[$size] = $thumbnailPath;
             } catch (\Exception $e) {
-                \Log::error("Failed to generate {$size} thumbnail for {$imagePath}: " . $e->getMessage());
+                \Log::error("Failed to generate {$size} thumbnail for {$imagePath}: ".$e->getMessage());
             }
         }
 
@@ -68,15 +68,10 @@ class ImageOptimizationService
 
     /**
      * Get thumbnail URL or fallback to original
-     *
-     * @param string|null $imagePath
-     * @param string $size
-     * @param string $disk
-     * @return string|null
      */
     public function getThumbnailUrl(?string $imagePath, string $size = 'medium', string $disk = 'public'): ?string
     {
-        if (!$imagePath) {
+        if (! $imagePath) {
             return null;
         }
 
@@ -102,10 +97,6 @@ class ImageOptimizationService
 
     /**
      * Delete thumbnails for an image
-     *
-     * @param string $imagePath
-     * @param string $disk
-     * @return bool
      */
     public function deleteThumbnails(string $imagePath, string $disk = 'public'): bool
     {
@@ -118,7 +109,7 @@ class ImageOptimizationService
 
         foreach ($this->thumbnailSizes as $size => $dimensions) {
             $thumbnailPath = "{$directory}/thumbnails/{$filename}_{$size}.{$extension}";
-            
+
             if (Storage::disk($disk)->exists($thumbnailPath)) {
                 $deleted = $deleted && Storage::disk($disk)->delete($thumbnailPath);
             }
@@ -129,55 +120,47 @@ class ImageOptimizationService
 
     /**
      * Optimize an existing image
-     *
-     * @param string $imagePath
-     * @param string $disk
-     * @param int $quality
-     * @return bool
      */
     public function optimizeImage(string $imagePath, string $disk = 'public', int $quality = 85): bool
     {
         try {
-            if (!Storage::disk($disk)->exists($imagePath)) {
+            if (! Storage::disk($disk)->exists($imagePath)) {
                 return false;
             }
 
             $fullPath = Storage::disk($disk)->path($imagePath);
             $image = Image::make($fullPath);
-            
+
             // Optimize and save
             $image->save($fullPath, $quality);
 
             return true;
         } catch (\Exception $e) {
-            \Log::error("Failed to optimize image {$imagePath}: " . $e->getMessage());
+            \Log::error("Failed to optimize image {$imagePath}: ".$e->getMessage());
+
             return false;
         }
     }
 
     /**
      * Get lazy loading placeholder (base64 encoded low-quality image)
-     *
-     * @param string $imagePath
-     * @param string $disk
-     * @return string|null
      */
     public function getLazyPlaceholder(string $imagePath, string $disk = 'public'): ?string
     {
         try {
-            if (!Storage::disk($disk)->exists($imagePath)) {
+            if (! Storage::disk($disk)->exists($imagePath)) {
                 return null;
             }
 
             $fullPath = Storage::disk($disk)->path($imagePath);
             $image = Image::make($fullPath);
-            
+
             // Create tiny placeholder (20x30 for typical poster ratio)
             $image->fit(20, 30);
             $image->blur(5);
 
             // Convert to base64
-            return 'data:image/jpeg;base64,' . base64_encode($image->encode('jpg', 50));
+            return 'data:image/jpeg;base64,'.base64_encode($image->encode('jpg', 50));
         } catch (\Exception $e) {
             return null;
         }

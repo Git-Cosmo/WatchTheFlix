@@ -32,12 +32,12 @@ class DailyStatistic extends Model
     {
         $bytes = $this->total_bandwidth;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 
     /**
@@ -48,10 +48,11 @@ class DailyStatistic extends Model
         $minutes = $this->total_viewing_time;
         $hours = floor($minutes / 60);
         $mins = $minutes % 60;
-        
+
         if ($hours > 0) {
             return "{$hours}h {$mins}m";
         }
+
         return "{$mins}m";
     }
 }

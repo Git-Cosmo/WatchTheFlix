@@ -68,7 +68,7 @@ class TranscodingJob extends Model
      */
     public function getStatusLabelAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'Pending',
             'processing' => 'Processing',
             'completed' => 'Completed',
@@ -82,7 +82,7 @@ class TranscodingJob extends Model
      */
     public function getQualityColorAttribute(): string
     {
-        return match($this->quality) {
+        return match ($this->quality) {
             '360p' => 'gray',
             '480p' => 'blue',
             '720p' => 'green',

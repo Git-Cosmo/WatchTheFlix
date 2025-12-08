@@ -45,7 +45,7 @@ class ActivityLogController extends Controller
 
         // Search
         if ($request->filled('search')) {
-            $query->where('description', 'like', '%' . $request->search . '%');
+            $query->where('description', 'like', '%'.$request->search.'%');
         }
 
         $activities = $query->paginate(50);
@@ -68,11 +68,11 @@ class ActivityLogController extends Controller
     {
         $csv = $this->activityService->exportToCSV();
 
-        $filename = 'activity_log_' . now()->format('Y-m-d_His') . '.csv';
+        $filename = 'activity_log_'.now()->format('Y-m-d_His').'.csv';
 
         return response($csv)
             ->header('Content-Type', 'text/csv')
-            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+            ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
     }
 
     /**

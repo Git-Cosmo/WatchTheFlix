@@ -10,12 +10,12 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TvGuideController;
 use App\Http\Controllers\WatchlistController;
-use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 // Language Switcher
@@ -103,7 +103,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Media Management
     Route::resource('media', MediaManagementController::class)->parameters(['media' => 'media']);
-    
+
     // Subtitle Management
     Route::get('/media/{media}/subtitles', [\App\Http\Controllers\Admin\SubtitleController::class, 'index'])->name('media.subtitles');
     Route::post('/media/{media}/subtitles', [\App\Http\Controllers\Admin\SubtitleController::class, 'store'])->name('media.subtitles.store');
@@ -150,7 +150,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/streams', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'streams'])->name('streams');
         Route::get('/statistics', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'statistics'])->name('statistics');
         Route::get('/documentation', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'documentation'])->name('documentation');
-        
+
         Route::post('/users/{user}/generate-token', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'generateToken'])->name('generate-token');
         Route::delete('/users/{user}/revoke-token', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'revokeToken'])->name('revoke-token');
         Route::post('/test-endpoint', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'testEndpoint'])->name('test-endpoint');

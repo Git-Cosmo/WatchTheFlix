@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class SubtitleService
 {
@@ -62,11 +61,11 @@ class SubtitleService
 
             // First line might be an ID or timecode
             $timecodeIndex = 0;
-            if (!preg_match('/-->/', $lines[0])) {
+            if (! preg_match('/-->/', $lines[0])) {
                 $timecodeIndex = 1;
             }
 
-            if (!isset($lines[$timecodeIndex])) {
+            if (! isset($lines[$timecodeIndex])) {
                 continue;
             }
 
@@ -92,7 +91,7 @@ class SubtitleService
     {
         // Format: 00:00:00,000
         $time = str_replace(',', '.', $time);
-        list($hours, $minutes, $seconds) = explode(':', $time);
+        [$hours, $minutes, $seconds] = explode(':', $time);
 
         return ((float) $hours * 3600) + ((float) $minutes * 60) + (float) $seconds;
     }
@@ -103,7 +102,7 @@ class SubtitleService
     protected function vttTimeToSeconds(string $time): float
     {
         // Format: 00:00:00.000
-        list($hours, $minutes, $seconds) = explode(':', $time);
+        [$hours, $minutes, $seconds] = explode(':', $time);
 
         return ((float) $hours * 3600) + ((float) $minutes * 60) + (float) $seconds;
     }
@@ -114,7 +113,7 @@ class SubtitleService
     public function storeSubtitle($file, int $mediaId, string $language = 'en'): string
     {
         $extension = $file->getClientOriginalExtension();
-        $filename = "media_{$mediaId}_{$language}." . $extension;
+        $filename = "media_{$mediaId}_{$language}.".$extension;
         $path = $file->storeAs('subtitles', $filename, 'public');
 
         return Storage::url($path);
@@ -127,7 +126,7 @@ class SubtitleService
     {
         $extension = strtolower($file->getClientOriginalExtension());
 
-        if (!in_array($extension, ['srt', 'vtt'])) {
+        if (! in_array($extension, ['srt', 'vtt'])) {
             return false;
         }
 

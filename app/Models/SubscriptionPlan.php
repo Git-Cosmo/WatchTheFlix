@@ -64,7 +64,7 @@ class SubscriptionPlan extends Model
      */
     public function getFormattedPriceAttribute(): string
     {
-        return $this->price == 0 ? 'Free' : '$' . number_format($this->price, 2);
+        return $this->price == 0 ? 'Free' : '$'.number_format($this->price, 2);
     }
 
     /**
@@ -83,6 +83,7 @@ class SubscriptionPlan extends Model
         } elseif ($this->duration_days == 365) {
             return '1 Year';
         }
-        return $this->duration_days . ' Days';
+
+        return $this->duration_days.' Days';
     }
 }

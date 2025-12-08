@@ -128,7 +128,7 @@ class TvChannelManagementController extends Controller
                 ->with('success', 'EPG sync started successfully! Check the logs for details.');
         } catch (\Exception $e) {
             return redirect()->route('admin.tv-channels.index')
-                ->with('error', 'EPG sync failed: ' . $e->getMessage());
+                ->with('error', 'EPG sync failed: '.$e->getMessage());
         }
     }
 }

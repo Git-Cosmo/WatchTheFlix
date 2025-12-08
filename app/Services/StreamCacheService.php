@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Redis;
 
 /**
  * Stream Cache Service
- * 
+ *
  * Provides Redis-based caching for stream data to achieve 10-100x performance improvements
  */
 class StreamCacheService
@@ -33,8 +33,8 @@ class StreamCacheService
      */
     public function cacheLiveStreams(?string $category = null): array
     {
-        $cacheKey = "xtream:live_streams" . ($category ? ":{$category}" : '');
-        
+        $cacheKey = 'xtream:live_streams'.($category ? ":{$category}" : '');
+
         return Cache::remember($cacheKey, self::CACHE_TTL['live_streams'], function () use ($category) {
             $query = TvChannel::active();
 
@@ -66,8 +66,8 @@ class StreamCacheService
      */
     public function cacheVodStreams(?string $category = null): array
     {
-        $cacheKey = "xtream:vod_streams" . ($category ? ":{$category}" : '');
-        
+        $cacheKey = 'xtream:vod_streams'.($category ? ":{$category}" : '');
+
         return Cache::remember($cacheKey, self::CACHE_TTL['vod_streams'], function () use ($category) {
             $query = Media::published();
 
@@ -100,7 +100,7 @@ class StreamCacheService
     public function cacheCategories(string $type = 'live'): array
     {
         $cacheKey = "xtream:categories:{$type}";
-        
+
         return Cache::remember($cacheKey, self::CACHE_TTL['categories'], function () use ($type) {
             if ($type === 'live') {
                 return TvChannel::active()
@@ -110,14 +110,14 @@ class StreamCacheService
                     ->map(function ($item) {
                         return [
                             'category_id' => $item->country,
-                            'category_name' => $item->country . ' Channels',
-                            'parent_id' => 0
+                            'category_name' => $item->country.' Channels',
+                            'parent_id' => 0,
                         ];
                     })->toArray();
             } elseif ($type === 'vod') {
                 return [
                     ['category_id' => 'movie', 'category_name' => 'Movies', 'parent_id' => 0],
-                    ['category_id' => 'series', 'category_name' => 'TV Series', 'parent_id' => 0]
+                    ['category_id' => 'series', 'category_name' => 'TV Series', 'parent_id' => 0],
                 ];
             }
 
@@ -130,12 +130,12 @@ class StreamCacheService
      */
     public function cacheEpg(int $streamId, ?int $limit = null): array
     {
-        $cacheKey = "xtream:epg:{$streamId}" . ($limit ? ":{$limit}" : '');
-        
+        $cacheKey = "xtream:epg:{$streamId}".($limit ? ":{$limit}" : '');
+
         return Cache::remember($cacheKey, self::CACHE_TTL['epg'], function () use ($streamId, $limit) {
             $channel = TvChannel::find($streamId);
 
-            if (!$channel) {
+            if (! $channel) {
                 return [];
             }
 
@@ -179,6 +179,7 @@ class StreamCacheService
     public function getCachedUserAuth(string $username): ?array
     {
         $cacheKey = "xtream:user_auth:{$username}";
+
         return Cache::get($cacheKey);
     }
 
@@ -195,8 +196,8 @@ class StreamCacheService
                 $pattern = "laravel_cache:{$type}:*";
                 $redis = Redis::connection(Cache::getStore()->getConnection());
                 $keys = $redis->keys($pattern);
-                
-                if (!empty($keys)) {
+
+                if (! empty($keys)) {
                     $redis->del($keys);
                 }
             }
@@ -222,7 +223,7 @@ class StreamCacheService
                 'vod_streams' => count($results['vod_streams']),
                 'live_categories' => count($results['live_categories']),
                 'vod_categories' => count($results['vod_categories']),
-            ]
+            ],
         ];
     }
 
@@ -242,12 +243,12 @@ class StreamCacheService
             if (config('cache.default') === 'redis') {
                 $redis = Redis::connection();
                 $stats['redis_connected'] = true;
-                
+
                 // Get keys matching our pattern
-                $pattern = "laravel_cache:xtream:*";
+                $pattern = 'laravel_cache:xtream:*';
                 $keys = $redis->keys($pattern);
                 $stats['total_keys'] = count($keys);
-                
+
                 // Get memory info
                 $info = $redis->info('memory');
                 $stats['memory_usage'] = $info['used_memory_human'] ?? 'N/A';
@@ -266,15 +267,15 @@ class StreamCacheService
     {
         try {
             if (Cache::getStore() instanceof \Illuminate\Cache\RedisStore) {
-                $pattern = "laravel_cache:xtream:*";
+                $pattern = 'laravel_cache:xtream:*';
                 $redis = Redis::connection(Cache::getStore()->getConnection());
                 $keys = $redis->keys($pattern);
-                
-                if (!empty($keys)) {
+
+                if (! empty($keys)) {
                     $redis->del($keys);
                 }
             }
-            
+
             return true;
         } catch (\Exception $e) {
             return false;

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Invite;
 use App\Models\Media;
-use App\Models\User;
-use App\Models\Subscription;
 use App\Models\StreamConnection;
+use App\Models\Subscription;
+use App\Models\User;
 use Spatie\Activitylog\Models\Activity;
 
 class DashboardController extends Controller

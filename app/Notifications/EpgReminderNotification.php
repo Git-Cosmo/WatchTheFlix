@@ -35,15 +35,15 @@ class EpgReminderNotification extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $program = $this->reminderData['program'];
-        
+
         return (new MailMessage)
             ->subject($this->reminderData['title'])
             ->greeting('Program Reminder')
             ->line($this->reminderData['message'])
-            ->line('**' . $program['title'] . '**')
+            ->line('**'.$program['title'].'**')
             ->line($program['description'] ?? 'No description available.')
-            ->line('Channel: ' . $program['channel']['name'])
-            ->line('Start Time: ' . date('M d, Y H:i', strtotime($program['start_time'])))
+            ->line('Channel: '.$program['channel']['name'])
+            ->line('Start Time: '.date('M d, Y H:i', strtotime($program['start_time'])))
             ->action('Watch Now', $this->reminderData['action_url'])
             ->line('Don\'t miss it!');
     }

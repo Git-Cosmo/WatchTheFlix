@@ -128,6 +128,7 @@ class TmdbImportController extends Controller
             // Skip if already imported
             if (Media::where('tmdb_id', $tmdbId)->where('type', $type)->exists()) {
                 $skipped++;
+
                 continue;
             }
 
@@ -141,6 +142,7 @@ class TmdbImportController extends Controller
 
                 if (! $details) {
                     $errors++;
+
                     continue;
                 }
 

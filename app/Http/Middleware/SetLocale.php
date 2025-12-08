@@ -14,19 +14,19 @@ class SetLocale
     {
         $locale = Session::get('locale');
 
-        if (!$locale) {
+        if (! $locale) {
             // Try to get from user preferences if authenticated
             if ($request->user() && method_exists($request->user(), 'locale')) {
                 $locale = $request->user()->locale;
             }
 
             // Fall back to browser language detection
-            if (!$locale) {
+            if (! $locale) {
                 $locale = $request->getPreferredLanguage(config('app.supported_locales', ['en']));
             }
 
             // Fall back to default locale
-            if (!$locale || !in_array($locale, config('app.supported_locales', ['en']))) {
+            if (! $locale || ! in_array($locale, config('app.supported_locales', ['en']))) {
                 $locale = config('app.locale', 'en');
             }
         }

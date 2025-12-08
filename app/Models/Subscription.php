@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class Subscription extends Model
 {
@@ -48,7 +47,7 @@ class Subscription extends Model
      */
     public function isActive(): bool
     {
-        return $this->status === 'active' && 
+        return $this->status === 'active' &&
                ($this->expires_at === null || $this->expires_at->isFuture());
     }
 
@@ -65,10 +64,10 @@ class Subscription extends Model
      */
     public function getDaysRemainingAttribute(): ?int
     {
-        if (!$this->expires_at) {
+        if (! $this->expires_at) {
             return null; // Lifetime
         }
-        
+
         return max(0, now()->diffInDays($this->expires_at, false));
     }
 
@@ -78,9 +77,9 @@ class Subscription extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'active')
-            ->where(function($q) {
+            ->where(function ($q) {
                 $q->whereNull('expires_at')
-                  ->orWhere('expires_at', '>', now());
+                    ->orWhere('expires_at', '>', now());
             });
     }
 
@@ -100,6 +99,7 @@ class Subscription extends Model
     {
         $this->status = 'cancelled';
         $this->cancelled_at = now();
+
         return $this->save();
     }
 
@@ -113,6 +113,7 @@ class Subscription extends Model
         }
         $this->status = 'active';
         $this->cancelled_at = null;
+
         return $this->save();
     }
 }

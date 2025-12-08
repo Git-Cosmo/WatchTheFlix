@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('notification_method')->default('in_app'); // in_app, email, push
             $table->text('notes')->nullable();
             $table->timestamps();
-            
+
             // Indexes for performance
             $table->index(['user_id', 'is_sent']);
             $table->index(['reminder_time', 'is_sent']);
@@ -52,7 +52,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('epg_reminders');
-        
+
         Schema::table('tv_programs', function (Blueprint $table) {
             $table->dropColumn([
                 'metadata',
@@ -66,7 +66,7 @@ return new class extends Migration
                 'is_premiere',
                 'cast',
                 'director',
-                'age_rating'
+                'age_rating',
             ]);
         });
     }

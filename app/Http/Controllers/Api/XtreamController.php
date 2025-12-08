@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * ⚠️ FEATURE ON HOLD: Xtream Codes API
- * 
+ *
  * This API is currently postponed until a future release (no ETA).
  * See README.md for information about the project's current focus.
  */
@@ -24,7 +24,7 @@ class XtreamController extends Controller
 
     /**
      * Main player_api.php endpoint - Xtream Codes compatible
-     * 
+     *
      * ⚠️ NOTE: This API is on hold - see class documentation
      */
     public function playerApi(Request $request)
@@ -34,13 +34,13 @@ class XtreamController extends Controller
         $action = $request->input('action');
 
         // Authenticate user
-        if (!$username || !$password) {
+        if (! $username || ! $password) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
         $auth = $this->xtreamService->authenticate($username, $password);
-        
-        if (!$auth) {
+
+        if (! $auth) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
@@ -48,40 +48,46 @@ class XtreamController extends Controller
         switch ($action) {
             case 'get_live_categories':
                 return response()->json($this->xtreamService->getLiveCategories());
-            
+
             case 'get_live_streams':
                 $category = $request->input('category_id');
+
                 return response()->json($this->xtreamService->getLiveStreams($category));
-            
+
             case 'get_vod_categories':
                 return response()->json($this->xtreamService->getVodCategories());
-            
+
             case 'get_vod_streams':
                 $category = $request->input('category_id');
+
                 return response()->json($this->xtreamService->getVodStreams($category));
-            
+
             case 'get_vod_info':
                 $vodId = $request->input('vod_id');
                 $info = $this->xtreamService->getVodInfo($vodId);
+
                 return $info ? response()->json($info) : response()->json(['error' => 'Not found'], 404);
-            
+
             case 'get_series_categories':
                 return response()->json($this->xtreamService->getSeriesCategories());
-            
+
             case 'get_series':
                 $category = $request->input('category_id');
+
                 return response()->json($this->xtreamService->getSeriesStreams($category));
-            
+
             case 'get_series_info':
                 $seriesId = $request->input('series_id');
                 $info = $this->xtreamService->getSeriesInfo($seriesId);
+
                 return $info ? response()->json($info) : response()->json(['error' => 'Not found'], 404);
-            
+
             case 'get_short_epg':
                 $streamId = $request->input('stream_id');
                 $limit = $request->input('limit', 10);
+
                 return response()->json(['epg_listings' => $this->xtreamService->getShortEpg($streamId, $limit)]);
-            
+
             default:
                 // Return auth info if no action specified
                 return response()->json($auth);
@@ -96,13 +102,13 @@ class XtreamController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        if (!$username || !$password) {
+        if (! $username || ! $password) {
             return response('Invalid credentials', 401)->header('Content-Type', 'text/plain');
         }
 
         $auth = $this->xtreamService->authenticate($username, $password);
-        
-        if (!$auth) {
+
+        if (! $auth) {
             return response('Invalid credentials', 401)->header('Content-Type', 'text/plain');
         }
 
@@ -126,7 +132,7 @@ class XtreamController extends Controller
                 ->header('Content-Type', 'application/xml')
                 ->header('Content-Disposition', 'attachment; filename="epg.xml"');
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to generate EPG: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to generate EPG: '.$e->getMessage()], 500);
         }
     }
 
@@ -136,14 +142,14 @@ class XtreamController extends Controller
     public function getLiveStream(string $username, string $password, int $streamId, string $extension = 'm3u8')
     {
         $auth = $this->xtreamService->authenticate($username, $password);
-        
-        if (!$auth) {
+
+        if (! $auth) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $channel = \App\Models\TvChannel::find($streamId);
-        
-        if (!$channel) {
+
+        if (! $channel) {
             return response()->json(['error' => 'Stream not found'], 404);
         }
 
@@ -152,7 +158,7 @@ class XtreamController extends Controller
             'stream_id' => $channel->id,
             'name' => $channel->name,
             'status' => 'online',
-            'message' => 'Stream available'
+            'message' => 'Stream available',
         ]);
     }
 
@@ -162,14 +168,14 @@ class XtreamController extends Controller
     public function getVodStream(string $username, string $password, int $streamId, string $extension = 'mp4')
     {
         $auth = $this->xtreamService->authenticate($username, $password);
-        
-        if (!$auth) {
+
+        if (! $auth) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $media = \App\Models\Media::find($streamId);
-        
-        if (!$media) {
+
+        if (! $media) {
             return response()->json(['error' => 'Stream not found'], 404);
         }
 
@@ -184,7 +190,7 @@ class XtreamController extends Controller
             'name' => $media->title,
             'status' => 'available',
             'direct_source' => $media->stream_url ?? '',
-            'message' => 'Stream available'
+            'message' => 'Stream available',
         ]);
     }
 
@@ -204,13 +210,13 @@ class XtreamController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        if (!$username || !$password) {
+        if (! $username || ! $password) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
         $auth = $this->xtreamService->authenticate($username, $password);
-        
-        if (!$auth) {
+
+        if (! $auth) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 

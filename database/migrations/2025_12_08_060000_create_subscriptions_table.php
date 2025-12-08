@@ -33,7 +33,7 @@ return new class extends Migration
             $table->string('payment_method')->nullable();
             $table->string('transaction_id')->nullable();
             $table->timestamps();
-            
+
             $table->index(['user_id', 'status']);
             $table->index('expires_at');
         });
@@ -50,7 +50,7 @@ return new class extends Migration
             $table->dropForeign(['current_subscription_id']);
             $table->dropColumn('current_subscription_id');
         });
-        
+
         Schema::dropIfExists('subscriptions');
         Schema::dropIfExists('subscription_plans');
     }
