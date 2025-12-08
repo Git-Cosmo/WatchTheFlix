@@ -39,4 +39,8 @@ return [
         'api_url' => env('REAL_DEBRID_API_URL', 'https://api.real-debrid.com/rest/1.0'),
     ],
 
+    'epg' => [
+        'provider_url' => env('EPG_PROVIDER_URL'),
+    ],
+
 ];

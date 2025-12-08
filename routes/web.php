@@ -15,7 +15,11 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TvGuideController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
+
+// Language Switcher
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -94,6 +98,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Media Management
     Route::resource('media', MediaManagementController::class)->parameters(['media' => 'media']);
+    
+    // Subtitle Management
+    Route::get('/media/{media}/subtitles', [\App\Http\Controllers\Admin\SubtitleController::class, 'index'])->name('media.subtitles');
+    Route::post('/media/{media}/subtitles', [\App\Http\Controllers\Admin\SubtitleController::class, 'store'])->name('media.subtitles.store');
+    Route::delete('/media/{media}/subtitles/{language}', [\App\Http\Controllers\Admin\SubtitleController::class, 'destroy'])->name('media.subtitles.destroy');
 
     // User Management
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');

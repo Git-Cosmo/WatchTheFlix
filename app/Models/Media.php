@@ -41,6 +41,7 @@ class Media extends Model
         'genres' => 'array',
         'cast' => 'array',
         'crew' => 'array',
+        'subtitles' => 'array',
         'requires_real_debrid' => 'boolean',
         'is_published' => 'boolean',
         'imdb_rating' => 'decimal:1',
