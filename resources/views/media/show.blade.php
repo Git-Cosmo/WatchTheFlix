@@ -10,7 +10,7 @@
     :title="$media->title"
     :description="$media->meta_description ?? $media->description"
     :keywords="$media->meta_keywords"
-    :canonicalUrl="$media->canonical_url ?? route('media.show', $media)"
+    :canonicalUrl="$media->canonical_url ?? $media->getRouteUrl()"
     :imageUrl="$media->poster_url"
     :ogTags="$media->og_tags"
     :twitterTags="$media->twitter_tags"
@@ -90,7 +90,7 @@
                 <h3 class="text-sm font-semibold text-dark-400 mb-3">Share this:</h3>
                 <div class="flex flex-wrap gap-3">
                     @php
-                        $shareUrl = route('media.show', $media);
+                        $shareUrl = $media->getRouteUrl();
                         $shareText = urlencode($media->title . ' - Watch on WatchTheFlix');
                     @endphp
                     

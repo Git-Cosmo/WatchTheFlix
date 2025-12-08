@@ -106,7 +106,7 @@
     <!-- Media Grid -->
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-5">
         @forelse($media as $item)
-        <a href="{{ route('media.show', $item) }}" class="group">
+        <a href="{{ $item->getRouteUrl() }}" class="group">
             <div class="relative overflow-hidden rounded-xl bg-gh-bg-secondary border border-gh-border hover:border-accent-500/50 transition-all duration-300 hover:shadow-2xl hover:shadow-accent-500/20 hover:-translate-y-1">
                 <!-- Poster -->
                 <div class="relative aspect-[2/3] overflow-hidden">

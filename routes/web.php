@@ -52,11 +52,16 @@ Route::middleware('auth')->group(function () {
 
     // Media
     Route::get('/media', [MediaController::class, 'index'])->name('media.index');
-    Route::get('/media/{media}', [MediaController::class, 'show'])->name('media.show');
-    Route::post('/media/{media}/favorite', [MediaController::class, 'toggleFavorite'])->name('media.favorite');
-    Route::post('/media/{media}/rate', [MediaController::class, 'rate'])->name('media.rate');
-    Route::post('/media/{media}/comment', [MediaController::class, 'comment'])->name('media.comment');
-    Route::post('/media/{media}/react', [MediaController::class, 'react'])->name('media.react');
+    Route::get('/movies/{media:slug}', [MediaController::class, 'show'])->name('media.show');
+    Route::get('/tv-show/{media:slug}', [MediaController::class, 'show'])->name('media.show.series');
+    Route::post('/movies/{media:slug}/favorite', [MediaController::class, 'toggleFavorite'])->name('media.favorite');
+    Route::post('/movies/{media:slug}/rate', [MediaController::class, 'rate'])->name('media.rate');
+    Route::post('/movies/{media:slug}/comment', [MediaController::class, 'comment'])->name('media.comment');
+    Route::post('/movies/{media:slug}/react', [MediaController::class, 'react'])->name('media.react');
+    Route::post('/tv-show/{media:slug}/favorite', [MediaController::class, 'toggleFavorite'])->name('media.favorite.series');
+    Route::post('/tv-show/{media:slug}/rate', [MediaController::class, 'rate'])->name('media.rate.series');
+    Route::post('/tv-show/{media:slug}/comment', [MediaController::class, 'comment'])->name('media.comment.series');
+    Route::post('/tv-show/{media:slug}/react', [MediaController::class, 'react'])->name('media.react.series');
 
     // Watchlist
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');

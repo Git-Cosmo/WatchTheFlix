@@ -135,7 +135,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($latestMovies as $item)
-            <a href="{{ route('media.show', $item) }}" class="group">
+            <a href="{{ $item->getRouteUrl() }}" class="group">
                 <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10">
                     <div class="relative overflow-hidden aspect-[2/3]">
                         @if($item->poster_url)
@@ -181,7 +181,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($latestTvShows as $item)
-            <a href="{{ route('media.show', $item) }}" class="group">
+            <a href="{{ $item->getRouteUrl() }}" class="group">
                 <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10">
                     <div class="relative overflow-hidden aspect-[2/3]">
                         @if($item->poster_url)
@@ -224,7 +224,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach($featured as $item)
-            <a href="{{ route('media.show', $item) }}" class="group">
+            <a href="{{ $item->getRouteUrl() }}" class="group">
                 <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10">
                     <div class="relative overflow-hidden aspect-[2/3]">
                         @if($item->poster_url)
@@ -265,7 +265,7 @@
         </div>
         <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
             @foreach($trending as $item)
-            <a href="{{ route('media.show', $item) }}" class="group">
+            <a href="{{ $item->getRouteUrl() }}" class="group">
                 <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300">
                     <div class="relative overflow-hidden aspect-[2/3]">
                         @if($item->poster_url)

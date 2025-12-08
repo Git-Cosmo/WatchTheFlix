@@ -167,4 +167,26 @@ class Media extends Model
             ->withPivot('availability_url', 'requires_subscription')
             ->withTimestamps();
     }
+
+    /**
+     * Get the route URL for this media item
+     */
+    public function getRouteUrl(): string
+    {
+        if ($this->type === 'movie') {
+            return route('media.show', $this->slug);
+        }
+        return route('media.show.series', $this->slug);
+    }
+
+    /**
+     * Get the route name for this media type
+     */
+    public function getRouteName(): string
+    {
+        if ($this->type === 'movie') {
+            return 'media.show';
+        }
+        return 'media.show.series';
+    }
 }

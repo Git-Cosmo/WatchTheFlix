@@ -85,7 +85,7 @@ class SyncTmdbDataCommand extends Command
                     unset($transformedData['stream_url'], $transformedData['requires_real_debrid']);
 
                     // Set canonical URL based on current route
-                    $transformedData['canonical_url'] = route('media.show', $media);
+                    $transformedData['canonical_url'] = $media->getRouteUrl();
 
                     $media->update($transformedData);
                     $synced++;
