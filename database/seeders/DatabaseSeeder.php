@@ -84,8 +84,9 @@ class DatabaseSeeder extends Seeder
         $epgProviderUrl = config('services.epg.provider_url') ?? env('EPG_PROVIDER_URL');
         if ($epgProviderUrl) {
             $this->command->info('EPG provider URL detected. Fetching real TV program data...');
-            // Run the EPG update command
-            $this->call('epg:update');
+            // Run the EPG update command via Artisan
+            \Illuminate\Support\Facades\Artisan::call('epg:update');
+            $this->command->info('EPG data fetched successfully.');
         } else {
             $this->command->warn('EPG provider URL not configured. Seeding sample TV program data...');
             $this->command->info('To enable real EPG data, set EPG_PROVIDER_URL in .env file.');
