@@ -94,6 +94,17 @@ class MediaController extends Controller
 
     public function show(Media $media)
     {
+        // Validate that the route matches the media type
+        $currentRoute = request()->route()->getName();
+        if ($currentRoute === 'media.show' && $media->type !== 'movie') {
+            // Redirect to correct route for non-movie content
+            return redirect()->to($media->getRouteUrl(), 301);
+        }
+        if ($currentRoute === 'media.show.series' && $media->type === 'movie') {
+            // Redirect to correct route for movie content
+            return redirect()->to($media->getRouteUrl(), 301);
+        }
+
         if (! $media->is_published && (! Auth::check() || ! Auth::user()->isAdmin())) {
             abort(404);
         }
