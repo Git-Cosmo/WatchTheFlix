@@ -213,11 +213,11 @@
 
     <style>
         .admin-nav-link {
-            @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-dark-300 hover:bg-gh-bg-tertiary hover:text-dark-100 transition-all;
+            @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-dark-300 hover:bg-gh-bg-tertiary hover:text-dark-100 transition-all duration-200 hover:translate-x-1;
         }
         
         .admin-nav-link-active {
-            @apply bg-accent-500/10 text-accent-400 hover:bg-accent-500/20 hover:text-accent-300;
+            @apply bg-gradient-to-r from-accent-500/20 to-accent-500/10 text-accent-300 hover:from-accent-500/30 hover:to-accent-500/15 hover:text-accent-200 border-l-4 border-accent-500;
         }
     </style>
 </body>

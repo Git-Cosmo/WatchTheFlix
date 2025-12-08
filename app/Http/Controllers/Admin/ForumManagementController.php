@@ -36,7 +36,7 @@ class ForumManagementController extends Controller
             ->performedOn($category)
             ->log('Forum category created');
 
-        return redirect()->route('admin.forum.index')
+        return redirect()->route('admin.forum.admin.index')
             ->with('success', 'Forum category created successfully');
     }
 
@@ -73,7 +73,7 @@ class ForumManagementController extends Controller
 
         $category->delete();
 
-        return redirect()->route('admin.forum.index')
+        return redirect()->route('admin.forum.admin.index')
             ->with('success', 'Forum category deleted successfully');
     }
 }

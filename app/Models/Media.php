@@ -35,6 +35,36 @@ class Media extends Model
         'stream_url',
         'requires_real_debrid',
         'is_published',
+        // SEO fields
+        'meta_description',
+        'meta_keywords',
+        'og_tags',
+        'twitter_tags',
+        'canonical_url',
+        // Enhanced TMDB fields
+        'production_companies',
+        'production_countries',
+        'spoken_languages',
+        'budget',
+        'revenue',
+        'original_title',
+        'original_language',
+        'status',
+        'tagline',
+        'popularity',
+        'vote_count',
+        'vote_average',
+        'facebook_id',
+        'instagram_id',
+        'twitter_id',
+        'logos',
+        'posters',
+        'backdrops',
+        'number_of_seasons',
+        'number_of_episodes',
+        'first_air_date',
+        'last_air_date',
+        'tmdb_last_synced_at',
     ];
 
     protected $casts = [
@@ -45,6 +75,21 @@ class Media extends Model
         'requires_real_debrid' => 'boolean',
         'is_published' => 'boolean',
         'imdb_rating' => 'decimal:1',
+        // SEO fields
+        'og_tags' => 'array',
+        'twitter_tags' => 'array',
+        // Enhanced TMDB fields
+        'production_companies' => 'array',
+        'production_countries' => 'array',
+        'spoken_languages' => 'array',
+        'popularity' => 'decimal:3',
+        'vote_average' => 'decimal:1',
+        'logos' => 'array',
+        'posters' => 'array',
+        'backdrops' => 'array',
+        'first_air_date' => 'date',
+        'last_air_date' => 'date',
+        'tmdb_last_synced_at' => 'datetime',
     ];
 
     public function getSlugOptions(): SlugOptions
