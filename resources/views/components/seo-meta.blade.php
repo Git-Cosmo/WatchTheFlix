@@ -33,16 +33,16 @@
 <meta name="robots" content="index, follow">
 <meta name="googlebot" content="index, follow">
 
-<!-- Schema.org structured data for movies/TV shows -->
+<!-- Schema.org structured data -->
 @php
-$isVideoType = in_array($type, ['video.movie', 'video.tv_show']);
 $schemaType = match($type) {
     'video.movie' => 'Movie',
     'video.tv_show' => 'TVSeries',
+    'article' => 'Article',
     default => 'WebPage',
 };
 @endphp
-@if($isVideoType)
+
 <script type="application/ld+json">
 {
   "@@context": "https://schema.org",
@@ -50,9 +50,38 @@ $schemaType = match($type) {
   "name": "{{ $title }}",
   "description": "{{ $description }}",
   @if($imageUrl)
-  "image": "{{ $imageUrl }}",
+  "image": {
+    "@@type": "ImageObject",
+    "url": "{{ $imageUrl }}",
+    "width": "1200",
+    "height": "630"
+  },
   @endif
-  "url": "{{ $canonicalUrl }}"
+  "url": "{{ $canonicalUrl }}"@if($schemaType === 'WebPage'),
+  "publisher": {
+    "@@type": "Organization",
+    "name": "{{ config('app.name') }}",
+    "logo": {
+      "@@type": "ImageObject",
+      "url": "{{ asset('images/logo.png') }}"
+    }
+  }
+  @endif
 }
 </script>
-@endif
+
+<!-- Breadcrumb structured data -->
+<script type="application/ld+json">
+{
+  "@@context": "https://schema.org",
+  "@@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ route('home') }}"
+    }
+  ]
+}
+</script>

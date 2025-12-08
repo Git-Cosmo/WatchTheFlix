@@ -130,6 +130,19 @@ class DatabaseSeeder extends Seeder
             ForumCategory::create($categoryData);
         }
 
+        // Run platform seeder for streaming service data
+        $this->call(PlatformSeeder::class);
+
+        // Conditionally run TMDB media seeder if API key is configured
+        $tmdbService = app(\App\Services\TmdbService::class);
+        if ($tmdbService->isConfigured()) {
+            $this->command->info('TMDB API key detected. Fetching real content from TMDB...');
+            $this->call(TmdbMediaSeeder::class);
+        } else {
+            $this->command->warn('TMDB API key not configured. Skipping TMDB content import.');
+            $this->command->info('To enable TMDB import, set TMDB_API_KEY in Admin Settings or .env file.');
+        }
+
         $this->command->info('Database seeded successfully!');
         $this->command->info('Admin credentials:');
         $this->command->info('Email: admin@watchtheflix.com');

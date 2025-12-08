@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Media;
+use App\Models\Platform;
 use App\Services\TmdbService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
@@ -59,27 +60,27 @@ class TmdbMediaSeeder extends Seeder
                         continue;
                     }
 
-                    $releaseYear = null;
-                    if (! empty($movie['release_date'])) {
-                        $releaseYear = (int) substr($movie['release_date'], 0, 4);
+                    // Fetch full movie details with extended data
+                    $fullDetails = $tmdbService->getMovieDetails($movie['id']);
+                    
+                    if (!$fullDetails) {
+                        $this->command->warn("Could not fetch details for movie ID: {$movie['id']}");
+                        continue;
                     }
 
-                    Media::create([
-                        'title' => $movie['title'] ?? 'Untitled',
-                        'description' => $movie['overview'] ?? null,
-                        'type' => 'movie',
-                        'tmdb_id' => $movie['id'],
-                        'release_year' => $releaseYear,
-                        'imdb_rating' => isset($movie['vote_average']) ? round($movie['vote_average'], 1) : null,
-                        'poster_url' => isset($movie['poster_path']) ? $tmdbService->getPosterUrl($movie['poster_path']) : null,
-                        'backdrop_url' => isset($movie['backdrop_path']) ? $tmdbService->getBackdropUrl($movie['backdrop_path']) : null,
-                        'genres' => $this->extractGenres($movie),
-                        'is_published' => true,
-                        'requires_real_debrid' => false,
-                    ]);
+                    // Transform TMDB data to database format
+                    $mediaData = $tmdbService->transformMovieData($fullDetails);
+                    $mediaData['is_published'] = true;
+                    $mediaData['requires_real_debrid'] = false;
+
+                    // Create media record
+                    $media = Media::create($mediaData);
+
+                    // Attach platforms/providers if available
+                    $this->attachPlatforms($media, $fullDetails['watch/providers'] ?? null);
 
                     $moviesSeeded++;
-                    $this->command->info("Seeded movie: {$movie['title']} ({$moviesSeeded}/50)");
+                    $this->command->info("Seeded movie: {$fullDetails['title']} ({$moviesSeeded}/50)");
                 } catch (\Exception $e) {
                     Log::error('Failed to seed movie: '.$e->getMessage(), ['movie' => $movie]);
                     $this->command->warn("Failed to seed movie: {$movie['title']}");
@@ -119,27 +120,27 @@ class TmdbMediaSeeder extends Seeder
                         continue;
                     }
 
-                    $releaseYear = null;
-                    if (! empty($tvShow['first_air_date'])) {
-                        $releaseYear = (int) substr($tvShow['first_air_date'], 0, 4);
+                    // Fetch full TV show details with extended data
+                    $fullDetails = $tmdbService->getTvShowDetails($tvShow['id']);
+                    
+                    if (!$fullDetails) {
+                        $this->command->warn("Could not fetch details for TV show ID: {$tvShow['id']}");
+                        continue;
                     }
 
-                    Media::create([
-                        'title' => $tvShow['name'] ?? 'Untitled',
-                        'description' => $tvShow['overview'] ?? null,
-                        'type' => 'series',
-                        'tmdb_id' => $tvShow['id'],
-                        'release_year' => $releaseYear,
-                        'imdb_rating' => isset($tvShow['vote_average']) ? round($tvShow['vote_average'], 1) : null,
-                        'poster_url' => isset($tvShow['poster_path']) ? $tmdbService->getPosterUrl($tvShow['poster_path']) : null,
-                        'backdrop_url' => isset($tvShow['backdrop_path']) ? $tmdbService->getBackdropUrl($tvShow['backdrop_path']) : null,
-                        'genres' => $this->extractGenres($tvShow),
-                        'is_published' => true,
-                        'requires_real_debrid' => false,
-                    ]);
+                    // Transform TMDB data to database format
+                    $mediaData = $tmdbService->transformTvShowData($fullDetails);
+                    $mediaData['is_published'] = true;
+                    $mediaData['requires_real_debrid'] = false;
+
+                    // Create media record
+                    $media = Media::create($mediaData);
+
+                    // Attach platforms/providers if available
+                    $this->attachPlatforms($media, $fullDetails['watch/providers'] ?? null);
 
                     $tvShowsSeeded++;
-                    $this->command->info("Seeded TV show: {$tvShow['name']} ({$tvShowsSeeded}/50)");
+                    $this->command->info("Seeded TV show: {$fullDetails['name']} ({$tvShowsSeeded}/50)");
                 } catch (\Exception $e) {
                     Log::error('Failed to seed TV show: '.$e->getMessage(), ['tvShow' => $tvShow]);
                     $this->command->warn("Failed to seed TV show: {$tvShow['name']}");
@@ -153,31 +154,57 @@ class TmdbMediaSeeder extends Seeder
     }
 
     /**
-     * Extract genre names from TMDB data
+     * Attach platforms to media based on TMDB watch providers
      */
-    protected function extractGenres(array $data): array
+    protected function attachPlatforms(Media $media, ?array $watchProviders): void
     {
-        // TMDB genre IDs to names mapping (common ones)
-        $genreMap = [
-            28 => 'Action', 12 => 'Adventure', 16 => 'Animation', 35 => 'Comedy',
-            80 => 'Crime', 99 => 'Documentary', 18 => 'Drama', 10751 => 'Family',
-            14 => 'Fantasy', 36 => 'History', 27 => 'Horror', 10402 => 'Music',
-            9648 => 'Mystery', 10749 => 'Romance', 878 => 'Science Fiction',
-            10770 => 'TV Movie', 53 => 'Thriller', 10752 => 'War', 37 => 'Western',
-            10759 => 'Action & Adventure', 10762 => 'Kids', 10763 => 'News',
-            10764 => 'Reality', 10765 => 'Sci-Fi & Fantasy', 10766 => 'Soap',
-            10767 => 'Talk', 10768 => 'War & Politics',
-        ];
-
-        $genres = [];
-        if (isset($data['genre_ids']) && is_array($data['genre_ids'])) {
-            foreach ($data['genre_ids'] as $genreId) {
-                if (isset($genreMap[$genreId])) {
-                    $genres[] = $genreMap[$genreId];
-                }
-            }
+        if (!$watchProviders || !isset($watchProviders['results'])) {
+            return;
         }
 
-        return $genres;
+        // Try US providers first, fallback to other regions
+        $providers = $watchProviders['results']['US'] ?? $watchProviders['results'][array_key_first($watchProviders['results'])] ?? null;
+        
+        if (!$providers) {
+            return;
+        }
+
+        // Map TMDB provider IDs to platform names
+        $providerMapping = [
+            8 => 'Netflix',
+            9 => 'Amazon Prime Video',
+            10 => 'Apple TV+',
+            15 => 'Hulu',
+            337 => 'Disney+',
+            384 => 'HBO Max',
+            387 => 'Peacock',
+            531 => 'Paramount+',
+            350 => 'Apple TV',
+        ];
+
+        // Combine all provider types (flatrate, rent, buy)
+        $allProviders = array_merge(
+            $providers['flatrate'] ?? [],
+            $providers['rent'] ?? [],
+            $providers['buy'] ?? []
+        );
+
+        foreach ($allProviders as $provider) {
+            $providerId = $provider['provider_id'] ?? null;
+            $providerName = $providerMapping[$providerId] ?? $provider['provider_name'] ?? null;
+
+            if (!$providerName) {
+                continue;
+            }
+
+            // Find or skip platform
+            $platform = Platform::where('name', $providerName)->first();
+            
+            if ($platform && !$media->platforms->contains($platform->id)) {
+                $media->platforms()->attach($platform->id, [
+                    'requires_subscription' => true,
+                ]);
+            }
+        }
     }
 }
