@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\ForumCategory;
-use App\Models\Media;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
@@ -32,73 +31,7 @@ class DatabaseSeeder extends Seeder
             $admin->assignRole('admin');
         }
 
-        // Create sample media
-        $sampleMedia = [
-            [
-                'title' => 'The Matrix',
-                'description' => 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
-                'type' => 'movie',
-                'release_year' => 1999,
-                'runtime' => 136,
-                'imdb_rating' => 8.7,
-                'rating' => 'R',
-                'genres' => ['Action', 'Sci-Fi'],
-                'requires_real_debrid' => false,
-                'is_published' => true,
-            ],
-            [
-                'title' => 'Inception',
-                'description' => 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
-                'type' => 'movie',
-                'release_year' => 2010,
-                'runtime' => 148,
-                'imdb_rating' => 8.8,
-                'rating' => 'PG-13',
-                'genres' => ['Action', 'Sci-Fi', 'Thriller'],
-                'requires_real_debrid' => false,
-                'is_published' => true,
-            ],
-            [
-                'title' => 'Interstellar',
-                'description' => 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
-                'type' => 'movie',
-                'release_year' => 2014,
-                'runtime' => 169,
-                'imdb_rating' => 8.6,
-                'rating' => 'PG-13',
-                'genres' => ['Adventure', 'Drama', 'Sci-Fi'],
-                'requires_real_debrid' => false,
-                'is_published' => true,
-            ],
-            [
-                'title' => 'Breaking Bad',
-                'description' => 'A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine to secure his family\'s future.',
-                'type' => 'series',
-                'release_year' => 2008,
-                'imdb_rating' => 9.5,
-                'rating' => 'TV-MA',
-                'genres' => ['Crime', 'Drama', 'Thriller'],
-                'requires_real_debrid' => true,
-                'is_published' => true,
-            ],
-            [
-                'title' => 'Stranger Things',
-                'description' => 'When a young boy disappears, his mother, a police chief and his friends must confront terrifying supernatural forces in order to get him back.',
-                'type' => 'series',
-                'release_year' => 2016,
-                'imdb_rating' => 8.7,
-                'rating' => 'TV-14',
-                'genres' => ['Drama', 'Fantasy', 'Horror'],
-                'requires_real_debrid' => true,
-                'is_published' => true,
-            ],
-        ];
-
-        foreach ($sampleMedia as $mediaData) {
-            Media::create($mediaData);
-        }
-
-        // Create sample forum categories
+        // Create production-ready forum categories
         $forumCategories = [
             [
                 'name' => 'General Discussion',
@@ -133,6 +66,10 @@ class DatabaseSeeder extends Seeder
         // Run platform seeder for streaming service data
         $this->call(PlatformSeeder::class);
 
+        // Seed TV channels (required for EPG data)
+        $this->command->info('Seeding TV channels...');
+        $this->call(TvChannelSeeder::class);
+
         // Conditionally run TMDB media seeder if API key is configured
         $tmdbService = app(\App\Services\TmdbService::class);
         if ($tmdbService->isConfigured()) {
@@ -140,12 +77,29 @@ class DatabaseSeeder extends Seeder
             $this->call(TmdbMediaSeeder::class);
         } else {
             $this->command->warn('TMDB API key not configured. Skipping TMDB content import.');
-            $this->command->info('To enable TMDB import, set TMDB_API_KEY in Admin Settings or .env file.');
+            $this->command->info('To enable TMDB import, set TMDB_API_KEY in .env file or Admin Panel Settings.');
         }
 
-        $this->command->info('Database seeded successfully!');
+        // Conditionally fetch EPG data if provider URL is configured
+        $epgProviderUrl = config('services.epg.provider_url') ?? env('EPG_PROVIDER_URL');
+        if ($epgProviderUrl) {
+            $this->command->info('EPG provider URL detected. Fetching real TV program data...');
+            // Run the EPG update command via Artisan
+            \Illuminate\Support\Facades\Artisan::call('epg:update');
+            $this->command->info('EPG data fetched successfully.');
+        } else {
+            $this->command->warn('EPG provider URL not configured. Seeding sample TV program data...');
+            $this->command->info('To enable real EPG data, set EPG_PROVIDER_URL in .env file.');
+            $this->call(TvProgramSeeder::class);
+        }
+
+        $this->command->info('');
+        $this->command->info('✓ Database seeded successfully!');
+        $this->command->info('');
         $this->command->info('Admin credentials:');
-        $this->command->info('Email: admin@watchtheflix.com');
-        $this->command->info('Password: password');
+        $this->command->info('  Email: admin@watchtheflix.com');
+        $this->command->info('  Password: password');
+        $this->command->info('');
+        $this->command->warn('⚠ Please change the admin password immediately!');
     }
 }

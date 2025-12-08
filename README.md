@@ -315,35 +315,37 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-6. **Run migrations**
-```bash
-php artisan migrate
+6. **Configure Optional Integrations** (Before seeding)
+
+For automatic TMDB content import during seeding, add your TMDB API key to `.env`:
+```env
+TMDB_API_KEY=your_tmdb_api_key_here
 ```
 
-7. **Seed the database** (optional)
+For real EPG (TV Guide) data import during seeding, add your EPG provider URL:
+```env
+EPG_PROVIDER_URL=https://your-epg-provider.com/xmltv.xml
+```
+
+**Note**: Both are optional. Without these keys, the seeder will:
+- Skip TMDB content import (no media seeded by default)
+- Seed sample TV program data instead of real EPG data
+
+7. **Run migrations and seed database**
 ```bash
-php artisan db:seed
+php artisan migrate --seed
 ```
 
 This creates:
-- Admin user: `admin@watchtheflix.com` / `password`
-- Sample media content
-- Forum categories
+- ✅ Admin user: `admin@watchtheflix.com` / `password` (⚠️ Change immediately!)
+- ✅ Production-ready forum categories
+- ✅ Streaming platforms (Netflix, Prime, Hulu, Disney+, etc.)
+- ✅ TV channels (UK and US)
+- ✅ **Real TMDB content** (Top 50 movies + TV shows) - *if TMDB_API_KEY is set*
+- ✅ **Real EPG data** (Live TV schedules) - *if EPG_PROVIDER_URL is set*
+- ✅ Sample TV program data (7 days) - *if EPG_PROVIDER_URL is NOT set*
 
-To seed additional data:
-```bash
-# Seed streaming platforms (Netflix, Prime, Hulu, etc.)
-php artisan db:seed --class=PlatformSeeder
-
-# Seed TV channels (UK and US)
-php artisan db:seed --class=TvChannelSeeder
-
-# Seed TV program guide (7 days of sample EPG data)
-php artisan db:seed --class=TvProgramSeeder
-
-# Seed top 50 movies and TV shows from TMDB (requires API key)
-php artisan db:seed --class=TmdbMediaSeeder
-```
+**Important**: The seeder no longer creates sample movies/series. All media is imported from TMDB if the API key is configured.
 
 8. **Build frontend assets**
 ```bash
@@ -366,21 +368,60 @@ Visit `http://localhost:8000` in your browser.
 
 ### TMDB API Setup
 
+WatchTheFlix supports flexible TMDB API key configuration with two methods:
+
+#### Method 1: Environment Variable (.env) - Recommended for Initial Setup
+
+Add your API key to `.env` file (this is the default source):
+```env
+TMDB_API_KEY=your_tmdb_api_key_here
+```
+
+**Benefits**:
+- ✅ Automatic TMDB content import during `php artisan migrate --seed`
+- ✅ Persists across deployments
+- ✅ Easy to configure in production environments
+
+#### Method 2: Admin Panel - Recommended for Runtime Changes
+
 1. Get your API key from [TMDB](https://www.themoviedb.org/settings/api)
 2. Log in as an admin
 3. Go to `/admin/settings`
 4. Enter your TMDB API key in the "API Integrations" section
 5. Save settings
 
-The TMDB API enables:
-- Importing rich metadata for movies and TV shows
-- Automatic poster and backdrop downloads
-- Cast and crew information
-- Streaming platform availability detection
-- Using the `media:scrape` command to fetch latest content
-- Using the `TmdbMediaSeeder` to bulk import popular content
+**Benefits**:
+- ✅ Override .env value without redeploying
+- ✅ Change API key at runtime without server restart
+- ✅ Manage from the UI
 
-**Note**: The application works without TMDB API - you can manually add media through the admin panel. TMDB integration is optional but recommended for rich metadata.
+**Priority**: Admin Panel setting takes precedence over .env. If admin panel value is empty/blank, it falls back to .env.
+
+#### What TMDB API Enables
+
+The TMDB API integration provides:
+- 🎬 Importing rich metadata for movies and TV shows
+- 🖼️ Automatic poster and backdrop downloads
+- 👥 Cast and crew information with photos
+- 🎭 Production companies and budget/revenue data
+- 📺 Streaming platform availability detection
+- 🔗 External links (IMDb, Facebook, Instagram, Twitter)
+- 🏷️ Genres, keywords, and taglines
+- ⭐ Ratings and popularity scores
+
+**Commands**:
+```bash
+# Import top 50 movies and TV shows from TMDB
+php artisan db:seed --class=TmdbMediaSeeder
+
+# Sync existing media with latest TMDB data
+php artisan tmdb:sync
+
+# Scrape latest content from TMDB
+php artisan media:scrape
+```
+
+**Note**: The application works fully without TMDB API - you can manually add media through the admin panel. TMDB integration is optional but highly recommended for rich metadata and automated content import.
 
 ### Enhanced TMDB Integration ✅ NEW
 
@@ -423,6 +464,75 @@ The sync command:
 // In routes/console.php or app/Console/Kernel.php
 Schedule::command('tmdb:sync --days=7')->weekly();
 ```
+
+### EPG (Electronic Program Guide) Setup
+
+WatchTheFlix includes robust EPG integration for real TV channel schedules and program data.
+
+#### EPG Configuration
+
+Add your EPG provider URL to `.env` file:
+```env
+EPG_PROVIDER_URL=https://your-epg-provider.com/xmltv.xml
+```
+
+**What happens with EPG_PROVIDER_URL**:
+- ✅ **Set**: Real EPG data is fetched during `php artisan migrate --seed`
+- ❌ **Not Set**: Sample TV program data (7 days) is seeded as fallback
+
+#### Automated EPG Updates
+
+EPG data is automatically updated **daily at 3:00 AM** via Laravel's task scheduler (configured in `routes/console.php`).
+
+To enable automated updates:
+```bash
+# Add to server crontab (crontab -e)
+* * * * * cd /path/to/WatchTheFlix && php artisan schedule:run >> /dev/null 2>&1
+```
+
+#### Manual EPG Updates
+
+Update EPG data on-demand:
+```bash
+# Standard update (skips existing programs)
+php artisan epg:update
+
+# Force update (overwrites existing programs)
+php artisan epg:update --force
+```
+
+#### EPG Data Format
+
+WatchTheFlix supports standard **XMLTV format** EPG data. The EPG service:
+- ✅ Parses XMLTV XML format
+- ✅ Handles timezone offsets
+- ✅ Matches programs to existing channels
+- ✅ Prevents duplicate program entries
+- ✅ Supports multi-channel imports
+- ✅ Includes comprehensive error handling
+
+#### Finding EPG Providers
+
+**Free Options**:
+- **XMLTV.org**: Community-maintained EPG data (varies by region)
+- **Schedules Direct**: Free for personal use (US/Canada)
+
+**Paid Options**:
+- **EPG123**: Schedules Direct integration ($25/year)
+- **IPTV-EPG**: Various providers (pricing varies)
+- **Gracenote**: Enterprise-grade (contact for pricing)
+
+#### EPG Features
+
+- 📺 **Multi-Country Support**: UK and US channels pre-configured
+- 🔄 **Automated Sync**: Daily updates keep schedules fresh
+- 🎯 **Channel Matching**: Automatic program-to-channel mapping
+- ⚡ **Bulk Import**: Efficient batch processing
+- 📊 **Admin Interface**: Manage channels and view EPG statistics
+- 🔍 **Search**: Find programs across all channels
+- ⏰ **EPG Reminders**: Set reminders for upcoming programs
+
+**For detailed EPG setup instructions, see [EPG_SETUP.md](EPG_SETUP.md)**
 
 ### SEO Features ✅ NEW
 
@@ -801,6 +911,149 @@ WatchTheFlix is pivoting to provide a superior content discovery and browsing ex
 - Xtream Codes API may be reconsidered in a future release after core features are fully polished
 - The implementation remains available at [XTREAM_API.md](XTREAM_API.md) for reference
 - Community feedback will help determine if and when to revive these features
+
+## Database Seeding
+
+### Overview
+
+WatchTheFlix uses an intelligent seeding system that adapts based on your configuration:
+
+#### Default Behavior (No API Keys)
+
+Running `php artisan migrate --seed` without TMDB or EPG keys will create:
+- ✅ Admin user (`admin@watchtheflix.com` / `password`)
+- ✅ Production-ready forum categories
+- ✅ Streaming platforms (Netflix, Prime, Hulu, Disney+, etc.)
+- ✅ TV channels (UK and US)
+- ✅ **Sample TV program data** (7 days of placeholder schedules)
+- ❌ **No media content** (requires TMDB_API_KEY)
+
+#### With TMDB API Key
+
+Add `TMDB_API_KEY=your_key` to `.env` before seeding:
+- ✅ Everything from default behavior
+- ✅ **Top 50 movies from TMDB** (with full metadata, cast, posters, etc.)
+- ✅ **Top 50 TV shows from TMDB** (with full metadata, cast, posters, etc.)
+- ✅ **Streaming platform associations** (automatically linked from TMDB watch providers)
+
+#### With EPG Provider URL
+
+Add `EPG_PROVIDER_URL=https://your-provider.com/xmltv.xml` to `.env` before seeding:
+- ✅ Everything from default behavior
+- ✅ **Real EPG data** instead of sample TV programs
+- ✅ Live TV schedules from your EPG provider
+- ✅ Automatic channel-to-program matching
+
+#### With Both TMDB and EPG
+
+The ultimate setup - configure both before seeding:
+```env
+TMDB_API_KEY=your_tmdb_key
+EPG_PROVIDER_URL=https://your-epg-provider.com/xmltv.xml
+```
+
+Result:
+- ✅ Complete production-ready database
+- ✅ Real movies and TV shows from TMDB
+- ✅ Real TV schedules from EPG provider
+- ✅ Ready for immediate use
+
+### Seeder Components
+
+#### DatabaseSeeder (Main Orchestrator)
+Intelligently coordinates all seeders based on configuration:
+- Creates admin user and forum categories
+- Calls PlatformSeeder and TvChannelSeeder
+- **Conditionally** calls TmdbMediaSeeder if TMDB key configured
+- **Conditionally** fetches EPG data or seeds sample programs
+
+#### PlatformSeeder
+Seeds streaming platforms:
+- Netflix, Amazon Prime Video, Hulu, Disney+, HBO Max, Apple TV+
+- Paramount+, Peacock, BBC iPlayer, ITV Hub, Channel 4/5
+- Sky Go, Now TV, BritBox, YouTube, Tubi, Crunchyroll
+
+#### TvChannelSeeder
+Seeds TV channels:
+- **UK Channels**: BBC One, BBC Two, ITV, Channel 4/5, Sky One, etc.
+- **US Channels**: ABC, CBS, NBC, FOX, HBO, ESPN, CNN, etc.
+
+#### TmdbMediaSeeder
+Fetches real content from TMDB (requires API key):
+- Top 50 popular movies with full details
+- Top 50 popular TV shows with full details
+- Includes cast, crew, production companies, budgets, external IDs
+- Automatically links streaming platforms from TMDB watch providers
+
+#### TvProgramSeeder (Fallback)
+Generates sample TV program data when EPG_PROVIDER_URL is not set:
+- 7 days of placeholder schedules
+- Realistic program durations (30-120 minutes)
+- Time-appropriate titles (morning shows, evening news, etc.)
+- Multiple genres and ratings
+
+### Manual Seeding
+
+Run individual seeders as needed:
+
+```bash
+# Seed only streaming platforms
+php artisan db:seed --class=PlatformSeeder
+
+# Seed only TV channels
+php artisan db:seed --class=TvChannelSeeder
+
+# Seed TMDB content (requires API key)
+php artisan db:seed --class=TmdbMediaSeeder
+
+# Seed sample TV programs (fallback)
+php artisan db:seed --class=TvProgramSeeder
+
+# Seed everything (respects configuration)
+php artisan db:seed
+```
+
+### Production Recommendations
+
+For production deployments:
+
+1. **Set TMDB_API_KEY in .env** before initial seeding
+   - Get your free API key at https://www.themoviedb.org/settings/api
+   - Ensures rich media catalog from the start
+
+2. **Set EPG_PROVIDER_URL in .env** before initial seeding
+   - Provides real TV schedules instead of placeholders
+   - Set up cron job for automated daily updates
+
+3. **Change admin password immediately** after seeding
+   - Default: `admin@watchtheflix.com` / `password`
+   - Change via `/admin/settings` or user profile
+
+4. **Enable Laravel scheduler** for automated updates:
+   ```bash
+   * * * * * cd /path/to/WatchTheFlix && php artisan schedule:run >> /dev/null 2>&1
+   ```
+
+### Seeder Changes (This PR)
+
+**What Changed:**
+- ❌ **Removed**: Sample media data (The Matrix, Inception, etc.)
+- ✅ **Added**: Conditional TMDB seeding based on API key
+- ✅ **Added**: Conditional EPG fetching based on provider URL
+- ✅ **Enhanced**: TMDB API key now defaults to .env with admin panel override
+- ✅ **Improved**: Clear messaging about what's being seeded and why
+
+**Migration Path:**
+If you're updating from an older version:
+1. Run `php artisan migrate:fresh --seed` to get the new seeding behavior
+2. Configure TMDB_API_KEY and EPG_PROVIDER_URL in .env for full functionality
+3. Or add TMDB key via Admin Panel after seeding (overrides .env)
+
+**Benefits:**
+- 🎯 Production-ready from the start (no placeholder content)
+- 🔧 Flexible configuration (works with or without API keys)
+- 📊 Real content when configured (TMDB + EPG integration)
+- ⚡ Fast seeding when keys not set (minimal data)
 
 ## Roadmap
 

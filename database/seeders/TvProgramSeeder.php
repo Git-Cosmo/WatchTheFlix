@@ -11,10 +11,14 @@ class TvProgramSeeder extends Seeder
 {
     /**
      * Seed sample TV program data for testing and demonstration.
+     * 
+     * Note: This seeder generates sample/placeholder TV program data.
+     * For real EPG data, configure EPG_PROVIDER_URL in .env and run 'php artisan epg:update'
+     * or include EPG_PROVIDER_URL before running 'php artisan migrate --seed'.
      */
     public function run(): void
     {
-        $this->command->info('Seeding TV program guide data...');
+        $this->command->info('Seeding sample TV program guide data...');
 
         // Get all active channels
         $channels = TvChannel::where('is_active', true)->get();

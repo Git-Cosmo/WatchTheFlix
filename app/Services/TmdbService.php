@@ -27,12 +27,20 @@ class TmdbService
 
     public function __construct()
     {
-        // Get API key from settings table (with error handling for migrations)
+        // Get API key with proper fallback chain:
+        // 1. Admin panel setting (from settings table)
+        // 2. Environment variable (.env)
+        // 3. null if neither is configured
         try {
-            $this->apiKey = Setting::get('tmdb_api_key');
+            $adminApiKey = Setting::get('tmdb_api_key');
+            $envApiKey = env('TMDB_API_KEY');
+            
+            // Use admin setting if not empty, otherwise fallback to .env
+            $this->apiKey = !empty($adminApiKey) ? $adminApiKey : $envApiKey;
         } catch (\Exception $e) {
             // Settings table doesn't exist yet (e.g., during migrations)
-            $this->apiKey = null;
+            // Fallback to environment variable
+            $this->apiKey = env('TMDB_API_KEY');
         }
     }
 
