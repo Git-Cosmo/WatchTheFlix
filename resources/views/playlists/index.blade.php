@@ -15,15 +15,13 @@
     </div>
 
     @if($playlists->isEmpty())
-    <div class="text-center py-20">
-        <div class="inline-flex items-center justify-center w-20 h-20 bg-gh-bg-secondary rounded-full mb-6">
-            <svg class="h-10 w-10 text-gh-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-            </svg>
-        </div>
-        <p class="text-gh-text-muted text-lg mb-4">You haven't created any playlists yet</p>
-        <a href="{{ route('playlists.create') }}" class="btn-primary">Create Your First Playlist</a>
-    </div>
+    <x-empty-state 
+        icon="🎵" 
+        title="No playlists yet" 
+        message="Create your first playlist to organize your favorite content."
+        action-text="Create Your First Playlist"
+        action-url="{{ route('playlists.create') }}"
+    />
     @else
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         @foreach($playlists as $playlist)

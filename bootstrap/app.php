@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'rate.limit.api' => \App\Http\Middleware\RateLimitApi::class,
         ]);
 
         // Rate limiting for production security
@@ -29,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
         
         // Add locale middleware for internationalization
         $middleware->append(\App\Http\Middleware\SetLocale::class);
+
+        // Add response compression for better performance
+        $middleware->append(\App\Http\Middleware\CompressResponse::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -4,6 +4,10 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+    <x-breadcrumbs :items="[
+        ['label' => 'Bouquets', 'url' => route('admin.bouquets.index')]
+    ]" />
+
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">{{ __('Channel Bouquets') }}</h1>
         <a href="{{ route('admin.bouquets.create') }}" class="btn-primary">

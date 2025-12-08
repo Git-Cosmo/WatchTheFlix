@@ -8,8 +8,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// Xtream Codes API Routes
-Route::prefix('xtream')->group(function () {
+// Xtream Codes API Routes (with rate limiting)
+Route::prefix('xtream')->middleware('rate.limit.api:150,1')->group(function () {
     // Main player_api.php endpoint (Xtream Codes compatible)
     Route::get('/player_api.php', [XtreamController::class, 'playerApi']);
     Route::post('/player_api.php', [XtreamController::class, 'playerApi']);
@@ -28,15 +28,17 @@ Route::prefix('xtream')->group(function () {
     Route::get('/epg.xml', [XtreamController::class, 'getEPG']);
     Route::get('/xmltv', [XtreamController::class, 'xmltv']);
     
-    // Stream URLs (Xtream format)
-    Route::get('/live/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getLiveStream']);
-    Route::get('/live/{username}/{password}/{streamId}', [XtreamController::class, 'getLiveStream']);
-    
-    Route::get('/vod/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getVodStream']);
-    Route::get('/vod/{username}/{password}/{streamId}', [XtreamController::class, 'getVodStream']);
-    
-    Route::get('/series/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getVodStream']);
-    Route::get('/series/{username}/{password}/{streamId}', [XtreamController::class, 'getVodStream']);
+    // Stream URLs (Xtream format) - Higher rate limit for streaming
+    Route::middleware('rate.limit.api:300,1')->group(function () {
+        Route::get('/live/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getLiveStream']);
+        Route::get('/live/{username}/{password}/{streamId}', [XtreamController::class, 'getLiveStream']);
+        
+        Route::get('/vod/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getVodStream']);
+        Route::get('/vod/{username}/{password}/{streamId}', [XtreamController::class, 'getVodStream']);
+        
+        Route::get('/series/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getVodStream']);
+        Route::get('/series/{username}/{password}/{streamId}', [XtreamController::class, 'getVodStream']);
+    });
     
     // Server info
     Route::get('/server_info', [XtreamController::class, 'serverInfo']);
