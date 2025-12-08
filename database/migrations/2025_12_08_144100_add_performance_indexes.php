@@ -14,28 +14,29 @@ return new class extends Migration
         // Add indexes to media table
         Schema::table('media', function (Blueprint $table) {
             $table->index('type', 'idx_media_type');
-            $table->index('status', 'idx_media_status');
-            $table->index(['type', 'status'], 'idx_media_type_status');
+            // Note: media table doesn't have a status column, using is_published instead
+            $table->index('is_published', 'idx_media_published');
+            $table->index(['type', 'is_published'], 'idx_media_type_published');
             $table->index('created_at', 'idx_media_created_at');
             $table->index('release_year', 'idx_media_release_year');
         });
 
         // Add indexes to users table
         Schema::table('users', function (Blueprint $table) {
-            $table->index('role', 'idx_users_role');
+            // Note: role is managed by Spatie Permission package, not a column in users table
             $table->index('email_verified_at', 'idx_users_email_verified');
             $table->index('created_at', 'idx_users_created_at');
         });
 
         // Add indexes to subscriptions table
+        // Note: subscriptions already has indexes for expires_at and ['user_id', 'status']
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->index('expires_at', 'idx_subscriptions_expires_at');
+            // Only add index for status as other indexes already exist
             $table->index('status', 'idx_subscriptions_status');
-            $table->index(['user_id', 'status'], 'idx_subscriptions_user_status');
         });
 
-        // Add indexes to media_user (watchlist) table
-        Schema::table('media_user', function (Blueprint $table) {
+        // Add indexes to watchlists table
+        Schema::table('watchlists', function (Blueprint $table) {
             $table->index(['user_id', 'created_at'], 'idx_watchlist_user_created');
         });
 
@@ -49,23 +50,18 @@ return new class extends Migration
         // Add indexes to comments table
         if (Schema::hasTable('comments')) {
             Schema::table('comments', function (Blueprint $table) {
-                $table->index(['commentable_type', 'commentable_id'], 'idx_comments_morph');
-                $table->index('created_at', 'idx_comments_created_at');
+                // Note: comments table already has foreign key indexes for user_id and media_id
+                // Just add index for created_at queries
+                $table->index('created_at', 'idx_comments_created');
             });
         }
 
-        // Add indexes to reactions table
-        if (Schema::hasTable('reactions')) {
-            Schema::table('reactions', function (Blueprint $table) {
-                $table->index(['reactable_type', 'reactable_id'], 'idx_reactions_morph');
-                $table->index(['user_id', 'reactable_type', 'reactable_id'], 'idx_reactions_user_morph');
-            });
-        }
+        // Note: reactions table already has appropriate indexes through foreign keys and unique constraint
 
         // Add indexes to tv_programs table
+        // Note: tv_programs already has indexes for ['tv_channel_id', 'start_time'] and 'start_time'
         Schema::table('tv_programs', function (Blueprint $table) {
-            $table->index(['tv_channel_id', 'start_time'], 'idx_programs_channel_start');
-            $table->index('start_time', 'idx_programs_start_time');
+            // Only add index for end_time as other indexes already exist
             $table->index('end_time', 'idx_programs_end_time');
         });
 
@@ -84,28 +80,26 @@ return new class extends Migration
         // Drop indexes from media table
         Schema::table('media', function (Blueprint $table) {
             $table->dropIndex('idx_media_type');
-            $table->dropIndex('idx_media_status');
-            $table->dropIndex('idx_media_type_status');
+            $table->dropIndex('idx_media_published');
+            $table->dropIndex('idx_media_type_published');
             $table->dropIndex('idx_media_created_at');
             $table->dropIndex('idx_media_release_year');
         });
 
         // Drop indexes from users table
         Schema::table('users', function (Blueprint $table) {
-            $table->dropIndex('idx_users_role');
             $table->dropIndex('idx_users_email_verified');
             $table->dropIndex('idx_users_created_at');
         });
 
         // Drop indexes from subscriptions table
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropIndex('idx_subscriptions_expires_at');
+            // Only drop the status index we added
             $table->dropIndex('idx_subscriptions_status');
-            $table->dropIndex('idx_subscriptions_user_status');
         });
 
-        // Drop indexes from media_user table
-        Schema::table('media_user', function (Blueprint $table) {
+        // Drop indexes from watchlists table
+        Schema::table('watchlists', function (Blueprint $table) {
             $table->dropIndex('idx_watchlist_user_created');
         });
 
@@ -119,23 +113,13 @@ return new class extends Migration
         // Drop indexes from comments table
         if (Schema::hasTable('comments')) {
             Schema::table('comments', function (Blueprint $table) {
-                $table->dropIndex('idx_comments_morph');
-                $table->dropIndex('idx_comments_created_at');
-            });
-        }
-
-        // Drop indexes from reactions table
-        if (Schema::hasTable('reactions')) {
-            Schema::table('reactions', function (Blueprint $table) {
-                $table->dropIndex('idx_reactions_morph');
-                $table->dropIndex('idx_reactions_user_morph');
+                $table->dropIndex('idx_comments_created');
             });
         }
 
         // Drop indexes from tv_programs table
         Schema::table('tv_programs', function (Blueprint $table) {
-            $table->dropIndex('idx_programs_channel_start');
-            $table->dropIndex('idx_programs_start_time');
+            // Only drop the end_time index we added
             $table->dropIndex('idx_programs_end_time');
         });
 

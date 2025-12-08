@@ -23,7 +23,8 @@ return new class extends Migration
 
         // Add transcoding fields to media table
         Schema::table('media', function (Blueprint $table) {
-            $table->timestamp('transcoded_at')->nullable()->after('duration');
+            // Note: media table uses 'runtime' not 'duration'
+            $table->timestamp('transcoded_at')->nullable()->after('runtime');
             $table->string('transcoding_status')->default('pending')->after('transcoded_at');
             $table->json('available_qualities')->nullable()->after('transcoding_status');
             $table->string('hls_playlist_url')->nullable()->after('available_qualities');

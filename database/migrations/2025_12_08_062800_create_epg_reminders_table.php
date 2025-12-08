@@ -36,7 +36,7 @@ return new class extends Migration
             $table->string('episode_number')->nullable()->after('series_id');
             $table->string('season_number')->nullable()->after('episode_number');
             $table->string('imdb_id')->nullable()->after('season_number');
-            $table->decimal('rating', 3, 1)->nullable()->after('imdb_id');
+            // Note: rating column already exists, so we skip adding it
             $table->string('language')->default('en')->after('rating');
             $table->boolean('is_repeat')->default(false)->after('language');
             $table->boolean('is_premiere')->default(false)->after('is_repeat');
@@ -60,7 +60,7 @@ return new class extends Migration
                 'episode_number',
                 'season_number',
                 'imdb_id',
-                'rating',
+                // 'rating', // Don't drop rating as it was created in the original migration
                 'language',
                 'is_repeat',
                 'is_premiere',
