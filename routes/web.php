@@ -177,4 +177,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::put('/{bouquet}', [\App\Http\Controllers\Admin\BouquetManagementController::class, 'update'])->name('update');
         Route::delete('/{bouquet}', [\App\Http\Controllers\Admin\BouquetManagementController::class, 'destroy'])->name('destroy');
     });
+
+    // Activity Log
+    Route::prefix('activity-log')->name('activity-log.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\ActivityLogController::class, 'index'])->name('index');
+        Route::get('/export', [\App\Http\Controllers\Admin\ActivityLogController::class, 'export'])->name('export');
+        Route::get('/stats', [\App\Http\Controllers\Admin\ActivityLogController::class, 'stats'])->name('stats');
+    });
+
+    // Transcoding Management
+    Route::prefix('transcoding')->name('transcoding.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TranscodingController::class, 'index'])->name('index');
+        Route::post('/queue/{media}', [\App\Http\Controllers\Admin\TranscodingController::class, 'queue'])->name('queue');
+        Route::post('/{job}/process', [\App\Http\Controllers\Admin\TranscodingController::class, 'process'])->name('process');
+        Route::delete('/{job}', [\App\Http\Controllers\Admin\TranscodingController::class, 'destroy'])->name('destroy');
+        Route::post('/generate-playlist/{media}', [\App\Http\Controllers\Admin\TranscodingController::class, 'generatePlaylist'])->name('generate-playlist');
+    });
 });

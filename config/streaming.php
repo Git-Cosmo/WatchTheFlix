@@ -73,4 +73,21 @@ return [
     'websocket_enabled' => env('WEBSOCKET_ENABLED', true),
     'websocket_driver' => env('BROADCAST_DRIVER', 'log'), // reverb, pusher, etc.
     
+    /*
+    |--------------------------------------------------------------------------
+    | Transcoding Settings
+    |--------------------------------------------------------------------------
+    |
+    | Adaptive bitrate transcoding settings with FFmpeg
+    |
+    */
+
+    'transcoding' => [
+        'enabled' => env('TRANSCODING_ENABLED', true),
+        'preset' => env('TRANSCODING_PRESET', 'medium'), // ultrafast, fast, medium, slow
+        'storage_path' => env('TRANSCODING_STORAGE_PATH', storage_path('app/transcoded')),
+        'segment_duration' => env('TRANSCODING_SEGMENT_DURATION', 4), // seconds
+        'qualities' => ['360p', '480p', '720p', '1080p', '4k'],
+    ],
+    
 ];
