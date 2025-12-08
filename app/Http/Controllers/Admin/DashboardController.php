@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Invite;
 use App\Models\Media;
 use App\Models\User;
+use App\Models\Subscription;
+use App\Models\StreamConnection;
 use Spatie\Activitylog\Models\Activity;
 
 class DashboardController extends Controller
@@ -21,6 +23,8 @@ class DashboardController extends Controller
             'draft_media' => Media::where('is_published', false)->count(),
             'movies_count' => Media::where('type', 'movie')->count(),
             'series_count' => Media::where('type', 'series')->count(),
+            'active_subscriptions' => Subscription::active()->count(),
+            'current_connections' => StreamConnection::where('expires_at', '>', now())->whereNull('ended_at')->count(),
         ];
 
         // User engagement metrics
