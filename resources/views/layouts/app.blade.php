@@ -25,7 +25,6 @@
                         WatchTheFlix
                     </a>
                     
-                    @auth
                     <div class="hidden md:flex space-x-2">
                         <a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'nav-link-active' : '' }}">
                             <svg class="h-4 w-4 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -33,18 +32,25 @@
                             </svg>
                             Home
                         </a>
-                        <a href="{{ route('media.index') }}" class="nav-link {{ request()->routeIs('media.*') ? 'nav-link-active' : '' }}">
+                        <a href="{{ route('movies.index') }}" class="nav-link {{ request()->routeIs('movies.*') ? 'nav-link-active' : '' }}">
                             <svg class="h-4 w-4 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
                             </svg>
-                            Browse
+                            Movies
                         </a>
-                        <a href="{{ route('tv-guide.index') }}" class="nav-link {{ request()->routeIs('tv-guide.*') ? 'nav-link-active' : '' }}">
+                        <a href="{{ route('tv-shows.index') }}" class="nav-link {{ request()->routeIs('tv-shows.*') ? 'nav-link-active' : '' }}">
                             <svg class="h-4 w-4 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                             </svg>
+                            TV Shows
+                        </a>
+                        <a href="{{ route('tv-guide.index') }}" class="nav-link {{ request()->routeIs('tv-guide.*') ? 'nav-link-active' : '' }}">
+                            <svg class="h-4 w-4 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                            </svg>
                             TV Guide
                         </a>
+                        @auth
                         <a href="{{ route('watchlist.index') }}" class="nav-link {{ request()->routeIs('watchlist.*') ? 'nav-link-active' : '' }}">
                             <svg class="h-4 w-4 mr-1.5 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
@@ -66,14 +72,13 @@
                             Admin
                         </a>
                         @endcan
+                        @endauth
                     </div>
-                    @endauth
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    @auth
                     <!-- Quick Search -->
-                    <form method="GET" action="{{ route('media.index') }}" class="hidden lg:block">
+                    <form method="GET" action="{{ route('movies.index') }}" class="hidden lg:block">
                         <div class="relative">
                             <input type="text" name="search" placeholder="Quick search..." class="input-field w-64 pl-10 py-2 text-sm" value="{{ request('search') }}">
                             <svg class="h-5 w-5 text-dark-400 absolute left-3 top-1/2 transform -translate-y-1/2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

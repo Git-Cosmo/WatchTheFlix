@@ -4,12 +4,27 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
-    <div class="max-w-3xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8">Settings</h1>
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold mb-2">⚙️ Settings</h1>
+            <p class="text-gh-text-muted">Manage your account preferences and integrations</p>
+        </div>
 
-        <!-- Real-Debrid Settings -->
-        <div class="card p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Real-Debrid Integration</h2>
+        <!-- Settings Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Real-Debrid Settings -->
+            <div class="card p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-12 h-12 bg-accent-500/10 rounded-lg flex items-center justify-center">
+                        <svg class="h-6 w-6 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-semibold">Real-Debrid Integration</h2>
+                        <p class="text-sm text-gh-text-muted">Enable premium content access</p>
+                    </div>
+                </div>
             <form method="POST" action="{{ route('profile.settings.update') }}">
                 @csrf
                 @method('PUT')
@@ -38,13 +53,28 @@
                     </p>
                 </div>
 
-                <button type="submit" class="btn-primary">Save Real-Debrid Settings</button>
+                <button type="submit" class="btn-primary w-full">
+                    <svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Real-Debrid Settings
+                </button>
             </form>
         </div>
 
         <!-- Parental Controls -->
-        <div class="card p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Parental Controls</h2>
+        <div class="card p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold">Parental Controls</h2>
+                    <p class="text-sm text-gh-text-muted">Protect your family with PIN</p>
+                </div>
+            </div>
             <form method="POST" action="{{ route('profile.settings.update') }}">
                 @csrf
                 @method('PUT')
@@ -67,14 +97,31 @@
                            class="input-field w-full" placeholder="1234">
                 </div>
 
-                <button type="submit" class="btn-primary">Save Parental Controls</button>
+                <button type="submit" class="btn-primary w-full">
+                    <svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Save Parental Controls
+                </button>
             </form>
         </div>
+    </div>
 
+    <!-- Full Width Sections -->
+    <div class="space-y-6">
         <!-- Two-Factor Authentication -->
-        <div class="card p-6 mb-6">
-            <h2 class="text-xl font-semibold mb-4">Two-Factor Authentication (2FA)</h2>
-            <p class="text-dark-300 mb-4">Add an extra layer of security to your account with two-factor authentication.</p>
+        <div class="card p-6">
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold">Two-Factor Authentication (2FA)</h2>
+                    <p class="text-sm text-gh-text-muted">Add an extra layer of security to your account</p>
+                </div>
+            </div>
 
             @if(session('recovery_codes'))
             <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
@@ -126,6 +173,9 @@
             <form method="POST" action="{{ route('two-factor.enable') }}">
                 @csrf
                 <button type="submit" class="btn-primary">
+                    <svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
                     Enable 2FA
                 </button>
             </form>
@@ -134,7 +184,17 @@
 
         <!-- Change Password -->
         <div class="card p-6">
-            <h2 class="text-xl font-semibold mb-4">Change Password</h2>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
+                    <svg class="h-6 w-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-semibold">Change Password</h2>
+                    <p class="text-sm text-gh-text-muted">Update your account password</p>
+                </div>
+            </div>
             <form method="POST" action="{{ route('profile.settings.update') }}">
                 @csrf
                 @method('PUT')
@@ -156,9 +216,15 @@
                     <input type="password" name="password_confirmation" id="password_confirmation" class="input-field w-full">
                 </div>
 
-                <button type="submit" class="btn-primary">Change Password</button>
+                <button type="submit" class="btn-primary">
+                    <svg class="h-4 w-4 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Change Password
+                </button>
             </form>
         </div>
+    </div>
     </div>
 </div>
 @endsection

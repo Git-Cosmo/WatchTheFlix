@@ -4,51 +4,89 @@
 
 @section('content')
 <div class="relative">
-    <!-- Compact Header with Stats and Quick Actions -->
-    <div class="bg-gradient-to-r from-accent-500/5 via-blue-500/5 to-purple-500/5 border-b border-gh-border">
-        <div class="container mx-auto px-4 py-6">
-            <div class="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">WatchTheFlix</h1>
-                    <p class="text-sm text-gh-text-muted">Your Ultimate Streaming Platform</p>
+    <!-- Hero Section with Featured Content -->
+    @if($featured->isNotEmpty())
+    <div class="relative h-[70vh] min-h-[500px] overflow-hidden bg-gradient-to-b from-gh-bg to-gh-bg-secondary">
+        @php
+            $hero = $featured->first();
+        @endphp
+        
+        <!-- Background Image -->
+        @if($hero->backdrop_url)
+        <div class="absolute inset-0">
+            <img src="{{ $hero->backdrop_url }}" alt="{{ $hero->title }}" class="w-full h-full object-cover opacity-30">
+            <div class="absolute inset-0 bg-gradient-to-t from-gh-bg via-gh-bg/80 to-transparent"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-gh-bg via-transparent to-gh-bg/50"></div>
+        </div>
+        @endif
+        
+        <!-- Content -->
+        <div class="relative container mx-auto px-4 h-full flex items-center">
+            <div class="max-w-2xl space-y-6">
+                @if($hero->poster_url)
+                <div class="flex items-center gap-4">
+                    <img src="{{ $hero->poster_url }}" alt="{{ $hero->title }}" class="w-24 h-36 object-cover rounded-lg shadow-2xl border-2 border-accent-500/30">
+                    <div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-3 py-1 bg-accent-600 rounded-full text-xs font-bold uppercase">Featured</span>
+                            @if($hero->imdb_rating)
+                            <div class="flex items-center gap-1 px-2 py-1 bg-black/60 rounded">
+                                <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <span class="text-sm font-bold">{{ number_format($hero->imdb_rating, 1) }}</span>
+                            </div>
+                            @endif
+                        </div>
+                        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-2 text-white drop-shadow-2xl">{{ $hero->title }}</h1>
+                    </div>
                 </div>
-                
-                <!-- Quick Stats (inline) -->
-                @auth
-                @if($stats)
-                <div class="hidden md:flex items-center gap-6 text-sm">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-accent-400">{{ $stats['total_media'] }}</div>
-                        <div class="text-xs text-gh-text-muted">Total</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-accent-400">{{ $stats['movies'] }}</div>
-                        <div class="text-xs text-gh-text-muted">Movies</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-accent-400">{{ $stats['series'] }}</div>
-                        <div class="text-xs text-gh-text-muted">Series</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-400">{{ $stats['watchlist_count'] }}</div>
-                        <div class="text-xs text-gh-text-muted">Watchlist</div>
-                    </div>
-                </div>
+                @else
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-white drop-shadow-2xl">{{ $hero->title }}</h1>
                 @endif
-                @endauth
                 
-                <!-- Quick Actions for Guests -->
-                @guest
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Get Started</a>
-                    <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Sign In</a>
+                @if($hero->overview)
+                <p class="text-lg text-gray-200 leading-relaxed line-clamp-3 drop-shadow-lg">{{ $hero->overview }}</p>
+                @endif
+                
+                <div class="flex items-center gap-3 flex-wrap">
+                    @if($hero->release_year)
+                    <span class="text-sm text-gray-300">{{ $hero->release_year }}</span>
+                    <span class="text-gray-600">•</span>
+                    @endif
+                    @if($hero->runtime)
+                    <span class="text-sm text-gray-300">{{ $hero->runtime }} min</span>
+                    <span class="text-gray-600">•</span>
+                    @endif
+                    @if($hero->genres && count($hero->genres) > 0)
+                    <div class="flex gap-2">
+                        @foreach(array_slice($hero->genres, 0, 3) as $genre)
+                        <span class="text-xs px-2 py-1 bg-white/10 backdrop-blur rounded-full text-gray-300">{{ $genre }}</span>
+                        @endforeach
+                    </div>
+                    @endif
                 </div>
-                @endguest
+                
+                <div class="flex gap-3">
+                    <a href="{{ $hero->getRouteUrl() }}" class="btn-primary text-lg px-8 py-3 inline-flex items-center gap-2">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                        </svg>
+                        Watch Now
+                    </a>
+                    <a href="{{ $hero->getRouteUrl() }}" class="btn-secondary text-lg px-8 py-3 inline-flex items-center gap-2">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        More Info
+                    </a>
+                </div>
             </div>
         </div>
     </div>
+    @endif
 
-    <div class="container mx-auto px-4 py-4">
+    <div class="container mx-auto px-4 py-8">
         
         <!-- Quick Filter Tabs -->
         <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-2">

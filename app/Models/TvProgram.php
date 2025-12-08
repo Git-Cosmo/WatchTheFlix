@@ -37,7 +37,6 @@ class TvProgram extends Model
         'metadata' => 'array',
         'is_repeat' => 'boolean',
         'is_premiere' => 'boolean',
-        'rating' => 'decimal:1',
     ];
 
     public function channel()
