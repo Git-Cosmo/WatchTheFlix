@@ -28,14 +28,14 @@ return new class extends Migration
         });
 
         // Add indexes to subscriptions table
+        // Note: subscriptions already has indexes for expires_at and ['user_id', 'status']
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->index('expires_at', 'idx_subscriptions_expires_at');
+            // Only add index for status as other indexes already exist
             $table->index('status', 'idx_subscriptions_status');
-            $table->index(['user_id', 'status'], 'idx_subscriptions_user_status');
         });
 
-        // Add indexes to media_user (watchlist) table
-        Schema::table('media_user', function (Blueprint $table) {
+        // Add indexes to watchlists table
+        Schema::table('watchlists', function (Blueprint $table) {
             $table->index(['user_id', 'created_at'], 'idx_watchlist_user_created');
         });
 
@@ -63,9 +63,9 @@ return new class extends Migration
         }
 
         // Add indexes to tv_programs table
+        // Note: tv_programs already has indexes for ['tv_channel_id', 'start_time'] and 'start_time'
         Schema::table('tv_programs', function (Blueprint $table) {
-            $table->index(['tv_channel_id', 'start_time'], 'idx_programs_channel_start');
-            $table->index('start_time', 'idx_programs_start_time');
+            // Only add index for end_time as other indexes already exist
             $table->index('end_time', 'idx_programs_end_time');
         });
 
@@ -99,13 +99,12 @@ return new class extends Migration
 
         // Drop indexes from subscriptions table
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropIndex('idx_subscriptions_expires_at');
+            // Only drop the status index we added
             $table->dropIndex('idx_subscriptions_status');
-            $table->dropIndex('idx_subscriptions_user_status');
         });
 
-        // Drop indexes from media_user table
-        Schema::table('media_user', function (Blueprint $table) {
+        // Drop indexes from watchlists table
+        Schema::table('watchlists', function (Blueprint $table) {
             $table->dropIndex('idx_watchlist_user_created');
         });
 
@@ -134,8 +133,7 @@ return new class extends Migration
 
         // Drop indexes from tv_programs table
         Schema::table('tv_programs', function (Blueprint $table) {
-            $table->dropIndex('idx_programs_channel_start');
-            $table->dropIndex('idx_programs_start_time');
+            // Only drop the end_time index we added
             $table->dropIndex('idx_programs_end_time');
         });
 

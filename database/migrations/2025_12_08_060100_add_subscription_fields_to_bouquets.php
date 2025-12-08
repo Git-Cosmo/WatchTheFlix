@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('bouquet_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
             
-            $table->unique(['subscription_plan_id', 'bouquet_id']);
+            $table->unique(['subscription_plan_id', 'bouquet_id'], 'sub_plan_bouquet_unique');
         });
     }
 
