@@ -9,7 +9,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         @forelse($watchlist as $item)
         <div class="card overflow-hidden">
-            <a href="{{ route('media.show', $item) }}">
+            <a href="{{ $item->getRouteUrl() }}">
                 @if($item->poster_url)
                 <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-64 object-cover lazy" loading="lazy">
                 @else

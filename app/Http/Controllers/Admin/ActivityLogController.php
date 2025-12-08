@@ -13,7 +13,6 @@ class ActivityLogController extends Controller
 
     public function __construct(UserActivityService $activityService)
     {
-        $this->middleware(['auth', 'role:admin']);
         $this->activityService = $activityService;
     }
 
