@@ -4,6 +4,11 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+    <!-- Video Player -->
+    @if($media->stream_url)
+    <x-video-player :media="$media" />
+    @endif
+
     <!-- Media Header -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <div>
