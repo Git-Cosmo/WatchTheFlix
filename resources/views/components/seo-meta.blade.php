@@ -34,11 +34,11 @@
 <meta name="googlebot" content="index, follow">
 
 <!-- Schema.org structured data for movies/TV shows -->
-@if($type === 'video.movie' || $type === 'video.tv_show')
+@if($isVideoType())
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "{{ $type === 'video.movie' ? 'Movie' : 'TVSeries' }}",
+  "@type": "{{ $getSchemaType() }}",
   "name": "{{ $title }}",
   "description": "{{ $description }}",
   @if($imageUrl)

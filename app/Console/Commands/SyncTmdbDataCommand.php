@@ -95,7 +95,8 @@ class SyncTmdbDataCommand extends Command
                 }
 
                 // Rate limiting: TMDB allows 40 requests per 10 seconds
-                usleep(250000); // 250ms delay = max 4 requests/second
+                // 250ms delay = max 4 requests/second (well under the 40/10s limit)
+                usleep(config('services.tmdb.rate_limit_delay', 250000));
             } catch (\Exception $e) {
                 $failed++;
                 Log::error("Error syncing media ID {$media->id}: {$e->getMessage()}");

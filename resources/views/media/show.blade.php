@@ -3,6 +3,9 @@
 @section('title', $media->title)
 
 @section('seo')
+@php
+    use App\View\Components\SeoMeta;
+@endphp
 <x-seo-meta 
     :title="$media->title"
     :description="$media->meta_description ?? $media->description"
@@ -11,7 +14,7 @@
     :imageUrl="$media->poster_url"
     :ogTags="$media->og_tags"
     :twitterTags="$media->twitter_tags"
-    :type="$media->type === 'movie' ? 'video.movie' : 'video.tv_show'"
+    :type="$media->type === 'movie' ? SeoMeta::TYPE_VIDEO_MOVIE : SeoMeta::TYPE_VIDEO_TV_SHOW"
 />
 @endsection
 

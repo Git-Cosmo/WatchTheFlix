@@ -43,4 +43,8 @@ return [
         'provider_url' => env('EPG_PROVIDER_URL'),
     ],
 
+    'tmdb' => [
+        'rate_limit_delay' => env('TMDB_RATE_LIMIT_DELAY', 250000), // microseconds (250ms = 4 req/sec)
+    ],
+
 ];
