@@ -345,6 +345,87 @@ The TMDB API enables:
 
 **Note**: The application works without TMDB API - you can manually add media through the admin panel. TMDB integration is optional but recommended for rich metadata.
 
+### Enhanced TMDB Integration ✅ NEW
+
+WatchTheFlix now includes comprehensive TMDB integration with extended metadata support:
+
+#### Extended Metadata Fields
+- **Production Details**: Companies, countries, spoken languages
+- **Financial Data**: Budget and revenue information (for movies)
+- **Additional Info**: Original titles, tagline, status, popularity scores
+- **External IDs**: Facebook, Instagram, Twitter, IMDb links
+- **Images**: Multiple posters, backdrops, and logos
+- **TV Show Data**: Season/episode counts, air dates
+- **Ratings**: Vote counts and averages from TMDB
+
+#### Automatic Data Synchronization
+
+Keep your content metadata fresh with automated TMDB syncing:
+
+```bash
+# Sync all media last updated more than 30 days ago (default)
+php artisan tmdb:sync
+
+# Sync all media regardless of last sync time
+php artisan tmdb:sync --all
+
+# Sync media updated more than 60 days ago
+php artisan tmdb:sync --days=60
+```
+
+The sync command:
+- ✅ Updates existing media with latest TMDB data
+- ✅ Preserves your custom settings (stream URLs, Real-Debrid flags)
+- ✅ Includes automatic rate limiting (TMDB allows 40 req/10s)
+- ✅ Provides detailed progress tracking
+- ✅ Logs all errors for troubleshooting
+
+**Recommended**: Schedule this command to run weekly via Laravel's task scheduler:
+
+```php
+// In routes/console.php or app/Console/Kernel.php
+Schedule::command('tmdb:sync --days=7')->weekly();
+```
+
+### SEO Features ✅ NEW
+
+WatchTheFlix includes comprehensive SEO optimizations to improve search engine visibility:
+
+#### Implemented SEO Features
+- **SEO-Friendly URLs**: Automatic slug generation using spatie/laravel-sluggable
+- **Unique Slugs**: Collision handling ensures all media has unique URLs
+- **Meta Tags**: Dynamic meta descriptions and keywords for all pages
+- **Canonical URLs**: Prevents duplicate content issues
+- **Open Graph Tags**: Rich previews for Facebook, LinkedIn, and other platforms
+- **Twitter Cards**: Beautiful card previews when sharing on Twitter
+- **Schema.org Structured Data**: JSON-LD markup for movies and TV shows
+- **Semantic HTML**: Proper heading hierarchy and semantic elements
+- **Image Optimization**: Alt tags and optimized image loading
+
+#### SEO Component Usage
+
+The SEO meta component is automatically included on media pages. For custom pages:
+
+```blade
+@section('seo')
+<x-seo-meta 
+    :title="$pageTitle"
+    :description="$description"
+    :keywords="$keywords"
+    :canonicalUrl="route('your.route')"
+    :imageUrl="$image"
+    :type="'website'"
+/>
+@endsection
+```
+
+#### SEO Best Practices
+- All media entries generate unique SEO-friendly slugs automatically
+- Meta descriptions are auto-generated from content descriptions (truncated to 160 chars)
+- Keywords are extracted from genres and tags
+- Social sharing images use poster URLs for rich previews
+- Canonical URLs prevent duplicate content penalties
+
 ### Real-Debrid Setup (Optional)
 
 Real-Debrid integration is **optional** - the platform works fully without it. Enable it only if you want premium content access.
@@ -443,8 +524,14 @@ php artisan view:cache
 ## Database Schema
 
 ### Key Tables
-- `users` - User accounts with Real-Debrid settings
-- `media` - Movies, series, and episodes
+- `users` - User accounts with Real-Debrid settings and 2FA
+- `media` - Movies, series, and episodes with extended TMDB metadata
+  - ✅ **New**: SEO fields (meta_description, meta_keywords, og_tags, twitter_tags, canonical_url)
+  - ✅ **New**: Extended TMDB fields (production companies/countries, budget, revenue, external IDs)
+  - ✅ **New**: Additional images (multiple posters, backdrops, logos)
+  - ✅ **New**: TV show fields (seasons, episodes, air dates)
+  - ✅ **New**: Popularity and vote data
+  - ✅ **New**: Last synced timestamp for TMDB updates
 - `platforms` - Streaming platforms (Netflix, Prime, Hulu, etc.)
 - `media_platform` - Many-to-many relationship between media and platforms
 - `tv_channels` - UK and US TV channels
@@ -458,10 +545,11 @@ php artisan view:cache
 - `viewing_history` - Watch progress tracking
 - `settings` - Platform configuration (includes TMDB API key)
 - `notifications` - User notifications (welcome messages, updates, etc.)
-- `forum_categories` - Forum discussion categories
-- `forum_threads` - Forum discussion threads
+- `forum_categories` - Forum discussion categories with ordering and active status
+- `forum_threads` - Forum discussion threads with pin/lock functionality
 - `forum_posts` - Thread replies
 - `forum_thread_subscriptions` - Thread subscription tracking
+- `playlists` - User-created playlists with ordered media items
 
 ## Security
 
@@ -487,12 +575,45 @@ php artisan view:cache
 
 ### TMDB API Integration
 
-The application integrates with The Movie Database (TMDB) API v3:
-- Search for movies and TV shows
-- Retrieve detailed metadata (posters, backdrops, descriptions)
-- Access cast and crew information
-- Detect streaming platform availability
-- Import ratings and release information
+The application integrates comprehensively with The Movie Database (TMDB) API v3:
+
+#### Core Features
+- **Search**: Movies and TV shows by title
+- **Details**: Full metadata including descriptions, release dates, runtime
+- **Images**: Posters, backdrops, logos (multiple variants)
+- **Cast & Crew**: Top 20 actors and key crew members
+- **Videos**: Trailers from YouTube
+- **Watch Providers**: Streaming platform availability
+- **External IDs**: Links to IMDb, Facebook, Instagram, Twitter
+
+#### Extended Metadata ✅ NEW
+- **Production**: Companies, countries, spoken languages
+- **Financial**: Budget and revenue data (movies only)
+- **Status**: Released, In Production, Post Production, etc.
+- **Popularity**: TMDB popularity scores and vote averages
+- **TV Shows**: Season/episode counts, air dates, episode runtime
+- **Keywords**: Content keywords for better categorization
+
+#### API Endpoints Used
+- `/search/movie` - Search movies
+- `/search/tv` - Search TV shows
+- `/movie/{id}?append_to_response=credits,videos,watch/providers,images,external_ids,keywords` - Full movie details
+- `/tv/{id}?append_to_response=credits,videos,watch/providers,images,external_ids,keywords` - Full TV show details
+- `/movie/popular` - Popular movies
+- `/tv/popular` - Popular TV shows
+- `/trending/all/week` - Trending content
+
+#### Rate Limiting
+- **TMDB Limit**: 40 requests per 10 seconds
+- **Our Implementation**: 250ms delay between requests (4 req/sec) for sync command
+- **Automatic**: Handles rate limiting transparently
+
+#### Data Transformation
+The `TmdbService` includes helper methods to transform raw TMDB data into our database format:
+- `transformMovieData(array $tmdbData)` - Converts movie data with all extended fields
+- `transformTvShowData(array $tmdbData)` - Converts TV show data with all extended fields
+- Automatic SEO field generation from content metadata
+- Preserves existing local settings (stream URLs, Real-Debrid flags)
 
 ### Real-Debrid Integration
 
@@ -502,9 +623,70 @@ The application integrates with Real-Debrid's REST API v1.0:
 - Link unrestricting
 - Torrent management
 
+## Admin UI Improvements ✅ NEW
+
+The admin panel has been redesigned with enhanced visual polish and improved user experience:
+
+### UI Enhancements
+- **Modern Button Styles**: Gradient backgrounds with smooth hover effects and scaling
+- **Enhanced Cards**: Improved borders, hover states, and visual hierarchy
+- **Sidebar Navigation**: Active state indicators with gradient backgrounds and smooth transitions
+- **Table Redesign**: Media thumbnails, improved badges, and better data presentation
+- **Form Improvements**: Better labels, placeholders, error states with icons
+- **Responsive Design**: Optimized for mobile devices with improved spacing
+- **Visual Feedback**: Icons, status indicators, and hover effects throughout
+- **Color Consistency**: Unified color scheme using GitHub-inspired dark theme
+
+### Key Improvements
+- ✅ Media management table now shows thumbnails and improved metadata display
+- ✅ Forum category management with visual badges and status indicators
+- ✅ Enhanced form layouts with better visual hierarchy and user guidance
+- ✅ Improved button interactions with gradients and hover animations
+- ✅ Better empty states with helpful icons and call-to-action buttons
+- ✅ Smooth transitions and animations throughout the interface
+
+## Recent Bug Fixes ✅
+
+### Fixed Route Naming Issues
+**Issue**: `RouteNotFoundException` for `forum.admin.create` route  
+**Cause**: Inconsistent route naming between route definitions and view files  
+**Resolution**: Updated all admin forum routes to use consistent `admin.forum.admin.*` naming pattern
+
+**Files Fixed**:
+- `resources/views/admin/forum/index.blade.php`
+- `resources/views/admin/forum/create.blade.php`
+- `resources/views/admin/forum/edit.blade.php`
+- `app/Http/Controllers/Admin/ForumManagementController.php`
+
+### Fixed Undefined Variable Error
+**Issue**: `Undefined variable $errors` in compiled Blade views  
+**Cause**: Stale compiled view cache  
+**Resolution**: Cleared compiled views and ensured proper error bag handling
+
+The `$errors` variable is now properly available in all views through Laravel's validation middleware. To prevent this issue:
+```bash
+php artisan view:clear  # Clear compiled views
+php artisan optimize:clear  # Clear all caches
+```
+
+### Database Migration Safety
+**Issue**: TmdbService tried to access database during bootstrap before migrations ran  
+**Cause**: Service constructor queried Settings table in service provider  
+**Resolution**: Added try-catch error handling to gracefully handle missing database during migrations
+
 ## Troubleshooting
 
 ### Common Issues
+
+**Route not found errors**
+- Clear route cache: `php artisan route:clear`
+- Verify route names match in views and controllers
+- Check middleware groups are properly defined
+
+**Compiled view errors**
+- Clear view cache: `php artisan view:clear`
+- Delete files in `storage/framework/views/`
+- Rebuild views by visiting the pages
 
 **Database not found**
 - Ensure `database/database.sqlite` exists
@@ -515,6 +697,11 @@ The application integrates with Real-Debrid's REST API v1.0:
 - Run `npm run build`
 - Clear browser cache
 - Check `public/build` directory exists
+
+**TMDB Sync failures**
+- Verify TMDB API key is set in Admin Settings
+- Check rate limiting (max 40 requests per 10 seconds)
+- Review logs in `storage/logs/laravel.log`
 
 **Permission denied**
 - Ensure `storage` and `bootstrap/cache` are writable
