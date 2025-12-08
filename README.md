@@ -11,23 +11,32 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 ## Quick Start
 
 **What you get out of the box:**
-- 🎬 Media catalog with watchlists, favorites, ratings, comments, and reactions
-- 📺 TV Guide for UK and US channels (manual data seeding)
+- 🎬 **TMDB-Powered Media Catalog**: Browse movies and TV shows with rich metadata, posters, and backdrops
+  - Latest Movies section with newest additions
+  - Latest TV Shows section with recent series
+  - Trending content section with popular titles
+- 📺 **TV Guide with Admin Management**: UK and US channels with EPG sync and admin controls
 - 🌐 Platform availability tracking (Netflix, Prime, Hulu, etc.)
 - 💬 Custom forum system with categories, threads, and subscriptions
-- 👤 User profiles with 2FA and parental controls (PIN-protected)
+- 👤 User profiles with avatars (displayed in navbar), 2FA and parental controls (PIN-protected)
 - 🔐 Invite-only registration system
-- 👨‍💼 Comprehensive admin panel with advanced analytics
+- 👨‍💼 **Redesigned Admin Panel**: Modern left-sidebar navigation with improved visual clarity
+  - Dashboard with quick stats and growth metrics
+  - Media management with bulk TMDB import
+  - TV channel management with EPG sync
+  - User and invite management
+  - Forum and analytics tools
 - 🎨 Dark theme with responsive design
-- 📡 Xtream Codes API for IPTV applications
 - 🎵 Playlist creation and management
 - 📊 Advanced search with multiple filters
 - 📧 Email notifications for important events
 - 🔗 Social sharing to Twitter, Facebook, LinkedIn, WhatsApp
 
 **Optional integrations:**
-- 🎬 TMDB API for rich metadata and automated content scraping
+- 🎬 TMDB API for rich metadata and automated content scraping (recommended)
 - 🚀 Real-Debrid for premium content access (user-level setting)
+
+> ⚠️ **FEATURE ON HOLD**: Xtream Codes API features are currently postponed until a future release (no ETA). The code remains available for reference, but is not actively maintained or recommended for production use at this time. WatchTheFlix is now focused on delivering a superior TMDB-based content catalog and enhanced TV Guide experience. See [Future Plans](#future-plans) for more details.
 
 ![Homepage](https://github.com/user-attachments/assets/473a1e94-570d-4807-8743-1a3e142dfe22)
 ![TV Guide](https://github.com/user-attachments/assets/055322be-0960-4a3e-8774-e7c09d2f3e70)
@@ -59,7 +68,13 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Email Notifications**: Receive notifications via email for forum replies and important events
 - **In-App Notifications**: Real-time notification system with bell icon, unread indicators, and mark-as-read functionality
 
-### 📡 Xtream Codes API (IPTV Support)
+### 📡 Xtream Codes API (⚠️ ON HOLD)
+
+> **IMPORTANT**: Xtream Codes API features are currently postponed until a future release (no ETA). The implementation remains in the codebase for reference but is not actively maintained or recommended for production use. See [Future Plans](#future-plans) below.
+
+<details>
+<summary>Click to view postponed features</summary>
+
 - **Full Xtream Codes Compatibility**: Backend API compatible with popular IPTV applications
 - **Player API**: Complete player_api.php implementation with all standard actions
 - **M3U Playlist Generation**: Auto-generated playlists for live TV and VOD content
@@ -68,7 +83,9 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Authentication Tokens**: Secure API access with Laravel Sanctum tokens
 - **Compatible Players**: TiviMate, Perfect Player, GSE Smart IPTV, IPTV Smarters, Kodi, VLC
 - **Stream URLs**: Direct live TV and VOD stream access via Xtream format URLs
-- **Full Documentation**: See [XTREAM_API.md](XTREAM_API.md) for complete API reference
+- **Full Documentation**: See [XTREAM_API.md](XTREAM_API.md) for complete API reference (note: features are on hold)
+
+</details>
 
 ### 🎯 Real-Debrid Integration
 - **User-Level Integration**: Each user can enable/disable Real-Debrid
@@ -76,15 +93,21 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Content Access Control**: Restrict premium content to Real-Debrid users
 - **Token Validation**: Automatic validation of Real-Debrid API tokens
 
-### 📺 TV Guide
+### 📺 TV Guide & Channel Management
 - **Multi-Country Support**: Browse TV channels from UK and US
 - **Program Schedules**: View program schedules with detailed information
 - **Channel Information**: Access channel numbers, descriptions, and logos
 - **Search Functionality**: Find specific programs across all channels
 - **Country Filtering**: Filter programs by country (UK/US)
+- **Admin Channel Management**: Full CRUD interface for TV channels
+  - Add, edit, and remove channels
+  - Bulk EPG sync from external providers
+  - Channel statistics and program counts
+  - Active/inactive status management
 - **Automated EPG Updates**: Scheduled XMLTV data fetching (daily at 3:00 AM)
   - Configure via `EPG_PROVIDER_URL` in `.env`
   - Manual updates: `php artisan epg:update`
+  - Admin UI sync button for on-demand updates
   - See [EPG_SETUP.md](EPG_SETUP.md) for detailed configuration
 
 ### 🎯 Platform Availability
@@ -95,15 +118,23 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Subscription Info**: See which platforms require subscriptions
 - **Easy Assignment**: Admins can easily assign platforms to media content
 
-### 🎬 TMDB API Integration
+### 🎬 Enhanced TMDB API Integration
 - **Rich Metadata**: Import movie and TV show details from The Movie Database
 - **Automated Imports**: Fetch posters, backdrops, descriptions, and ratings
 - **Cast & Crew**: Access comprehensive cast and crew information
 - **Watch Providers**: Automatically detect streaming platform availability
 - **Admin Configuration**: Easily configure API key through admin settings
 - **Documented Service**: Well-documented service class for TMDB API calls
-- **Media Scraper**: Automated scraper command to fetch and update latest content from TMDB
+- **Enhanced Media Scraper**: Automated scraper command with extended coverage
+  - Scrape latest movies: `php artisan media:scrape --type=movies --limit=50`
+  - Scrape latest TV shows: `php artisan media:scrape --type=tv --limit=50`
+  - Scrape trending content: `php artisan media:scrape --type=trending --limit=50`
+  - Scrape all: `php artisan media:scrape --type=all --limit=20`
 - **Bulk Seeding**: Seed database with top 50 movies and TV shows instantly
+- **Home Page Sections**:
+  - Latest Movies - newest movie additions
+  - Latest TV Shows - recent TV series
+  - Trending Now - popular content across movies and TV
 
 ### 💬 Community Forum
 - **Forum Categories**: Organized discussion sections
@@ -114,15 +145,26 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **View Tracking**: See how popular each thread is
 - **Admin Management**: Full CRUD for forum categories
 
-### 👨‍💼 Admin Panel
-- **Quick Access**: Admin panel link available in user dropdown menu for authorized users
-- **Dashboard**: Overview of users, media, and activity
+### 👨‍💼 Redesigned Admin Panel
+- **Modern Left Sidebar Navigation**: Streamlined access to all admin features
+- **Dashboard**: Overview of users, media, activity, and 30-day growth metrics
+  - Quick stats cards with visual indicators
+  - User engagement metrics (comments, ratings, favorites)
+  - Growth tracking for users, media, and interactions
+  - Quick action buttons for common tasks
 - **Media Management**: Full CRUD operations for media content with platform assignment
-- **User Management**: View and manage user accounts
-- **Invite System**: Generate and manage invite codes
+- **TMDB Bulk Import**: Import movies and TV shows from TMDB with admin UI
+- **TV Channel Management**: Full CRUD interface for TV channels
+  - Add, edit, and remove channels
+  - Bulk EPG sync functionality
+  - Channel statistics and active/inactive status
+- **User Management**: View and manage user accounts with detailed profiles
+- **Invite System**: Generate and manage invite codes with expiration dates
 - **Forum Management**: Create and organize forum categories
-- **Global Settings**: Configure platform-wide settings including TMDB API
+- **Analytics Dashboard**: Comprehensive analytics with user engagement insights
 - **Activity Logging**: Track all important actions (powered by Spatie Activity Log)
+- **Global Settings**: Configure platform-wide settings including TMDB API
+- **Consistent Dark Theme**: Admin UI seamlessly matches main site design
 
 ### 🎨 Modern UI/UX
 - **Dark Theme**: GitHub Copilot-inspired dark color scheme
@@ -516,9 +558,37 @@ For issues and questions:
 - Check existing documentation
 - Review Laravel documentation
 
+## Future Plans
+
+### Xtream Codes API - Postponed Features 📋
+
+The Xtream Codes API implementation has been placed **on hold** until a future release (no ETA). The project is currently focused on:
+
+**Current Focus:**
+- 🎬 **TMDB-Based Content Catalog**: Enhanced browsing experience with latest movies, latest TV shows, and trending sections
+- 📺 **TV Guide Enhancement**: Robust admin UI for channel management with EPG sync capabilities  
+- 🎨 **Admin UI Improvements**: Modern left-sidebar navigation and improved visual design
+- 👤 **User Experience**: Profile images in navbar and streamlined interactions
+
+**Why the Change:**
+WatchTheFlix is pivoting to provide a superior content discovery and browsing experience using TMDB's comprehensive database. The Xtream Codes functionality remains in the codebase for future development, but the current priorities are focused on features that deliver immediate value to users looking for a modern streaming platform experience.
+
+**Future Consideration:**
+- Xtream Codes API may be reconsidered in a future release after core features are fully polished
+- The implementation remains available at [XTREAM_API.md](XTREAM_API.md) for reference
+- Community feedback will help determine if and when to revive these features
+
 ## Roadmap
 
-### Recently Completed ✅
+### Recently Completed ✅ (December 2024)
+- [x] **Redesigned Admin Panel**: Modern left-sidebar navigation with improved visual clarity
+- [x] **TV Channel Admin UI**: Full CRUD interface for managing TV channels with EPG sync
+- [x] **Enhanced TMDB Scraper**: Support for trending content scraping alongside movies and TV shows
+- [x] **Home Page Refactor**: Dedicated sections for Latest Movies, Latest TV Shows, and Trending
+- [x] **User Avatar in Navbar**: Display uploaded profile images in navigation bar
+- [x] **Xtream Codes Feature Hold**: Properly documented postponement with clear future plans
+
+### Previously Completed ✅
 - [x] **TV Guide**: Browse UK and US TV channels with program schedules
 - [x] **Platform Availability**: See which streaming services offer each title
 - [x] **TMDB API Integration**: Import rich metadata from The Movie Database
@@ -527,22 +597,17 @@ For issues and questions:
 - [x] **Forum Subscriptions**: Subscribe to threads and get in-app notifications
 - [x] **View Tracking**: Track thread views and engagement
 - [x] **Parental Controls**: PIN-protected content restrictions
-
-### High Priority Features ✅ COMPLETED
 - [x] **Email Notifications**: Send email notifications for important events
 - [x] **Two-Factor Authentication (2FA)**: Add an extra layer of account security
 - [x] **Automated EPG Updates**: Real-time TV guide data integration from external sources
 - [x] **Advanced Search**: Enhanced search with filters for genre, year, rating, platform
 - [x] **Platform-Based Filtering**: Filter media by streaming service availability
-
-### Medium Priority Features ✅ COMPLETED
 - [x] **Subtitle Support**: Multi-language subtitle parsing and display in video player
 - [x] **Multi-Language UI**: Internationalization support for the entire interface
 - [x] **Social Sharing**: Share content to social media platforms
 - [x] **Playlist Creation**: Create and manage custom playlists
 - [x] **Advanced Analytics**: Comprehensive admin dashboard with user engagement metrics
 - [x] **TMDB Bulk Import UI**: Admin interface for bulk importing content from TMDB
-- [x] **Xtream Codes API**: Complete IPTV backend with full admin UI
 
 ### Future Enhancements 🚀
 - [ ] **Watch Party**: Synchronized viewing with friends
