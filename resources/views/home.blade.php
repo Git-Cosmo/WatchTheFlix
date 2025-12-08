@@ -3,290 +3,359 @@
 @section('title', 'Home')
 
 @section('content')
-<!-- Hero Section -->
-<div class="relative min-h-[60vh] flex items-center bg-gradient-to-br from-gh-bg via-gh-bg-secondary to-dark-900">
-    <!-- Decorative background elements -->
-    <div class="absolute inset-0 overflow-hidden">
-        <div class="absolute -top-40 -right-40 w-80 h-80 bg-accent-500/10 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-accent-600/10 rounded-full blur-3xl"></div>
-    </div>
-    
-    <div class="container mx-auto px-4 py-24 relative z-10">
-        <div class="max-w-4xl mx-auto text-center">
-            <!-- Badge -->
-            <div class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gh-bg-tertiary/80 border border-gh-border/50 mb-8 backdrop-blur-sm animate-fade-in-down">
-                <span class="flex h-2 w-2 relative mr-2">
-                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-500 opacity-75"></span>
-                    <span class="relative inline-flex rounded-full h-2 w-2 bg-accent-500"></span>
-                </span>
-                <span class="text-gh-text-muted">🎬 Stream with Real-Debrid & TMDB</span>
+<div class="relative">
+    <!-- Compact Header with Stats and Quick Actions -->
+    <div class="bg-gradient-to-r from-accent-500/5 via-blue-500/5 to-purple-500/5 border-b border-gh-border">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">WatchTheFlix</h1>
+                    <p class="text-sm text-gh-text-muted">Your Ultimate Streaming Platform</p>
+                </div>
+                
+                <!-- Quick Stats (inline) -->
+                @auth
+                @if($stats)
+                <div class="hidden md:flex items-center gap-6 text-sm">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-accent-400">{{ $stats['total_media'] }}</div>
+                        <div class="text-xs text-gh-text-muted">Total</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-accent-400">{{ $stats['movies'] }}</div>
+                        <div class="text-xs text-gh-text-muted">Movies</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-accent-400">{{ $stats['series'] }}</div>
+                        <div class="text-xs text-gh-text-muted">Series</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blue-400">{{ $stats['watchlist_count'] }}</div>
+                        <div class="text-xs text-gh-text-muted">Watchlist</div>
+                    </div>
+                </div>
+                @endif
+                @endauth
+                
+                <!-- Quick Actions for Guests -->
+                @guest
+                <div class="flex items-center gap-3">
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">Get Started</a>
+                    <a href="{{ route('login') }}" class="btn btn-secondary btn-sm">Sign In</a>
+                </div>
+                @endguest
             </div>
-            
-            <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight mb-6 animate-fade-in">
-                Welcome to
-                <span class="block mt-3 bg-gradient-to-r from-accent-400 via-accent-500 to-accent-600 bg-clip-text text-transparent animate-gradient">WatchTheFlix</span>
-            </h1>
-            <p class="text-xl md:text-2xl text-gh-text-muted mb-10 max-w-3xl mx-auto leading-relaxed animate-fade-in-up">
-                Your ultimate streaming companion featuring thousands of movies and TV shows, Real-Debrid integration, live TV Guide, and platform availability tracking
-            </p>
-            
-            @guest
-            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-300">
-                <a href="{{ route('register') }}" class="btn-primary px-8 py-4 text-lg glow-accent inline-flex items-center justify-center font-semibold transform hover:scale-105 transition-all">
-                    Get Started
-                    <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </a>
-                <a href="{{ route('login') }}" class="btn-secondary px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all">Sign In</a>
-            </div>
-            @else
-            <div class="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-300">
-                <a href="{{ route('media.index') }}" class="btn-primary px-8 py-4 text-lg glow-accent inline-flex items-center justify-center font-semibold transform hover:scale-105 transition-all">
-                    Browse Content
-                    <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                    </svg>
-                </a>
-                <a href="{{ route('tv-guide.index') }}" class="btn-secondary px-8 py-4 text-lg font-semibold transform hover:scale-105 transition-all inline-flex items-center justify-center">
-                    TV Guide
-                    <svg class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                </a>
-            </div>
-            @endguest
         </div>
     </div>
-</div>
 
-<!-- Features Section -->
-@guest
-<div class="container mx-auto px-4 py-16">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <div class="card p-8 text-center hover:border-accent-500/50 transition-all group">
-            <div class="w-16 h-16 bg-accent-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent-500/20 transition-all">
-                <svg class="h-8 w-8 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                </svg>
-            </div>
-            <h3 class="text-xl font-bold mb-2">Vast Library</h3>
-            <p class="text-gh-text-muted">Access thousands of movies and TV shows with rich metadata from TMDB</p>
+    <div class="container mx-auto px-4 py-4">
+        
+        <!-- Quick Filter Tabs -->
+        <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+            <button class="px-4 py-2 rounded-lg bg-accent-500 text-white text-sm font-semibold whitespace-nowrap hover:bg-accent-600 transition-colors">
+                🏠 All
+            </button>
+            <button class="px-4 py-2 rounded-lg bg-gh-bg-light text-gh-text-muted text-sm font-semibold whitespace-nowrap hover:bg-gh-bg-lighter hover:text-white transition-colors">
+                🎬 Movies
+            </button>
+            <button class="px-4 py-2 rounded-lg bg-gh-bg-light text-gh-text-muted text-sm font-semibold whitespace-nowrap hover:bg-gh-bg-lighter hover:text-white transition-colors">
+                📺 TV Shows
+            </button>
+            <button class="px-4 py-2 rounded-lg bg-gh-bg-light text-gh-text-muted text-sm font-semibold whitespace-nowrap hover:bg-gh-bg-lighter hover:text-white transition-colors">
+                🔥 Trending
+            </button>
+            <button class="px-4 py-2 rounded-lg bg-gh-bg-light text-gh-text-muted text-sm font-semibold whitespace-nowrap hover:bg-gh-bg-lighter hover:text-white transition-colors">
+                ⭐ Featured
+            </button>
         </div>
         
-        <div class="card p-8 text-center hover:border-accent-500/50 transition-all group">
-            <div class="w-16 h-16 bg-accent-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent-500/20 transition-all">
-                <svg class="h-8 w-8 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                </svg>
+        <!-- Trending Section - Horizontal Scroll -->
+        @if($trending->count() > 0)
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <span class="text-xl">🔥</span> Trending Now
+                </h2>
+                <span class="text-xs text-gh-text-muted">{{ $trending->count() }} items</span>
             </div>
-            <h3 class="text-xl font-bold mb-2">Live TV Guide</h3>
-            <p class="text-gh-text-muted">Browse UK and US TV channels with real-time program schedules</p>
-        </div>
+            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-accent-500 scrollbar-track-gh-bg">
+                @foreach($trending as $item)
+                <a href="{{ $item->getRouteUrl() }}" class="group flex-shrink-0 block w-28 sm:w-32">
+                    <div class="relative overflow-hidden rounded-lg aspect-[2/3] border border-gh-border hover:border-accent-500 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-accent-500/50">
+                        @if($item->poster_url)
+                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @else
+                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
+                            <span class="text-xl">🔥</span>
+                        </div>
+                        @endif
+                        <!-- Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                        <!-- Rating Badge -->
+                        @if($item->imdb_rating)
+                        <div class="absolute top-1 right-1 flex items-center gap-0.5 px-1 py-0.5 bg-black/90 backdrop-blur-sm rounded text-xs">
+                            <svg class="h-2.5 w-2.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                            <span class="font-bold text-white text-xs">{{ $item->imdb_rating }}</span>
+                        </div>
+                        @endif
+                        <!-- Quick Info on Hover -->
+                        <div class="absolute bottom-0 left-0 right-0 p-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+                            <h3 class="text-xs font-bold text-white line-clamp-2 mb-0.5">{{ $item->title }}</h3>
+                            <p class="text-xs text-gray-300">{{ $item->release_year }}</p>
+                        </div>
+                        <!-- Trending Badge -->
+                        <div class="absolute top-1 left-1 px-1.5 py-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded text-xs font-bold flex items-center gap-1">
+                            🔥
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </section>
+        @endif
         
-        <div class="card p-8 text-center hover:border-accent-500/50 transition-all group">
-            <div class="w-16 h-16 bg-accent-500/10 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-accent-500/20 transition-all">
-                <svg class="h-8 w-8 text-accent-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+        <!-- Featured & Latest in Compact Grid -->
+        @if($featured->count() > 0 || $latestMovies->count() > 0)
+        <section class="mb-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <!-- Featured Content -->
+                @if($featured->count() > 0)
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="text-xl">⭐</span> Featured
+                        </h2>
+                        <a href="{{ route('media.index', ['sort' => 'rating']) }}" class="text-xs text-accent-400 hover:text-accent-300 flex items-center gap-1">
+                            View All <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                        @foreach($featured->take(8) as $item)
+                        <a href="{{ $item->getRouteUrl() }}" class="group block relative">
+                            <div class="relative overflow-hidden rounded-lg aspect-[2/3] border border-gh-border hover:border-yellow-500 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-yellow-500/50 hover:z-10">
+                                @if($item->poster_url)
+                                <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                @else
+                                <div class="w-full h-full bg-gh-bg flex items-center justify-center">
+                                    <span class="text-xl">⭐</span>
+                                </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                                @if($item->imdb_rating)
+                                <div class="absolute top-1 right-1 px-1 py-0.5 bg-black/90 rounded text-xs font-bold text-yellow-400">
+                                    {{ $item->imdb_rating }}
+                                </div>
+                                @endif
+                                <div class="absolute bottom-0 left-0 right-0 p-1.5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+                                    <h3 class="text-xs font-bold text-white line-clamp-2">{{ $item->title }}</h3>
+                                </div>
+                                <!-- Play Button on Hover -->
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <div class="w-10 h-10 rounded-full bg-accent-500/90 flex items-center justify-center">
+                                        <svg class="h-5 w-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
+                <!-- Latest Movies -->
+                @if($latestMovies->count() > 0)
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <span class="text-xl">🎬</span> Latest Movies
+                        </h2>
+                        <a href="{{ route('media.index', ['type' => 'movie', 'sort' => 'latest']) }}" class="text-xs text-accent-400 hover:text-accent-300 flex items-center gap-1">
+                            View All <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </a>
+                    </div>
+                    <div class="grid grid-cols-4 sm:grid-cols-5 gap-2">
+                        @foreach($latestMovies->take(8) as $item)
+                        <a href="{{ $item->getRouteUrl() }}" class="group block relative">
+                            <div class="relative overflow-hidden rounded-lg aspect-[2/3] border border-gh-border hover:border-accent-500 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-accent-500/50 hover:z-10">
+                                @if($item->poster_url)
+                                <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                                @else
+                                <div class="w-full h-full bg-gh-bg flex items-center justify-center">
+                                    <span class="text-xl">🎬</span>
+                                </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                                @if($item->imdb_rating)
+                                <div class="absolute top-1 right-1 px-1 py-0.5 bg-black/90 rounded text-xs font-bold text-yellow-400">
+                                    {{ $item->imdb_rating }}
+                                </div>
+                                @endif
+                                <div class="absolute top-1 left-1 px-1.5 py-0.5 bg-accent-500 rounded text-xs font-bold">NEW</div>
+                                <div class="absolute bottom-0 left-0 right-0 p-1.5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+                                    <h3 class="text-xs font-bold text-white line-clamp-2">{{ $item->title }}</h3>
+                                </div>
+                                <!-- Play Button on Hover -->
+                                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                    <div class="w-10 h-10 rounded-full bg-accent-500/90 flex items-center justify-center">
+                                        <svg class="h-5 w-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
             </div>
-            <h3 class="text-xl font-bold mb-2">Real-Debrid</h3>
-            <p class="text-gh-text-muted">Premium streaming with Real-Debrid integration for enhanced access</p>
+        </section>
+        @endif
+
+        <!-- Latest TV Shows - Compact Grid -->
+        @if($latestTvShows->count() > 0)
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <span class="text-xl">📺</span> Latest TV Shows
+                </h2>
+                <a href="{{ route('media.index', ['type' => 'series', 'sort' => 'latest']) }}" class="text-xs text-accent-400 hover:text-accent-300 flex items-center gap-1">
+                    View All <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
+                @foreach($latestTvShows->take(10) as $item)
+                <a href="{{ $item->getRouteUrl() }}" class="group block relative">
+                    <div class="relative overflow-hidden rounded-lg aspect-[2/3] border border-gh-border hover:border-blue-500 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-blue-500/50 hover:z-10">
+                        @if($item->poster_url)
+                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @else
+                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
+                            <span class="text-xl">📺</span>
+                        </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                        @if($item->imdb_rating)
+                        <div class="absolute top-1 right-1 px-1 py-0.5 bg-black/90 rounded text-xs font-bold text-yellow-400">
+                            {{ $item->imdb_rating }}
+                        </div>
+                        @endif
+                        <div class="absolute top-1 left-1 px-1.5 py-0.5 bg-blue-500 rounded text-xs font-bold">NEW</div>
+                        <div class="absolute bottom-0 left-0 right-0 p-1.5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+                            <h3 class="text-xs font-bold text-white line-clamp-2">{{ $item->title }}</h3>
+                        </div>
+                        <!-- Play Button on Hover -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <div class="w-10 h-10 rounded-full bg-blue-500/90 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        <!-- More Movies - Compact Grid -->
+        @if($latestMovies->count() > 8)
+        <section class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-xl font-bold text-white">More Movies to Explore</h2>
+                <a href="{{ route('media.index', ['type' => 'movie']) }}" class="text-xs text-accent-400 hover:text-accent-300 flex items-center gap-1">
+                    Browse All <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+            <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 gap-2">
+                @foreach($latestMovies->slice(8)->take(10) as $item)
+                <a href="{{ $item->getRouteUrl() }}" class="group block relative">
+                    <div class="relative overflow-hidden rounded-lg aspect-[2/3] border border-gh-border hover:border-accent-500 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-accent-500/50 hover:z-10">
+                        @if($item->poster_url)
+                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
+                        @else
+                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
+                            <span class="text-xl">🎬</span>
+                        </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                        @if($item->imdb_rating)
+                        <div class="absolute top-1 right-1 px-1 py-0.5 bg-black/90 rounded text-xs font-bold text-yellow-400">
+                            {{ $item->imdb_rating }}
+                        </div>
+                        @endif
+                        <div class="absolute bottom-0 left-0 right-0 p-1.5 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
+                            <h3 class="text-xs font-bold text-white line-clamp-2">{{ $item->title }}</h3>
+                        </div>
+                        <!-- Play Button on Hover -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                            <div class="w-10 h-10 rounded-full bg-accent-500/90 flex items-center justify-center">
+                                <svg class="h-5 w-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
+        <!-- Bottom CTA for Guests - Sleek Banner -->
+        @guest
+        <section class="mb-6">
+            <div class="relative overflow-hidden rounded-xl border border-accent-500/30 bg-gradient-to-br from-accent-500/10 via-blue-500/10 to-purple-500/10 p-6 md:p-8">
+                <div class="absolute inset-0 opacity-5">
+                    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9nPjwvc3ZnPg==')]"></div>
+                </div>
+                <div class="relative text-center">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2 text-white">Love What You See?</h2>
+                    <p class="text-sm text-gh-text-muted mb-4 max-w-xl mx-auto">
+                        Join thousands streaming unlimited movies, TV shows & live channels. Free to start!
+                    </p>
+                    <div class="flex gap-2 justify-center flex-wrap">
+                        <a href="{{ route('register') }}" class="btn btn-primary px-6 py-2.5 inline-flex items-center">
+                            🚀 Get Started Free
+                        </a>
+                        <a href="{{ route('login') }}" class="btn btn-secondary px-6 py-2.5">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        @endguest
+
+        <!-- Feature Highlights - Compact Cards -->
+        <section class="mb-6">
+            <div class="grid grid-cols-3 gap-2 md:gap-3">
+                <a href="{{ route('media.index') }}" class="card p-3 md:p-4 hover:border-accent-500/50 transition-all group text-center">
+                    <div class="text-2xl md:text-3xl mb-1 md:mb-2 group-hover:scale-110 transition-transform">🎬</div>
+                    <h3 class="font-bold text-white text-xs md:text-sm mb-0.5 group-hover:text-accent-400">Browse Library</h3>
+                    <p class="text-xs text-gh-text-muted hidden md:block">Thousands of titles</p>
+                </a>
+                <a href="{{ route('tv-guide.index') }}" class="card p-3 md:p-4 hover:border-accent-500/50 transition-all group text-center">
+                    <div class="text-2xl md:text-3xl mb-1 md:mb-2 group-hover:scale-110 transition-transform">📺</div>
+                    <h3 class="font-bold text-white text-xs md:text-sm mb-0.5 group-hover:text-accent-400">TV Guide</h3>
+                    <p class="text-xs text-gh-text-muted hidden md:block">Live schedules</p>
+                </a>
+                <a href="{{ route('forum.index') }}" class="card p-3 md:p-4 hover:border-accent-500/50 transition-all group text-center">
+                    <div class="text-2xl md:text-3xl mb-1 md:mb-2 group-hover:scale-110 transition-transform">💬</div>
+                    <h3 class="font-bold text-white text-xs md:text-sm mb-0.5 group-hover:text-accent-400">Community</h3>
+                    <p class="text-xs text-gh-text-muted hidden md:block">Join discussions</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Pro Tip for Users -->
+        <div class="text-center text-xs text-gh-text-muted mb-4">
+            💡 <span class="font-semibold">Pro tip:</span> Hover over any poster to see quick actions and info
         </div>
+
     </div>
-</div>
-@endguest
-
-<div class="container mx-auto px-4 py-8">
-
-    @auth
-    <!-- Quick Stats -->
-    @if($stats)
-    <div class="mb-12">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="card p-6 text-center hover:border-accent-500/50 transition-all">
-                <div class="text-3xl font-bold text-accent-400 mb-2">{{ $stats['total_media'] }}</div>
-                <div class="text-sm text-gh-text-muted">Total Content</div>
-            </div>
-            <div class="card p-6 text-center hover:border-accent-500/50 transition-all">
-                <div class="text-3xl font-bold text-accent-400 mb-2">{{ $stats['movies'] }}</div>
-                <div class="text-sm text-gh-text-muted">Movies</div>
-            </div>
-            <div class="card p-6 text-center hover:border-accent-500/50 transition-all">
-                <div class="text-3xl font-bold text-accent-400 mb-2">{{ $stats['series'] }}</div>
-                <div class="text-sm text-gh-text-muted">TV Series</div>
-            </div>
-            <div class="card p-6 text-center hover:border-accent-500/50 transition-all">
-                <div class="text-3xl font-bold text-accent-400 mb-2">{{ $stats['watchlist_count'] }}</div>
-                <div class="text-sm text-gh-text-muted">My Watchlist</div>
-            </div>
-        </div>
-    </div>
-    @endif
-
-    <!-- Latest Movies -->
-    @if($latestMovies->count() > 0)
-    <section class="mb-16">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold text-white">Latest Movies</h2>
-            <a href="{{ route('media.index', ['type' => 'movie', 'sort' => 'latest']) }}" class="text-accent-400 hover:text-accent-300 text-sm font-medium transition-colors">
-                View All →
-            </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @foreach($latestMovies as $item)
-            <a href="{{ $item->getRouteUrl() }}" class="group">
-                <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10">
-                    <div class="relative overflow-hidden aspect-[2/3]">
-                        @if($item->poster_url)
-                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        @else
-                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
-                            <span class="text-gh-text-muted text-4xl">🎬</span>
-                        </div>
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        @if($item->imdb_rating)
-                        <div class="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-black/70 backdrop-blur-sm rounded-md">
-                            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <span class="text-sm font-semibold text-white">{{ $item->imdb_rating }}</span>
-                        </div>
-                        @endif
-                        <!-- NEW badge -->
-                        <div class="absolute top-3 left-3 px-2 py-1 bg-accent-500 rounded-md">
-                            <span class="text-xs font-bold text-white">NEW</span>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-base font-semibold mb-1 text-white group-hover:text-accent-400 transition-colors line-clamp-1">{{ $item->title }}</h3>
-                        <p class="text-sm text-gh-text-muted">{{ $item->release_year }} • {{ ucfirst($item->type) }}</p>
-                    </div>
-                </div>
-            </a>
-            @endforeach
-        </div>
-    </section>
-    @endif
-
-    <!-- Latest TV Shows -->
-    @if($latestTvShows->count() > 0)
-    <section class="mb-16">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold text-white">Latest TV Shows</h2>
-            <a href="{{ route('media.index', ['type' => 'series', 'sort' => 'latest']) }}" class="text-accent-400 hover:text-accent-300 text-sm font-medium transition-colors">
-                View All →
-            </a>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @foreach($latestTvShows as $item)
-            <a href="{{ $item->getRouteUrl() }}" class="group">
-                <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10">
-                    <div class="relative overflow-hidden aspect-[2/3]">
-                        @if($item->poster_url)
-                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        @else
-                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
-                            <span class="text-gh-text-muted text-4xl">📺</span>
-                        </div>
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        @if($item->imdb_rating)
-                        <div class="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-black/70 backdrop-blur-sm rounded-md">
-                            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <span class="text-sm font-semibold text-white">{{ $item->imdb_rating }}</span>
-                        </div>
-                        @endif
-                        <!-- NEW badge -->
-                        <div class="absolute top-3 left-3 px-2 py-1 bg-blue-500 rounded-md">
-                            <span class="text-xs font-bold text-white">NEW</span>
-                        </div>
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-base font-semibold mb-1 text-white group-hover:text-accent-400 transition-colors line-clamp-1">{{ $item->title }}</h3>
-                        <p class="text-sm text-gh-text-muted">{{ $item->release_year }} • TV Series</p>
-                    </div>
-                </div>
-            </a>
-            @endforeach
-        </div>
-    </section>
-    @endif
-
-    <!-- Featured Content -->
-    @if($featured->count() > 0)
-    <section class="mb-16">
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold text-white">Featured</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            @foreach($featured as $item)
-            <a href="{{ $item->getRouteUrl() }}" class="group">
-                <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300 hover:shadow-xl hover:shadow-accent-500/10">
-                    <div class="relative overflow-hidden aspect-[2/3]">
-                        @if($item->poster_url)
-                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        @else
-                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
-                            <span class="text-gh-text-muted text-4xl">🎬</span>
-                        </div>
-                        @endif
-                        <!-- Gradient overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <!-- Rating badge -->
-                        @if($item->imdb_rating)
-                        <div class="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-black/70 backdrop-blur-sm rounded-md">
-                            <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                            <span class="text-sm font-semibold text-white">{{ $item->imdb_rating }}</span>
-                        </div>
-                        @endif
-                    </div>
-                    <div class="p-4">
-                        <h3 class="text-base font-semibold mb-1 text-white group-hover:text-accent-400 transition-colors line-clamp-1">{{ $item->title }}</h3>
-                        <p class="text-sm text-gh-text-muted">{{ $item->release_year }} • {{ ucfirst($item->type) }}</p>
-                    </div>
-                </div>
-            </a>
-            @endforeach
-        </div>
-    </section>
-    @endif
-
-    <!-- Trending -->
-    @if($trending->count() > 0)
-    <section>
-        <div class="flex items-center justify-between mb-8">
-            <h2 class="text-3xl font-bold text-white">Trending Now</h2>
-        </div>
-        <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
-            @foreach($trending as $item)
-            <a href="{{ $item->getRouteUrl() }}" class="group">
-                <div class="card overflow-hidden hover:border-accent-500/50 transition-all duration-300">
-                    <div class="relative overflow-hidden aspect-[2/3]">
-                        @if($item->poster_url)
-                        <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-                        @else
-                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
-                            <span class="text-gh-text-muted text-2xl">🎬</span>
-                        </div>
-                        @endif
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </div>
-                    <div class="p-3">
-                        <h3 class="text-sm font-semibold truncate text-white group-hover:text-accent-400 transition-colors">{{ $item->title }}</h3>
-                        <p class="text-xs text-gh-text-muted mt-0.5">{{ $item->release_year }}</p>
-                    </div>
-                </div>
-            </a>
-            @endforeach
-        </div>
-    </section>
-    @endif
-    @endauth
 </div>
 @endsection
