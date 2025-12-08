@@ -86,7 +86,6 @@
                             </svg>
                         </div>
                     </form>
-                    @endauth
 
                     @guest
                     <a href="{{ route('login') }}" class="btn-secondary">Login</a>
