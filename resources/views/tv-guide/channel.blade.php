@@ -74,19 +74,10 @@
                                 ⚠️ {{ $currentProgram->rating }}
                             </span>
                         @endif
-                        @php
-                            $progress = 0;
-                            $now = now();
-                            $total = $currentProgram->end_time->diffInMinutes($currentProgram->start_time);
-                            $elapsed = $now->diffInMinutes($currentProgram->start_time);
-                            if ($total > 0) {
-                                $progress = min(100, ($elapsed / $total) * 100);
-                            }
-                        @endphp
                         <div class="flex-1 min-w-[200px]">
                             <div class="flex items-center justify-between mb-1">
                                 <span class="text-xs text-gh-text-muted">Progress</span>
-                                <span class="text-xs text-gh-text-muted">{{ round($progress) }}%</span>
+                                <span class="text-xs text-gh-text-muted">{{ $progress }}%</span>
                             </div>
                             <div class="w-full h-2 bg-gh-bg-tertiary rounded-full overflow-hidden">
                                 <div class="h-full bg-red-500 rounded-full transition-all duration-500" style="width: {{ $progress }}%"></div>

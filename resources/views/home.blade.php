@@ -58,7 +58,7 @@
                     <span class="text-sm text-gray-300">{{ $hero->runtime }} min</span>
                     <span class="text-gray-600">•</span>
                     @endif
-                    @if($hero->genres && count($hero->genres) > 0)
+                    @if($hero->genres && is_array($hero->genres) && count($hero->genres) > 0)
                     <div class="flex gap-2">
                         @foreach(array_slice($hero->genres, 0, 3) as $genre)
                         <span class="text-xs px-2 py-1 bg-white/10 backdrop-blur rounded-full text-gray-300">{{ $genre }}</span>
