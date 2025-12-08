@@ -4,6 +4,8 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 > **📋 Documentation Accuracy**: This README clearly distinguishes between **implemented features** (✅ working now) and **planned features** (📋 roadmap). See the [Current Limitations](#current-limitations) and [Roadmap](#roadmap) sections for complete transparency.
 
+> **📊 Repository Audit**: For a comprehensive analysis of implementation status, see [AUDIT.md](AUDIT.md), [GAP_ANALYSIS.md](GAP_ANALYSIS.md), and [ROADMAP.md](ROADMAP.md).
+
 ## Quick Start
 
 **What you get out of the box:**
@@ -78,8 +80,10 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Channel Information**: Access channel numbers, descriptions, and logos
 - **Search Functionality**: Find specific programs across all channels
 - **Country Filtering**: Filter programs by country (UK/US)
-- **Manual Data Seeding**: TV Guide data is seeded via database seeders
-  - *Note: Automated EPG (Electronic Program Guide) updates are planned (see [Roadmap](#roadmap))*
+- **Automated EPG Updates**: Scheduled XMLTV data fetching (daily at 3:00 AM)
+  - Configure via `EPG_PROVIDER_URL` in `.env`
+  - Manual updates: `php artisan epg:update`
+  - See [EPG_SETUP.md](EPG_SETUP.md) for detailed configuration
 
 ### 🎯 Platform Availability
 - **Streaming Services**: Track where content is available (Netflix, Prime, Hulu, etc.)
@@ -143,7 +147,7 @@ WatchTheFlix is production-ready with the following infrastructure:
 
 ### Implemented Features ✅
 - ✅ **In-App & Email Notifications**: Fully functional with bell icon and email support
-- ✅ **Automated EPG Updates**: Scheduled XMLTV data fetching from external EPG providers
+- ✅ **Automated EPG Updates**: Scheduled XMLTV data fetching from external EPG providers (see [EPG_SETUP.md](EPG_SETUP.md))
 - ✅ **Multi-Language UI**: Full internationalization with 5 languages (English, Spanish, French, German, Italian)
 - ✅ **Subtitle Support**: Multi-language subtitle upload and management (SRT/VTT formats)
 - ✅ **Two-Factor Authentication**: Google Authenticator integration with recovery codes
