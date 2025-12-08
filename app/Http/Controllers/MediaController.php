@@ -13,18 +13,41 @@ class MediaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Media::published();
+        $query = Media::published()->with('platforms');
 
+        // Search filter
         if ($request->filled('search')) {
             $query->where('title', 'like', '%'.$request->search.'%');
         }
 
+        // Type filter
         if ($request->filled('type')) {
             $query->byType($request->type);
         }
 
+        // Genre filter
         if ($request->filled('genre')) {
             $query->whereJsonContains('genres', $request->genre);
+        }
+
+        // Year range filter
+        if ($request->filled('year_from')) {
+            $query->where('release_year', '>=', $request->year_from);
+        }
+        if ($request->filled('year_to')) {
+            $query->where('release_year', '<=', $request->year_to);
+        }
+
+        // Rating filter (minimum IMDb rating)
+        if ($request->filled('min_rating')) {
+            $query->where('imdb_rating', '>=', $request->min_rating);
+        }
+
+        // Platform filter
+        if ($request->filled('platform')) {
+            $query->whereHas('platforms', function ($q) use ($request) {
+                $q->where('platforms.id', $request->platform);
+            });
         }
 
         // Add sorting
@@ -57,7 +80,16 @@ class MediaController extends Controller
             ->sort()
             ->values();
 
-        return view('media.index', compact('media', 'allGenres'));
+        // Get available platforms for filter
+        $platforms = \App\Models\Platform::active()->ordered()->get();
+
+        // Get year range
+        $yearRange = [
+            'min' => Media::published()->min('release_year') ?? 1900,
+            'max' => Media::published()->max('release_year') ?? date('Y'),
+        ];
+
+        return view('media.index', compact('media', 'allGenres', 'platforms', 'yearRange'));
     }
 
     public function show(Media $media)

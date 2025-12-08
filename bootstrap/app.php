@@ -26,6 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // Add security headers for all requests
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
+        
+        // Add locale middleware for internationalization
+        $middleware->append(\App\Http\Middleware\SetLocale::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -71,6 +71,67 @@
             </form>
         </div>
 
+        <!-- Two-Factor Authentication -->
+        <div class="card p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Two-Factor Authentication (2FA)</h2>
+            <p class="text-dark-300 mb-4">Add an extra layer of security to your account with two-factor authentication.</p>
+
+            @if(session('recovery_codes'))
+            <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-4">
+                <h3 class="text-yellow-500 font-semibold mb-2">⚠️ Save Your Recovery Codes</h3>
+                <p class="text-dark-300 mb-3 text-sm">Store these recovery codes in a safe place. You can use them to access your account if you lose your 2FA device.</p>
+                <div class="bg-dark-900 p-4 rounded font-mono text-sm grid grid-cols-2 gap-2">
+                    @foreach(session('recovery_codes') as $code)
+                    <div>{{ $code }}</div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            @if($user->two_factor_enabled)
+            <div class="flex items-center gap-3 mb-4">
+                <span class="flex items-center gap-2 text-green-500">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-medium">Enabled</span>
+                </span>
+                <span class="text-dark-400 text-sm">Two-factor authentication is active on your account</span>
+            </div>
+
+            <div class="flex gap-3">
+                <a href="{{ route('two-factor.recovery-codes') }}" class="btn-secondary">
+                    View Recovery Codes
+                </a>
+                <form method="POST" action="{{ route('two-factor.disable') }}" class="inline">
+                    @csrf
+                    <input type="password" name="password" placeholder="Enter password to disable" 
+                           class="input-field" required>
+                    <button type="submit" class="btn-secondary ml-2">
+                        Disable 2FA
+                    </button>
+                </form>
+            </div>
+            @else
+            <div class="flex items-center gap-3 mb-4">
+                <span class="flex items-center gap-2 text-dark-400">
+                    <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="font-medium">Disabled</span>
+                </span>
+                <span class="text-dark-400 text-sm">Two-factor authentication is not enabled</span>
+            </div>
+
+            <form method="POST" action="{{ route('two-factor.enable') }}">
+                @csrf
+                <button type="submit" class="btn-primary">
+                    Enable 2FA
+                </button>
+            </form>
+            @endif
+        </div>
+
         <!-- Change Password -->
         <div class="card p-6">
             <h2 class="text-xl font-semibold mb-4">Change Password</h2>

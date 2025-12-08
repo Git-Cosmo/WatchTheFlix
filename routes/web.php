@@ -15,7 +15,11 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TvGuideController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\LanguageController;
 use Illuminate\Support\Facades\Route;
+
+// Language Switcher
+Route::get('/language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -37,6 +41,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/settings', [ProfileController::class, 'settings'])->name('profile.settings');
     Route::put('/profile/settings', [ProfileController::class, 'updateSettings'])->name('profile.settings.update');
 
+    // Two-Factor Authentication
+    Route::prefix('two-factor')->name('two-factor.')->group(function () {
+        Route::post('/enable', [\App\Http\Controllers\TwoFactorAuthController::class, 'enable'])->name('enable');
+        Route::post('/confirm', [\App\Http\Controllers\TwoFactorAuthController::class, 'confirm'])->name('confirm');
+        Route::post('/disable', [\App\Http\Controllers\TwoFactorAuthController::class, 'disable'])->name('disable');
+        Route::get('/recovery-codes', [\App\Http\Controllers\TwoFactorAuthController::class, 'showRecoveryCodes'])->name('recovery-codes');
+        Route::post('/recovery-codes/regenerate', [\App\Http\Controllers\TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('recovery-codes.regenerate');
+    });
+
     // Media
     Route::get('/media', [MediaController::class, 'index'])->name('media.index');
     Route::get('/media/{media}', [MediaController::class, 'show'])->name('media.show');
@@ -49,6 +62,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/watchlist/{media}', [WatchlistController::class, 'add'])->name('watchlist.add');
     Route::delete('/watchlist/{media}', [WatchlistController::class, 'remove'])->name('watchlist.remove');
+
+    // Playlists
+    Route::resource('playlists', \App\Http\Controllers\PlaylistController::class);
+    Route::post('/playlists/{playlist}/add-media', [\App\Http\Controllers\PlaylistController::class, 'addMedia'])->name('playlists.add-media');
+    Route::delete('/playlists/{playlist}/remove-media/{media}', [\App\Http\Controllers\PlaylistController::class, 'removeMedia'])->name('playlists.remove-media');
+    Route::post('/playlists/{playlist}/reorder', [\App\Http\Controllers\PlaylistController::class, 'reorder'])->name('playlists.reorder');
 
     // Forum
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
@@ -79,6 +98,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Media Management
     Route::resource('media', MediaManagementController::class)->parameters(['media' => 'media']);
+    
+    // Subtitle Management
+    Route::get('/media/{media}/subtitles', [\App\Http\Controllers\Admin\SubtitleController::class, 'index'])->name('media.subtitles');
+    Route::post('/media/{media}/subtitles', [\App\Http\Controllers\Admin\SubtitleController::class, 'store'])->name('media.subtitles.store');
+    Route::delete('/media/{media}/subtitles/{language}', [\App\Http\Controllers\Admin\SubtitleController::class, 'destroy'])->name('media.subtitles.destroy');
 
     // User Management
     Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
@@ -103,5 +127,29 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/{category}/edit', [ForumManagementController::class, 'edit'])->name('admin.edit');
         Route::put('/{category}', [ForumManagementController::class, 'update'])->name('admin.update');
         Route::delete('/{category}', [ForumManagementController::class, 'destroy'])->name('admin.destroy');
+    });
+
+    // TMDB Import
+    Route::prefix('tmdb-import')->name('tmdb-import.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TmdbImportController::class, 'index'])->name('index');
+        Route::post('/search', [\App\Http\Controllers\Admin\TmdbImportController::class, 'search'])->name('search');
+        Route::post('/import', [\App\Http\Controllers\Admin\TmdbImportController::class, 'import'])->name('import');
+        Route::post('/bulk-import', [\App\Http\Controllers\Admin\TmdbImportController::class, 'bulkImport'])->name('bulk-import');
+    });
+
+    // Xtream Codes Management
+    Route::prefix('xtream')->name('xtream.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'index'])->name('index');
+        Route::get('/configuration', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'apiConfiguration'])->name('configuration');
+        Route::get('/users', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'users'])->name('users');
+        Route::get('/streams', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'streams'])->name('streams');
+        Route::get('/statistics', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'statistics'])->name('statistics');
+        Route::get('/documentation', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'documentation'])->name('documentation');
+        
+        Route::post('/users/{user}/generate-token', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'generateToken'])->name('generate-token');
+        Route::delete('/users/{user}/revoke-token', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'revokeToken'])->name('revoke-token');
+        Route::post('/test-endpoint', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'testEndpoint'])->name('test-endpoint');
+        Route::get('/export-epg', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'exportEpg'])->name('export-epg');
+        Route::get('/export-m3u/{user}', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'exportM3u'])->name('export-m3u');
     });
 });
