@@ -25,6 +25,22 @@ class SecurityHeaders
             $response->headers->set('Referrer-Policy', 'no-referrer-when-downgrade');
             $response->headers->set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
+            // Content Security Policy
+            $csp = [
+                "default-src 'self'",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // 'unsafe-inline' for Blade, 'unsafe-eval' for Vue/React if used
+                "style-src 'self' 'unsafe-inline'",
+                "img-src 'self' data: https:",
+                "font-src 'self' data:",
+                "connect-src 'self'",
+                "media-src 'self' blob:",
+                "object-src 'none'",
+                "frame-ancestors 'self'",
+                "base-uri 'self'",
+                "form-action 'self'",
+            ];
+            $response->headers->set('Content-Security-Policy', implode('; ', $csp));
+
             // Strict-Transport-Security (only if using HTTPS)
             if ($request->secure()) {
                 $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');

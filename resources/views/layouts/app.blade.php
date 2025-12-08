@@ -230,5 +230,8 @@
             </div>
         </div>
     </footer>
+
+    <!-- Toast Notifications -->
+    <x-toast />
 </body>
 </html>

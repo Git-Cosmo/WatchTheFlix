@@ -11,7 +11,7 @@
         <div class="card overflow-hidden">
             <a href="{{ route('media.show', $item) }}">
                 @if($item->poster_url)
-                <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-64 object-cover">
+                <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-64 object-cover lazy" loading="lazy">
                 @else
                 <div class="w-full h-64 bg-dark-800 flex items-center justify-center">
                     <span class="text-dark-500 text-4xl">🎬</span>
@@ -29,10 +29,14 @@
             </div>
         </div>
         @empty
-        <div class="col-span-full text-center py-12">
-            <p class="text-dark-400">Your watchlist is empty.</p>
-            <a href="{{ route('media.index') }}" class="btn-primary mt-4 inline-block">Browse Content</a>
-        </div>
+        <x-empty-state 
+            icon="📺" 
+            title="Your watchlist is empty" 
+            message="Start adding movies and TV shows to keep track of what you want to watch."
+            action-text="Browse Content"
+            action-url="{{ route('media.index') }}"
+            class="col-span-full"
+        />
         @endforelse
     </div>
 

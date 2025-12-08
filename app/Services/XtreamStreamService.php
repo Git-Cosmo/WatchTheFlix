@@ -13,11 +13,18 @@ use Illuminate\Support\Str;
  * Xtream Stream URL Service
  * 
  * Handles stream URL generation, validation, and access control
+ * Now enhanced with StreamTokenService for IP-bound secure tokens
  */
 class XtreamStreamService
 {
+    protected StreamTokenService $tokenService;
+
+    public function __construct(StreamTokenService $tokenService)
+    {
+        $this->tokenService = $tokenService;
+    }
     /**
-     * Generate authenticated stream URL for live TV
+     * Generate authenticated stream URL for live TV - Now with enhanced token security
      */
     public function generateLiveStreamUrl(User $user, int $channelId, string $format = 'm3u8'): ?string
     {
@@ -32,7 +39,9 @@ class XtreamStreamService
             return null;
         }
 
-        $token = $this->generateStreamToken($user, 'live', $channelId);
+        // Generate secure IP-bound token
+        $ipAddress = request()->ip();
+        $token = $this->tokenService->generateToken($user, 'live', $channelId, $ipAddress);
         
         return route('api.xtream.live.stream', [
             'user' => $user->email,
@@ -43,7 +52,7 @@ class XtreamStreamService
     }
 
     /**
-     * Generate authenticated stream URL for VOD
+     * Generate authenticated stream URL for VOD - Now with enhanced token security
      */
     public function generateVodStreamUrl(User $user, int $mediaId, string $format = 'mp4'): ?string
     {
@@ -58,7 +67,9 @@ class XtreamStreamService
             return null;
         }
 
-        $token = $this->generateStreamToken($user, 'vod', $mediaId);
+        // Generate secure IP-bound token
+        $ipAddress = request()->ip();
+        $token = $this->tokenService->generateToken($user, 'vod', $mediaId, $ipAddress);
         
         return route('api.xtream.vod.stream', [
             'user' => $user->email,
@@ -69,7 +80,7 @@ class XtreamStreamService
     }
 
     /**
-     * Generate timeshift/catch-up stream URL
+     * Generate timeshift/catch-up stream URL - Now with enhanced token security
      */
     public function generateTimeshiftUrl(User $user, int $channelId, int $duration, string $start): ?string
     {
@@ -79,7 +90,9 @@ class XtreamStreamService
             return null;
         }
 
-        $token = $this->generateStreamToken($user, 'timeshift', $channelId);
+        // Generate secure IP-bound token
+        $ipAddress = request()->ip();
+        $token = $this->tokenService->generateToken($user, 'timeshift', $channelId, $ipAddress);
         
         return route('api.xtream.timeshift', [
             'user' => $user->email,
@@ -91,34 +104,12 @@ class XtreamStreamService
     }
 
     /**
-     * Validate stream token
+     * Validate stream token - Now using enhanced token service
      */
     public function validateStreamToken(string $username, string $token, string $type, int $streamId): bool
     {
-        $user = User::where('email', $username)->first();
-        
-        if (!$user) {
-            return false;
-        }
-
-        $cacheKey = "stream_token:{$user->id}:{$type}:{$streamId}";
-        $cachedToken = Cache::get($cacheKey);
-        
-        return $cachedToken === $token;
-    }
-
-    /**
-     * Generate stream access token
-     */
-    protected function generateStreamToken(User $user, string $type, int $streamId): string
-    {
-        $token = Str::random(32);
-        $lifetime = config('xtream.stream_token_lifetime', 86400); // 24 hours
-        
-        $cacheKey = "stream_token:{$user->id}:{$type}:{$streamId}";
-        Cache::put($cacheKey, $token, $lifetime);
-        
-        return $token;
+        $ipAddress = request()->ip();
+        return $this->tokenService->validateToken($token, $type, $streamId, $ipAddress);
     }
 
     /**
