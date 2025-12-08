@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'WatchTheFlix') }} - @yield('title', 'Home')</title>
+    @hasSection('seo')
+        @yield('seo')
+    @else
+        <title>{{ config('app.name', 'WatchTheFlix') }} - @yield('title', 'Home')</title>
+        <meta name="description" content="Stream your favorite movies and TV shows">
+        <link rel="canonical" href="{{ url()->current() }}">
+    @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>

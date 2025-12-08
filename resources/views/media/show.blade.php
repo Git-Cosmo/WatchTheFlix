@@ -2,6 +2,19 @@
 
 @section('title', $media->title)
 
+@section('seo')
+<x-seo-meta 
+    :title="$media->title"
+    :description="$media->meta_description ?? $media->description"
+    :keywords="$media->meta_keywords"
+    :canonicalUrl="$media->canonical_url ?? route('media.show', $media)"
+    :imageUrl="$media->poster_url"
+    :ogTags="$media->og_tags"
+    :twitterTags="$media->twitter_tags"
+    :type="$media->type === 'movie' ? 'video.movie' : 'video.tv_show'"
+/>
+@endsection
+
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <!-- Video Player -->

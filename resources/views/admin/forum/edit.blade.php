@@ -7,7 +7,7 @@
     <div class="max-w-3xl mx-auto">
         <h1 class="text-3xl font-bold mb-8">Edit Forum Category</h1>
 
-        <form method="POST" action="{{ route('forum.admin.update', $category) }}" class="card p-6 space-y-6">
+        <form method="POST" action="{{ route('admin.forum.admin.update', $category) }}" class="card p-6 space-y-6">
             @csrf
             @method('PUT')
 
@@ -46,7 +46,7 @@
 
             <div class="flex space-x-4">
                 <button type="submit" class="btn-primary">Update Category</button>
-                <a href="{{ route('forum.admin.index') }}" class="btn-secondary">Cancel</a>
+                <a href="{{ route('admin.forum.admin.index') }}" class="btn-secondary">Cancel</a>
             </div>
         </form>
     </div>

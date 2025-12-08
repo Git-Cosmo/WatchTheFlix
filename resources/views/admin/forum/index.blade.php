@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold">Manage Forum Categories</h1>
-        <a href="{{ route('forum.admin.create') }}" class="btn-primary">Add New Category</a>
+        <a href="{{ route('admin.forum.admin.create') }}" class="btn-primary">Add New Category</a>
     </div>
 
     <div class="card">
@@ -38,8 +38,8 @@
                     </td>
                     <td class="p-4 text-right space-x-2">
                         <a href="{{ route('forum.category', $category) }}" class="text-accent-500 hover:text-accent-400" target="_blank">View</a>
-                        <a href="{{ route('forum.admin.edit', $category) }}" class="text-accent-500 hover:text-accent-400">Edit</a>
-                        <form method="POST" action="{{ route('forum.admin.destroy', $category) }}" class="inline">
+                        <a href="{{ route('admin.forum.admin.edit', $category) }}" class="text-accent-500 hover:text-accent-400">Edit</a>
+                        <form method="POST" action="{{ route('admin.forum.admin.destroy', $category) }}" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="text-red-500 hover:text-red-400" onclick="return confirm('Are you sure? This will delete all threads in this category.')">
