@@ -156,9 +156,13 @@
                     <!-- User Menu -->
                     <div class="relative">
                         <button onclick="toggleDropdown('user-menu')" class="flex items-center space-x-2 text-dark-300 hover:text-dark-100">
-                            <div class="w-8 h-8 rounded-full bg-accent-500 flex items-center justify-center">
-                                <span class="text-sm font-medium">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                            @if(auth()->user()->avatar)
+                            <img src="{{ Storage::url(auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}" class="w-8 h-8 rounded-full object-cover border-2 border-accent-500">
+                            @else
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-sm font-medium text-white">
+                                {{ substr(auth()->user()->name, 0, 1) }}
                             </div>
+                            @endif
                             <span>{{ auth()->user()->name }}</span>
                         </button>
                         

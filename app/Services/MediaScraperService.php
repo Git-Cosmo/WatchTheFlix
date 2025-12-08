@@ -103,6 +103,57 @@ class MediaScraperService
     }
 
     /**
+     * Scrape trending content (both movies and TV shows) and update database
+     */
+    public function scrapeTrendingContent(int $limit = 20): array
+    {
+        $stats = ['added' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
+
+        if (! $this->tmdbService->isConfigured()) {
+            throw new \Exception('TMDB API key is not configured');
+        }
+
+        try {
+            $response = $this->tmdbService->getTrendingContent();
+
+            if (! $response || ! isset($response['results'])) {
+                throw new \Exception('Failed to fetch trending content from TMDB');
+            }
+
+            $count = 0;
+            foreach ($response['results'] as $item) {
+                if ($count >= $limit) {
+                    break;
+                }
+
+                try {
+                    // Determine if it's a movie or TV show
+                    $mediaType = $item['media_type'] ?? null;
+                    
+                    if ($mediaType === 'movie') {
+                        $result = $this->processMovie($item);
+                    } elseif ($mediaType === 'tv') {
+                        $result = $this->processTvShow($item);
+                    } else {
+                        continue; // Skip person entries
+                    }
+                    
+                    $stats[$result]++;
+                    $count++;
+                } catch (\Exception $e) {
+                    $stats['errors']++;
+                    Log::error('Failed to process trending item: '.$e->getMessage(), ['item' => $item]);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to scrape trending content: '.$e->getMessage());
+            throw $e;
+        }
+
+        return $stats;
+    }
+
+    /**
      * Process a movie from TMDB data
      */
     protected function processMovie(array $movie): string
