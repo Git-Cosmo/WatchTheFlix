@@ -29,6 +29,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'two_factor_recovery_codes',
         'two_factor_confirmed_at',
         'preferences',
+        'current_subscription_id',
     ];
 
     protected $hidden = [
@@ -105,5 +106,30 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isAdmin(): bool
     {
         return $this->hasRole('admin');
+    }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function currentSubscription()
+    {
+        return $this->belongsTo(Subscription::class, 'current_subscription_id');
+    }
+
+    public function bouquets()
+    {
+        return $this->belongsToMany(Bouquet::class, 'user_bouquets');
+    }
+
+    public function hasActiveSubscription(): bool
+    {
+        return $this->currentSubscription && $this->currentSubscription->isActive();
+    }
+
+    public function getSubscriptionPlan(): ?SubscriptionPlan
+    {
+        return $this->currentSubscription?->plan;
     }
 }
