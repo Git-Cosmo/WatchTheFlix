@@ -20,7 +20,7 @@ class RateLimitApi
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {
             $retryAfter = RateLimiter::availableIn($key);
-            
+
             return response()->json([
                 'message' => 'Too many requests. Please try again later.',
                 'retry_after' => $retryAfter,
@@ -42,16 +42,13 @@ class RateLimitApi
 
     /**
      * Resolve request signature
-     *
-     * @param Request $request
-     * @return string
      */
     protected function resolveRequestSignature(Request $request): string
     {
         if ($user = $request->user()) {
-            return 'rate-limit:user:' . $user->id;
+            return 'rate-limit:user:'.$user->id;
         }
 
-        return 'rate-limit:ip:' . $request->ip();
+        return 'rate-limit:ip:'.$request->ip();
     }
 }

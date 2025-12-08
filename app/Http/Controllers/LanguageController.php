@@ -11,7 +11,7 @@ class LanguageController extends Controller
     {
         $supportedLocales = config('app.supported_locales', ['en']);
 
-        if (!in_array($locale, $supportedLocales)) {
+        if (! in_array($locale, $supportedLocales)) {
             abort(400, 'Invalid locale');
         }
 

@@ -33,7 +33,7 @@ class SubtitleController extends Controller
         $file = $request->file('subtitle_file');
 
         // Validate subtitle format
-        if (!$this->subtitleService->validateSubtitle($file)) {
+        if (! $this->subtitleService->validateSubtitle($file)) {
             return back()->with('error', 'Invalid subtitle file format. Please upload a valid SRT or VTT file.');
         }
 

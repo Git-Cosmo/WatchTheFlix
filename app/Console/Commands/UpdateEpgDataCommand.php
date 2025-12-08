@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 class UpdateEpgDataCommand extends Command
 {
     protected $signature = 'epg:update {--force : Force update even if recent data exists}';
+
     protected $description = 'Update EPG (Electronic Program Guide) data from external sources';
 
     protected $epgService;
@@ -28,8 +29,9 @@ class UpdateEpgDataCommand extends Command
         try {
             $epgUrl = config('services.epg.provider_url') ?? env('EPG_PROVIDER_URL');
 
-            if (!$epgUrl) {
+            if (! $epgUrl) {
                 $this->error('EPG provider URL not configured. Please set EPG_PROVIDER_URL in your .env file.');
+
                 return 1;
             }
 
@@ -40,10 +42,11 @@ class UpdateEpgDataCommand extends Command
 
             if (empty($epgData)) {
                 $this->warn('No EPG data received from provider.');
+
                 return 1;
             }
 
-            $this->info('Processing ' . count($epgData) . ' programs...');
+            $this->info('Processing '.count($epgData).' programs...');
 
             $imported = 0;
             $updated = 0;
@@ -55,9 +58,10 @@ class UpdateEpgDataCommand extends Command
                     ->orWhere('name', $programData['channel_name'])
                     ->first();
 
-                if (!$channel) {
+                if (! $channel) {
                     $this->warn("Channel not found: {$programData['channel_name']} - Skipping");
                     $skipped++;
+
                     continue;
                 }
 
@@ -66,8 +70,9 @@ class UpdateEpgDataCommand extends Command
                     ->where('start_time', $programData['start_time'])
                     ->first();
 
-                if ($existing && !$this->option('force')) {
+                if ($existing && ! $this->option('force')) {
                     $skipped++;
+
                     continue;
                 }
 
@@ -107,7 +112,7 @@ class UpdateEpgDataCommand extends Command
 
             return 0;
         } catch (\Exception $e) {
-            $this->error('EPG update failed: ' . $e->getMessage());
+            $this->error('EPG update failed: '.$e->getMessage());
             Log::error('EPG update failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

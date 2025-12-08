@@ -49,6 +49,7 @@ class StreamAnalytics extends Model
         } elseif ($this->stream_type === 'vod' || $this->stream_type === 'series') {
             return Media::find($this->stream_id);
         }
+
         return null;
     }
 
@@ -59,12 +60,12 @@ class StreamAnalytics extends Model
     {
         $bytes = $this->bytes_transferred;
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 
     /**
@@ -76,10 +77,11 @@ class StreamAnalytics extends Model
         $hours = floor($seconds / 3600);
         $minutes = floor(($seconds % 3600) / 60);
         $seconds = $seconds % 60;
-        
+
         if ($hours > 0) {
             return sprintf('%d:%02d:%02d', $hours, $minutes, $seconds);
         }
+
         return sprintf('%d:%02d', $minutes, $seconds);
     }
 }

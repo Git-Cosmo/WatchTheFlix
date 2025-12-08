@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Media;
 use App\Models\TranscodingJob;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
 
 class TranscodingService
@@ -42,7 +41,7 @@ class TranscodingService
             'audio_bitrate' => '256k',
         ],
     ];
-    
+
     /**
      * Check if transcoding is enabled
      */
@@ -50,47 +49,48 @@ class TranscodingService
     {
         return config('streaming.transcoding.enabled', false);
     }
-    
+
     /**
      * Queue transcoding jobs for media
      */
-    public function queueTranscoding(Media $media, array $qualities = null): array
+    public function queueTranscoding(Media $media, ?array $qualities = null): array
     {
-        if (!$this->isEnabled()) {
+        if (! $this->isEnabled()) {
             throw new \Exception('Transcoding is not enabled');
         }
-        
+
         $qualities = $qualities ?? array_keys($this->qualityProfiles);
         $jobs = [];
-        
+
         foreach ($qualities as $quality) {
-            if (!isset($this->qualityProfiles[$quality])) {
+            if (! isset($this->qualityProfiles[$quality])) {
                 continue;
             }
-            
+
             // Check if job already exists
             $existingJob = TranscodingJob::where('media_id', $media->id)
                 ->where('quality', $quality)
                 ->whereIn('status', ['pending', 'processing'])
                 ->first();
-            
+
             if ($existingJob) {
                 $jobs[] = $existingJob;
+
                 continue;
             }
-            
-            $job = new TranscodingJob();
+
+            $job = new TranscodingJob;
             $job->media_id = $media->id;
             $job->quality = $quality;
             $job->status = 'pending';
             $job->save();
-            
+
             $jobs[] = $job;
         }
-        
+
         return $jobs;
     }
-    
+
     /**
      * Transcode media to specific quality
      */
@@ -98,40 +98,41 @@ class TranscodingService
     {
         $media = $job->media;
         $profile = $this->qualityProfiles[$job->quality];
-        
-        if (!$media->stream_url) {
+
+        if (! $media->stream_url) {
             $job->status = 'failed';
             $job->error_message = 'No source stream URL available';
             $job->save();
+
             return false;
         }
-        
+
         $job->status = 'processing';
         $job->save();
-        
+
         try {
-            $outputDir = storage_path('app/transcoded/' . $media->id . '/' . $job->quality);
-            
-            if (!file_exists($outputDir)) {
+            $outputDir = storage_path('app/transcoded/'.$media->id.'/'.$job->quality);
+
+            if (! file_exists($outputDir)) {
                 mkdir($outputDir, 0755, true);
             }
-            
-            $outputPath = $outputDir . '/stream.m3u8';
-            
+
+            $outputPath = $outputDir.'/stream.m3u8';
+
             // Build FFmpeg command for HLS transcoding
             $command = $this->buildFFmpegCommand(
                 $media->stream_url,
                 $outputPath,
                 $profile
             );
-            
+
             Log::info('Starting transcode', [
                 'job_id' => $job->id,
                 'media_id' => $media->id,
                 'quality' => $job->quality,
                 'command' => $command,
             ]);
-            
+
             // Execute FFmpeg
             $process = Process::fromShellCommandline($command);
             $process->setTimeout(3600); // 1 hour timeout
@@ -140,64 +141,64 @@ class TranscodingService
                 if (preg_match('/time=(\d+):(\d+):(\d+)/', $buffer, $matches)) {
                     $seconds = ($matches[1] * 3600) + ($matches[2] * 60) + $matches[3];
                     $duration = $job->media->duration ?? 0;
-                    
+
                     if ($duration > 0) {
-                        $progress = min(100, (int)(($seconds / $duration) * 100));
+                        $progress = min(100, (int) (($seconds / $duration) * 100));
                         $job->progress = $progress;
                         $job->save();
                     }
                 }
             });
-            
-            if (!$process->isSuccessful()) {
+
+            if (! $process->isSuccessful()) {
                 throw new \Exception($process->getErrorOutput());
             }
-            
+
             // Update job status
             $job->status = 'completed';
             $job->progress = 100;
             $job->output_path = $outputPath;
             $job->save();
-            
+
             // Update media available qualities
             $this->updateMediaQualities($media);
-            
+
             Log::info('Transcode completed', [
                 'job_id' => $job->id,
                 'media_id' => $media->id,
                 'quality' => $job->quality,
             ]);
-            
+
             return true;
-            
+
         } catch (\Exception $e) {
             Log::error('Transcode failed', [
                 'job_id' => $job->id,
                 'media_id' => $media->id,
                 'error' => $e->getMessage(),
             ]);
-            
+
             $job->status = 'failed';
             $job->error_message = $e->getMessage();
             $job->save();
-            
+
             return false;
         }
     }
-    
+
     /**
      * Build FFmpeg command for HLS transcoding
      */
     private function buildFFmpegCommand(string $input, string $output, array $profile): string
     {
         $preset = config('streaming.transcoding.preset', 'medium');
-        
+
         return sprintf(
-            'ffmpeg -i "%s" ' .
-            '-vf scale=%d:%d ' .
-            '-c:v libx264 -preset %s -b:v %s -maxrate %s -bufsize %s ' .
-            '-c:a aac -b:a %s ' .
-            '-f hls -hls_time 4 -hls_playlist_type vod -hls_segment_filename "%s/segment_%%03d.ts" ' .
+            'ffmpeg -i "%s" '.
+            '-vf scale=%d:%d '.
+            '-c:v libx264 -preset %s -b:v %s -maxrate %s -bufsize %s '.
+            '-c:a aac -b:a %s '.
+            '-f hls -hls_time 4 -hls_playlist_type vod -hls_segment_filename "%s/segment_%%03d.ts" '.
             '"%s"',
             $input,
             $profile['width'],
@@ -205,13 +206,13 @@ class TranscodingService
             $preset,
             $profile['bitrate'],
             $profile['bitrate'],
-            (int)filter_var($profile['bitrate'], FILTER_SANITIZE_NUMBER_INT) * 2 . 'k',
+            (int) filter_var($profile['bitrate'], FILTER_SANITIZE_NUMBER_INT) * 2 .'k',
             $profile['audio_bitrate'],
             dirname($output),
             $output
         );
     }
-    
+
     /**
      * Update media available qualities
      */
@@ -220,38 +221,38 @@ class TranscodingService
         $completedJobs = TranscodingJob::where('media_id', $media->id)
             ->where('status', 'completed')
             ->get();
-        
+
         $qualities = $completedJobs->pluck('quality')->toArray();
-        
+
         $media->available_qualities = $qualities;
         $media->transcoding_status = count($qualities) > 0 ? 'completed' : 'pending';
         $media->transcoded_at = now();
-        
+
         // Set HLS playlist URL
         if (count($qualities) > 0) {
-            $media->hls_playlist_url = url('/transcoded/' . $media->id . '/master.m3u8');
+            $media->hls_playlist_url = url('/transcoded/'.$media->id.'/master.m3u8');
         }
-        
+
         $media->save();
     }
-    
+
     /**
      * Generate master HLS playlist
      */
     public function generateMasterPlaylist(Media $media): string
     {
         $qualities = $media->available_qualities ?? [];
-        
+
         $playlist = "#EXTM3U\n#EXT-X-VERSION:3\n\n";
-        
+
         foreach ($qualities as $quality) {
-            if (!isset($this->qualityProfiles[$quality])) {
+            if (! isset($this->qualityProfiles[$quality])) {
                 continue;
             }
-            
+
             $profile = $this->qualityProfiles[$quality];
-            $bitrate = (int)filter_var($profile['bitrate'], FILTER_SANITIZE_NUMBER_INT) * 1000;
-            
+            $bitrate = (int) filter_var($profile['bitrate'], FILTER_SANITIZE_NUMBER_INT) * 1000;
+
             $playlist .= sprintf(
                 "#EXT-X-STREAM-INF:BANDWIDTH=%d,RESOLUTION=%dx%d\n%s/stream.m3u8\n\n",
                 $bitrate,
@@ -260,14 +261,14 @@ class TranscodingService
                 $quality
             );
         }
-        
+
         // Save master playlist
-        $masterPath = storage_path('app/transcoded/' . $media->id . '/master.m3u8');
+        $masterPath = storage_path('app/transcoded/'.$media->id.'/master.m3u8');
         file_put_contents($masterPath, $playlist);
-        
+
         return $masterPath;
     }
-    
+
     /**
      * Get transcoding statistics
      */
@@ -281,7 +282,7 @@ class TranscodingService
             'total_media_transcoded' => Media::whereNotNull('transcoded_at')->count(),
         ];
     }
-    
+
     /**
      * Cleanup old transcode files
      */
@@ -289,17 +290,17 @@ class TranscodingService
     {
         $count = 0;
         $cutoffDate = now()->subDays($daysOld);
-        
+
         // Delete failed jobs older than cutoff
         $failedJobs = TranscodingJob::where('status', 'failed')
             ->where('updated_at', '<', $cutoffDate)
             ->get();
-        
+
         foreach ($failedJobs as $job) {
             $job->delete();
             $count++;
         }
-        
+
         return $count;
     }
 }

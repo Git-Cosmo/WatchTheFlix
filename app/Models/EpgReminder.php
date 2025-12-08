@@ -103,6 +103,6 @@ class EpgReminder extends Model
      */
     public function isOverdue(): bool
     {
-        return $this->reminder_time && $this->reminder_time->isPast() && !$this->is_sent;
+        return $this->reminder_time && $this->reminder_time->isPast() && ! $this->is_sent;
     }
 }

@@ -27,16 +27,16 @@ class ProcessEpgReminders extends Command
     public function handle(EpgReminderService $reminderService): int
     {
         $this->info('Processing EPG reminders...');
-        
+
         $results = $reminderService->processDueReminders();
-        
+
         $this->info("Processed: {$results['processed']} reminders");
         $this->info("Sent: {$results['sent']} notifications");
-        
+
         if ($results['failed'] > 0) {
             $this->error("Failed: {$results['failed']} notifications");
         }
-        
+
         return Command::SUCCESS;
     }
 }

@@ -19,8 +19,8 @@ class CompressResponse
 
         // Only compress if client accepts gzip
         $acceptEncoding = $request->header('Accept-Encoding', '');
-        
-        if (!str_contains($acceptEncoding, 'gzip')) {
+
+        if (! str_contains($acceptEncoding, 'gzip')) {
             return $response;
         }
 
@@ -46,7 +46,7 @@ class CompressResponse
             }
         }
 
-        if (!$shouldCompress) {
+        if (! $shouldCompress) {
             return $response;
         }
 
@@ -63,7 +63,7 @@ class CompressResponse
 
         // Compress the response
         $compressed = gzencode($content, 6); // Compression level 6 (balance speed/size)
-        
+
         if ($compressed === false) {
             return $response;
         }

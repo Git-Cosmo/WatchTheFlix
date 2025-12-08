@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreignId('subscription_plan_id')->constrained()->cascadeOnDelete();
             $table->foreignId('bouquet_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
-            
+
             $table->unique(['subscription_plan_id', 'bouquet_id'], 'sub_plan_bouquet_unique');
         });
     }
@@ -29,7 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('subscription_plan_bouquets');
-        
+
         Schema::table('bouquets', function (Blueprint $table) {
             $table->dropColumn(['price', 'duration_days', 'requires_subscription', 'allowed_plans']);
         });

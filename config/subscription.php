@@ -14,7 +14,7 @@ return [
     'trial_days' => env('TRIAL_DAYS', 7),
     'trial_max_extensions' => env('TRIAL_MAX_EXTENSIONS', 2),
     'trial_grace_period_days' => env('TRIAL_GRACE_PERIOD_DAYS', 3),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Activity Log Settings

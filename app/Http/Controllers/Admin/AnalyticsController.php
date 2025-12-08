@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\DailyStatistic;
 use App\Models\StreamAnalytics;
 use App\Models\StreamConnection;
-use App\Models\User;
 use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +16,7 @@ class AnalyticsController extends Controller
     public function index(Request $request)
     {
         $period = $request->input('period', '7'); // Default 7 days
-        $startDate = now()->subDays((int)$period);
+        $startDate = now()->subDays((int) $period);
 
         // Get key metrics
         $totalStreams = StreamAnalytics::where('started_at', '>=', $startDate)->count();
@@ -107,11 +107,11 @@ class AnalyticsController extends Controller
     private function formatBytes($bytes): string
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
-        return round($bytes, 2) . ' ' . $units[$i];
+
+        return round($bytes, 2).' '.$units[$i];
     }
 }

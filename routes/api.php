@@ -13,33 +13,33 @@ Route::prefix('xtream')->middleware('rate.limit.api:150,1')->group(function () {
     // Main player_api.php endpoint (Xtream Codes compatible)
     Route::get('/player_api.php', [XtreamController::class, 'playerApi']);
     Route::post('/player_api.php', [XtreamController::class, 'playerApi']);
-    
+
     // Alternative endpoint format
     Route::get('/panel_api.php', [XtreamController::class, 'playerApi']);
     Route::post('/panel_api.php', [XtreamController::class, 'playerApi']);
-    
+
     // M3U playlist generation
     Route::get('/get.php', [XtreamController::class, 'getM3U']);
     Route::get('/playlist.m3u', [XtreamController::class, 'getM3U']);
     Route::get('/playlist.m3u8', [XtreamController::class, 'getM3U']);
-    
+
     // EPG XML generation
     Route::get('/xmltv.php', [XtreamController::class, 'getEPG']);
     Route::get('/epg.xml', [XtreamController::class, 'getEPG']);
     Route::get('/xmltv', [XtreamController::class, 'xmltv']);
-    
+
     // Stream URLs (Xtream format) - Higher rate limit for streaming
     Route::middleware('rate.limit.api:300,1')->group(function () {
         Route::get('/live/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getLiveStream']);
         Route::get('/live/{username}/{password}/{streamId}', [XtreamController::class, 'getLiveStream']);
-        
+
         Route::get('/vod/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getVodStream']);
         Route::get('/vod/{username}/{password}/{streamId}', [XtreamController::class, 'getVodStream']);
-        
+
         Route::get('/series/{username}/{password}/{streamId}.{extension}', [XtreamController::class, 'getVodStream']);
         Route::get('/series/{username}/{password}/{streamId}', [XtreamController::class, 'getVodStream']);
     });
-    
+
     // Server info
     Route::get('/server_info', [XtreamController::class, 'serverInfo']);
     Route::post('/server_info', [XtreamController::class, 'serverInfo']);

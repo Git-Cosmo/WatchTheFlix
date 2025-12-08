@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bouquet;
-use App\Models\TvChannel;
 use App\Models\SubscriptionPlan;
+use App\Models\TvChannel;
 use Illuminate\Http\Request;
 
 class BouquetManagementController extends Controller
@@ -52,7 +52,7 @@ class BouquetManagementController extends Controller
         ]);
 
         // Attach channels
-        if (!empty($validated['channels'])) {
+        if (! empty($validated['channels'])) {
             $channelData = [];
             foreach ($validated['channels'] as $index => $channelId) {
                 $channelData[$channelId] = ['position' => $index + 1];
@@ -61,7 +61,7 @@ class BouquetManagementController extends Controller
         }
 
         // Attach subscription plans
-        if (!empty($validated['plans'])) {
+        if (! empty($validated['plans'])) {
             $bouquet->subscriptionPlans()->attach($validated['plans']);
         }
 

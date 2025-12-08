@@ -16,7 +16,7 @@ return new class extends Migration
             $table->boolean('is_trial')->default(false)->after('status');
             $table->timestamp('trial_ends_at')->nullable()->after('is_trial');
             $table->integer('trial_extended_count')->default(0)->after('trial_ends_at');
-            
+
             $table->index('is_trial');
             $table->index('trial_ends_at');
         });
@@ -28,16 +28,16 @@ return new class extends Migration
             $table->string('transcoding_status')->default('pending')->after('transcoded_at');
             $table->json('available_qualities')->nullable()->after('transcoding_status');
             $table->string('hls_playlist_url')->nullable()->after('available_qualities');
-            
+
             $table->index('transcoding_status');
         });
 
         // Enhance activity_log table for better querying
         Schema::table('activity_log', function (Blueprint $table) {
-            if (!Schema::hasColumn('activity_log', 'activity_type')) {
+            if (! Schema::hasColumn('activity_log', 'activity_type')) {
                 $table->string('activity_type')->nullable()->after('log_name');
             }
-            if (!Schema::hasIndex('activity_log', ['activity_type'])) {
+            if (! Schema::hasIndex('activity_log', ['activity_type'])) {
                 $table->index('activity_type');
             }
             $table->index(['causer_id', 'created_at']);
@@ -53,7 +53,7 @@ return new class extends Migration
             $table->string('output_path')->nullable();
             $table->string('error_message')->nullable();
             $table->timestamps();
-            
+
             $table->index('status');
             $table->index(['media_id', 'quality']);
         });

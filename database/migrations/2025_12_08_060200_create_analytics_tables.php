@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('device_type')->nullable();
             $table->string('user_agent')->nullable();
             $table->timestamps();
-            
+
             $table->index(['stream_type', 'stream_id']);
             $table->index('started_at');
             $table->index(['user_id', 'started_at']);
@@ -42,7 +42,7 @@ return new class extends Migration
             $table->integer('peak_concurrent')->default(0);
             $table->json('popular_content')->nullable(); // Top 10 content
             $table->timestamps();
-            
+
             $table->unique('date');
         });
     }

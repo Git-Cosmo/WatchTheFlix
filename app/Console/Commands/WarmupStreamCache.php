@@ -27,9 +27,9 @@ class WarmupStreamCache extends Command
     public function handle(StreamCacheService $cacheService): int
     {
         $this->info('Warming up stream cache...');
-        
+
         $results = $cacheService->warmup();
-        
+
         if ($results['success']) {
             $this->info('Cache warmed up successfully!');
             $this->table(
@@ -43,9 +43,10 @@ class WarmupStreamCache extends Command
             );
         } else {
             $this->error('Failed to warm up cache');
+
             return Command::FAILURE;
         }
-        
+
         return Command::SUCCESS;
     }
 }

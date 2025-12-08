@@ -312,7 +312,7 @@ class TmdbService
 
         // Cast and crew
         if (isset($tmdbData['credits']['cast'])) {
-            $data['cast'] = array_slice(array_map(fn($person) => [
+            $data['cast'] = array_slice(array_map(fn ($person) => [
                 'name' => $person['name'],
                 'character' => $person['character'] ?? null,
                 'profile_path' => $person['profile_path'] ?? null,
@@ -320,7 +320,7 @@ class TmdbService
         }
 
         if (isset($tmdbData['credits']['crew'])) {
-            $data['crew'] = array_slice(array_map(fn($person) => [
+            $data['crew'] = array_slice(array_map(fn ($person) => [
                 'name' => $person['name'],
                 'job' => $person['job'] ?? null,
                 'department' => $person['department'] ?? null,
@@ -329,7 +329,7 @@ class TmdbService
 
         // Production details
         if (isset($tmdbData['production_companies'])) {
-            $data['production_companies'] = array_map(fn($company) => [
+            $data['production_companies'] = array_map(fn ($company) => [
                 'name' => $company['name'],
                 'logo_path' => $company['logo_path'] ?? null,
                 'origin_country' => $company['origin_country'] ?? null,
@@ -353,14 +353,14 @@ class TmdbService
 
         // Additional images
         if (isset($tmdbData['images'])) {
-            $data['logos'] = isset($tmdbData['images']['logos']) 
-                ? array_slice(array_column($tmdbData['images']['logos'], 'file_path'), 0, 5) 
+            $data['logos'] = isset($tmdbData['images']['logos'])
+                ? array_slice(array_column($tmdbData['images']['logos'], 'file_path'), 0, 5)
                 : [];
-            $data['posters'] = isset($tmdbData['images']['posters']) 
-                ? array_slice(array_column($tmdbData['images']['posters'], 'file_path'), 0, 10) 
+            $data['posters'] = isset($tmdbData['images']['posters'])
+                ? array_slice(array_column($tmdbData['images']['posters'], 'file_path'), 0, 10)
                 : [];
-            $data['backdrops'] = isset($tmdbData['images']['backdrops']) 
-                ? array_slice(array_column($tmdbData['images']['backdrops'], 'file_path'), 0, 10) 
+            $data['backdrops'] = isset($tmdbData['images']['backdrops'])
+                ? array_slice(array_column($tmdbData['images']['backdrops'], 'file_path'), 0, 10)
                 : [];
         }
 
@@ -413,13 +413,13 @@ class TmdbService
         ];
 
         // Runtime (use episode runtime if available)
-        if (isset($tmdbData['episode_run_time']) && !empty($tmdbData['episode_run_time'])) {
+        if (isset($tmdbData['episode_run_time']) && ! empty($tmdbData['episode_run_time'])) {
             $data['runtime'] = $tmdbData['episode_run_time'][0];
         }
 
         // Cast and crew
         if (isset($tmdbData['credits']['cast'])) {
-            $data['cast'] = array_slice(array_map(fn($person) => [
+            $data['cast'] = array_slice(array_map(fn ($person) => [
                 'name' => $person['name'],
                 'character' => $person['character'] ?? null,
                 'profile_path' => $person['profile_path'] ?? null,
@@ -427,7 +427,7 @@ class TmdbService
         }
 
         if (isset($tmdbData['credits']['crew'])) {
-            $data['crew'] = array_slice(array_map(fn($person) => [
+            $data['crew'] = array_slice(array_map(fn ($person) => [
                 'name' => $person['name'],
                 'job' => $person['job'] ?? null,
                 'department' => $person['department'] ?? null,
@@ -436,7 +436,7 @@ class TmdbService
 
         // Production details
         if (isset($tmdbData['production_companies'])) {
-            $data['production_companies'] = array_map(fn($company) => [
+            $data['production_companies'] = array_map(fn ($company) => [
                 'name' => $company['name'],
                 'logo_path' => $company['logo_path'] ?? null,
                 'origin_country' => $company['origin_country'] ?? null,
@@ -463,14 +463,14 @@ class TmdbService
 
         // Additional images
         if (isset($tmdbData['images'])) {
-            $data['logos'] = isset($tmdbData['images']['logos']) 
-                ? array_slice(array_column($tmdbData['images']['logos'], 'file_path'), 0, 5) 
+            $data['logos'] = isset($tmdbData['images']['logos'])
+                ? array_slice(array_column($tmdbData['images']['logos'], 'file_path'), 0, 5)
                 : [];
-            $data['posters'] = isset($tmdbData['images']['posters']) 
-                ? array_slice(array_column($tmdbData['images']['posters'], 'file_path'), 0, 10) 
+            $data['posters'] = isset($tmdbData['images']['posters'])
+                ? array_slice(array_column($tmdbData['images']['posters'], 'file_path'), 0, 10)
                 : [];
-            $data['backdrops'] = isset($tmdbData['images']['backdrops']) 
-                ? array_slice(array_column($tmdbData['images']['backdrops'], 'file_path'), 0, 10) 
+            $data['backdrops'] = isset($tmdbData['images']['backdrops'])
+                ? array_slice(array_column($tmdbData['images']['backdrops'], 'file_path'), 0, 10)
                 : [];
         }
 

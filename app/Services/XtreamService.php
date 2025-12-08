@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Hash;
 
 /**
  * Xtream Codes API Service
- * 
+ *
  * ⚠️ FEATURE ON HOLD: This service is currently postponed until a future release (no ETA).
- * 
+ *
  * Provides Xtream Codes-compatible API functionality for IPTV applications.
  * The code remains available for reference and future development, but is not
  * actively maintained or recommended for production use at this time.
- * 
+ *
  * See README.md for information about the project's current focus on
  * TMDB-based content catalog and TV Guide features.
- * 
+ *
  * Originally enhanced with Redis caching for 10-100x performance improvement.
  */
 class XtreamService
@@ -47,7 +47,7 @@ class XtreamService
         }
         $user = User::where('email', $username)->first();
 
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (! $user || ! Hash::check($password, $user->password)) {
             return null;
         }
 
@@ -66,7 +66,7 @@ class XtreamService
                 'active_cons' => '0',
                 'created_at' => $user->created_at->timestamp,
                 'max_connections' => '1',
-                'allowed_output_formats' => ['m3u8', 'ts']
+                'allowed_output_formats' => ['m3u8', 'ts'],
             ],
             'server_info' => [
                 'url' => config('app.url'),
@@ -76,8 +76,8 @@ class XtreamService
                 'rtmp_port' => '1935',
                 'timezone' => config('app.timezone'),
                 'timestamp_now' => now()->timestamp,
-                'time_now' => now()->format('Y-m-d H:i:s')
-            ]
+                'time_now' => now()->format('Y-m-d H:i:s'),
+            ],
         ];
 
         // Cache the auth data
@@ -125,7 +125,7 @@ class XtreamService
     {
         $media = Media::find($vodId);
 
-        if (!$media) {
+        if (! $media) {
             return null;
         }
 
@@ -155,7 +155,7 @@ class XtreamService
                 'container_extension' => 'mp4',
                 'custom_sid' => '',
                 'direct_source' => $media->stream_url ?? '',
-            ]
+            ],
         ];
     }
 
@@ -166,7 +166,7 @@ class XtreamService
     {
         $media = Media::where('type', 'series')->find($seriesId);
 
-        if (!$media) {
+        if (! $media) {
             return null;
         }
 
@@ -188,7 +188,7 @@ class XtreamService
                 'episode_run_time' => $media->runtime ?? 0,
                 'category_id' => 'series',
             ],
-            'episodes' => []
+            'episodes' => [],
         ];
     }
 
@@ -201,8 +201,8 @@ class XtreamService
             [
                 'category_id' => 'series',
                 'category_name' => 'TV Series',
-                'parent_id' => 0
-            ]
+                'parent_id' => 0,
+            ],
         ];
     }
 
@@ -250,7 +250,7 @@ class XtreamService
     {
         $token = $user->tokens()->where('name', 'xtream-api')->first();
         $authToken = $token ? $token->token : '';
-        
+
         $baseUrl = config('app.url');
         $m3u = "#EXTM3U\n";
         $m3u .= "#EXTINF:-1 tvg-logo=\"\" group-title=\"WatchTheFlix\",WatchTheFlix Channels\n\n";
@@ -287,7 +287,7 @@ class XtreamService
             $channel = $xml->addChild('channel');
             $channel->addAttribute('id', $tvChannel->slug);
             $displayName = $channel->addChild('display-name', htmlspecialchars($tvChannel->name));
-            
+
             if ($tvChannel->logo_url) {
                 $icon = $channel->addChild('icon');
                 $icon->addAttribute('src', $tvChannel->logo_url);
@@ -305,15 +305,15 @@ class XtreamService
             $programme->addAttribute('channel', $tvProgram->channel->slug);
             $programme->addAttribute('start', $tvProgram->start_time->format('YmdHis O'));
             $programme->addAttribute('stop', $tvProgram->end_time->format('YmdHis O'));
-            
+
             $title = $programme->addChild('title', htmlspecialchars($tvProgram->title));
             $title->addAttribute('lang', 'en');
-            
+
             if ($tvProgram->description) {
                 $desc = $programme->addChild('desc', htmlspecialchars($tvProgram->description));
                 $desc->addAttribute('lang', 'en');
             }
-            
+
             if ($tvProgram->genre) {
                 $category = $programme->addChild('category', htmlspecialchars($tvProgram->genre));
                 $category->addAttribute('lang', 'en');
