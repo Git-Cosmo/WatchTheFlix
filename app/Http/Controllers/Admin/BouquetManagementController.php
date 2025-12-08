@@ -62,8 +62,7 @@ class BouquetManagementController extends Controller
 
         // Attach subscription plans
         if (!empty($validated['plans'])) {
-            $bouquet->belongsToMany(SubscriptionPlan::class, 'subscription_plan_bouquets')
-                ->attach($validated['plans']);
+            $bouquet->subscriptionPlans()->attach($validated['plans']);
         }
 
         return redirect()->route('admin.bouquets.index')
@@ -72,7 +71,7 @@ class BouquetManagementController extends Controller
 
     public function edit(Bouquet $bouquet)
     {
-        $bouquet->load(['channels', 'belongsToMany' => SubscriptionPlan::class]);
+        $bouquet->load(['channels', 'subscriptionPlans']);
         $channels = TvChannel::active()->orderBy('name')->get();
         $plans = SubscriptionPlan::active()->get();
 
@@ -117,8 +116,7 @@ class BouquetManagementController extends Controller
         }
 
         // Sync subscription plans
-        $bouquet->belongsToMany(SubscriptionPlan::class, 'subscription_plan_bouquets')
-            ->sync($validated['plans'] ?? []);
+        $bouquet->subscriptionPlans()->sync($validated['plans'] ?? []);
 
         return redirect()->route('admin.bouquets.index')
             ->with('success', 'Bouquet updated successfully.');

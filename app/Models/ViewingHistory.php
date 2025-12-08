@@ -9,6 +9,8 @@ class ViewingHistory extends Model
 {
     use HasFactory;
 
+    protected $table = 'viewing_history';
+
     protected $fillable = [
         'user_id',
         'media_id',
