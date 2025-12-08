@@ -1,6 +1,6 @@
 # WatchTheFlix
 
-A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Debrid integration, TMDB API, TV Guide, Platform Availability, and a sleek dark theme.
+A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Debrid integration, TMDB API, TV Guide, Platform Availability, and a sleek Netflix-style dark theme.
 
 > **📋 Documentation Accuracy**: This README clearly distinguishes between **implemented features** (✅ working now) and **planned features** (📋 roadmap). See the [Current Limitations](#current-limitations) and [Roadmap](#roadmap) sections for complete transparency.
 
@@ -12,21 +12,33 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 **What you get out of the box:**
 - 🎬 **TMDB-Powered Media Catalog**: Browse movies and TV shows with rich metadata, posters, and backdrops
+  - Dedicated **Movies** and **TV Shows** pages with separate navigation
+  - **Guest access** enabled - browse content without signing up
+  - Netflix-style hero section with featured content backdrop
   - Latest Movies section with newest additions
   - Latest TV Shows section with recent series
   - Trending content section with popular titles
-- 📺 **TV Guide with Admin Management**: UK and US channels with EPG sync and admin controls
+- 📺 **Enhanced TV Guide**: UK and US channels with live "On Air" indicators
+  - Real-time program progress bars
+  - Beautiful gradient designs and modern UI
+  - Admin management with EPG sync
+  - **Public access** - no login required
 - 🌐 Platform availability tracking (Netflix, Prime, Hulu, etc.)
-- 💬 Custom forum system with categories, threads, and subscriptions
+- 💬 Custom forum system with categories, threads, and subscriptions (auth required)
 - 👤 User profiles with avatars (displayed in navbar), 2FA and parental controls (PIN-protected)
 - 🔐 Invite-only registration system
-- 👨‍💼 **Redesigned Admin Panel**: Modern left-sidebar navigation with improved visual clarity
+- ⚙️ **Redesigned Settings Page**: Full-width modern layout with icon badges
+  - Real-Debrid Integration with visual indicators
+  - Parental Controls with PIN protection
+  - Two-Factor Authentication setup
+  - Password management
+- 👨‍💼 **Polished Admin Panel**: Modern left-sidebar navigation with clean iconography
   - Dashboard with quick stats and growth metrics
   - Media management with bulk TMDB import
   - TV channel management with EPG sync
   - User and invite management
   - Forum and analytics tools
-- 🎨 Dark theme with responsive design
+- 🎨 Netflix/Disney+ inspired dark theme with responsive design
 - 🎵 Playlist creation and management
 - 📊 Advanced search with multiple filters
 - 📧 Email notifications for important events
@@ -38,7 +50,15 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 > ⚠️ **FEATURE ON HOLD**: Xtream Codes API features are currently postponed until a future release (no ETA). The code remains available for reference, but is not actively maintained or recommended for production use at this time. WatchTheFlix is now focused on delivering a superior TMDB-based content catalog and enhanced TV Guide experience. See [Future Plans](#future-plans) for more details.
 
-![Homepage](https://github.com/user-attachments/assets/473a1e94-570d-4807-8743-1a3e142dfe22)
+### Screenshots
+
+**Homepage with Netflix-Style Hero Section**
+![Homepage Guest View](https://github.com/user-attachments/assets/eff3beb7-5d35-40df-91af-f5a5ed0c7919)
+
+**TV Guide with Live "On Air" Indicator**
+![TV Guide Channel](https://github.com/user-attachments/assets/1c5cd335-c4d0-449f-a7fc-8ce4dbf47dfe)
+
+**Previous Screenshots**
 ![TV Guide](https://github.com/user-attachments/assets/055322be-0960-4a3e-8774-e7c09d2f3e70)
 ![UK TV Channels](https://github.com/user-attachments/assets/2afd8ce4-01af-4e62-8145-d3c7a4081bb4)
 ![Platform Availability](https://github.com/user-attachments/assets/149096b6-e378-4269-ae7e-000ff8f5614c)
@@ -46,8 +66,27 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 ## Features
 
+## Recent Updates (December 2025)
+
+### 🎨 Major UI Overhaul
+- **Netflix-Inspired Homepage**: Immersive hero section with featured content backdrop, large titles, and action buttons
+- **Separate Navigation**: Distinct "Movies" and "TV Shows" menu items replacing generic "Browse"
+- **Guest Access**: Browse movies, TV shows, and TV Guide without authentication
+- **Enhanced TV Guide**: Live "On Air" indicators with real-time progress bars and modern gradient designs
+- **Redesigned Settings**: Full-width layout with icon badges and better organization
+- **Polished Admin UI**: Clean navigation with proper iconography and styling
+
+### 🐛 Bug Fixes
+- Fixed TV Guide channel page error (TvProgram rating field casting issue)
+- Fixed SQLite compatibility in featured content queries
+- Resolved Blade syntax errors in navigation
+
+## Features
+
 ### 🎬 Core Streaming Features
 - **Media Catalog**: Browse movies, TV series, and episodes with rich metadata
+  - **Dedicated Pages**: Separate /movies and /tv-shows routes with filtered content
+  - **Public Access**: Guests can browse all content without signing up
 - **Platform Availability**: See which streaming services (Netflix, Prime, Hulu, etc.) offer each title
 - **TV Guide**: Browse UK and US TV channels with program schedules
 - **Watchlists**: Create and manage personal watchlists
