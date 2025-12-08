@@ -15,7 +15,9 @@ class SubscriptionManagementController extends Controller
         $plans = SubscriptionPlan::with('subscriptions')->orderBy('sort_order')->get();
         $activeSubscriptions = Subscription::active()->count();
         $expiredSubscriptions = Subscription::where('status', 'expired')->count();
-        $totalRevenue = Subscription::where('status', 'active')->sum('subscription_plans.price');
+        $totalRevenue = Subscription::where('status', 'active')
+            ->join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->sum('subscription_plans.price');
 
         return view('admin.subscriptions.index', compact(
             'plans',
