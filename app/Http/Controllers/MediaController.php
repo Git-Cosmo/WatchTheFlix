@@ -96,12 +96,12 @@ class MediaController extends Controller
     {
         // Validate that the route matches the media type
         $currentRoute = request()->route()->getName();
-        if ($currentRoute === 'media.show' && $media->type !== 'movie') {
-            // Redirect to correct route for non-movie content
+        if ($currentRoute === 'media.show' && in_array($media->type, ['series', 'episode'])) {
+            // Redirect to correct route for series/episode content (should use tv-show URL)
             return redirect()->to($media->getRouteUrl(), 301);
         }
         if ($currentRoute === 'media.show.series' && $media->type === 'movie') {
-            // Redirect to correct route for movie content
+            // Redirect to correct route for movie content (should use movies URL)
             return redirect()->to($media->getRouteUrl(), 301);
         }
 

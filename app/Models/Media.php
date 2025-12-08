@@ -176,7 +176,8 @@ class Media extends Model
         if ($this->type === 'movie') {
             return route('media.show', $this->slug);
         }
-        // series and episode both use tv-show routes
+        // Both 'series' and 'episode' types use the tv-show route structure
+        // This maintains a clean URL structure for all episodic content
         return route('media.show.series', $this->slug);
     }
 
@@ -188,7 +189,8 @@ class Media extends Model
         if ($this->type === 'movie') {
             return 'media.show';
         }
-        // series and episode both use series route name
+        // Both 'series' and 'episode' types use the series route name
+        // This maintains a clean URL structure for all episodic content
         return 'media.show.series';
     }
 }
