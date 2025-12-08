@@ -10,6 +10,17 @@ use App\Services\XtreamService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * ⚠️ FEATURE ON HOLD: Xtream Codes API
+ * 
+ * This feature is currently postponed until a future release (no ETA).
+ * The Xtream Codes API functionality remains in the codebase for reference
+ * and future development, but is not actively maintained or recommended for
+ * production use at this time.
+ * 
+ * See README.md for more information about the project's current focus on
+ * TMDB-based content catalog and TV Guide features.
+ */
 class XtreamManagementController extends Controller
 {
     protected $xtreamService;
@@ -21,6 +32,8 @@ class XtreamManagementController extends Controller
 
     /**
      * Show Xtream Codes management dashboard
+     * 
+     * ⚠️ NOTE: This feature is on hold - see class documentation
      */
     public function index()
     {

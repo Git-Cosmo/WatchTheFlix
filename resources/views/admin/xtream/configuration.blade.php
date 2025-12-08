@@ -4,6 +4,8 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+    <x-xtream-hold-notice />
+    
     <div class="max-w-4xl mx-auto">
         <div class="flex items-center justify-between mb-8">
             <h1 class="text-3xl font-bold">Xtream API Configuration</h1>

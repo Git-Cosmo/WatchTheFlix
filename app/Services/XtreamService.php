@@ -11,8 +11,16 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Xtream Codes API Service
  * 
- * Provides Xtream Codes-compatible API functionality for IPTV applications
- * Now enhanced with Redis caching for 10-100x performance improvement
+ * ⚠️ FEATURE ON HOLD: This service is currently postponed until a future release (no ETA).
+ * 
+ * Provides Xtream Codes-compatible API functionality for IPTV applications.
+ * The code remains available for reference and future development, but is not
+ * actively maintained or recommended for production use at this time.
+ * 
+ * See README.md for information about the project's current focus on
+ * TMDB-based content catalog and TV Guide features.
+ * 
+ * Originally enhanced with Redis caching for 10-100x performance improvement.
  */
 class XtreamService
 {
