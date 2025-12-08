@@ -226,6 +226,84 @@ class XtreamService
     }
 
     /**
+     * Get series categories (Xtream format)
+     */
+    public function getSeriesCategories(): array
+    {
+        return [
+            [
+                'category_id' => 'series',
+                'category_name' => 'TV Series',
+                'parent_id' => 0
+            ]
+        ];
+    }
+
+    /**
+     * Get all series streams
+     */
+    public function getSeriesStreams(?string $category = null): array
+    {
+        $query = Media::where('type', 'series')->published();
+
+        return $query->get()->map(function ($media) {
+            return [
+                'num' => $media->id,
+                'name' => $media->title,
+                'series_id' => $media->id,
+                'cover' => $media->poster_url,
+                'plot' => $media->description,
+                'cast' => is_array($media->cast) ? implode(', ', $media->cast) : '',
+                'director' => '',
+                'genre' => is_array($media->genres) ? implode(', ', $media->genres) : '',
+                'release_date' => $media->release_year,
+                'last_modified' => $media->updated_at->timestamp,
+                'rating' => $media->imdb_rating ?? 0,
+                'rating_5based' => $media->imdb_rating ? round($media->imdb_rating / 2, 1) : 0,
+                'backdrop_path' => [$media->backdrop_url],
+                'youtube_trailer' => $media->trailer_url ?? '',
+                'episode_run_time' => $media->runtime ?? 0,
+                'category_id' => 'series',
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get short EPG for live streams (Xtream format)
+     */
+    public function getShortEpg(int $streamId, ?int $limit = null): array
+    {
+        $channel = TvChannel::find($streamId);
+
+        if (!$channel) {
+            return [];
+        }
+
+        $query = TvProgram::where('tv_channel_id', $streamId)
+            ->where('start_time', '>=', now())
+            ->orderBy('start_time');
+
+        if ($limit) {
+            $query->limit($limit);
+        }
+
+        return $query->get()->map(function ($program) {
+            return [
+                'id' => $program->id,
+                'epg_id' => $program->tv_channel_id,
+                'title' => $program->title,
+                'lang' => 'en',
+                'start' => $program->start_time->format('Y-m-d H:i:s'),
+                'end' => $program->end_time->format('Y-m-d H:i:s'),
+                'description' => $program->description,
+                'channel_id' => $program->tv_channel_id,
+                'start_timestamp' => $program->start_time->timestamp,
+                'stop_timestamp' => $program->end_time->timestamp,
+            ];
+        })->toArray();
+    }
+
+    /**
      * Generate M3U playlist
      */
     public function generateM3U(User $user): string

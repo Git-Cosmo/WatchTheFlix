@@ -57,10 +57,22 @@ class XtreamController extends Controller
                 $info = $this->xtreamService->getVodInfo($vodId);
                 return $info ? response()->json($info) : response()->json(['error' => 'Not found'], 404);
             
+            case 'get_series_categories':
+                return response()->json($this->xtreamService->getSeriesCategories());
+            
+            case 'get_series':
+                $category = $request->input('category_id');
+                return response()->json($this->xtreamService->getSeriesStreams($category));
+            
             case 'get_series_info':
                 $seriesId = $request->input('series_id');
                 $info = $this->xtreamService->getSeriesInfo($seriesId);
                 return $info ? response()->json($info) : response()->json(['error' => 'Not found'], 404);
+            
+            case 'get_short_epg':
+                $streamId = $request->input('stream_id');
+                $limit = $request->input('limit', 10);
+                return response()->json(['epg_listings' => $this->xtreamService->getShortEpg($streamId, $limit)]);
             
             default:
                 // Return auth info if no action specified

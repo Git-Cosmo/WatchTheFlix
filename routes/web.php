@@ -127,4 +127,20 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::post('/import', [\App\Http\Controllers\Admin\TmdbImportController::class, 'import'])->name('import');
         Route::post('/bulk-import', [\App\Http\Controllers\Admin\TmdbImportController::class, 'bulkImport'])->name('bulk-import');
     });
+
+    // Xtream Codes Management
+    Route::prefix('xtream')->name('xtream.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'index'])->name('index');
+        Route::get('/configuration', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'apiConfiguration'])->name('configuration');
+        Route::get('/users', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'users'])->name('users');
+        Route::get('/streams', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'streams'])->name('streams');
+        Route::get('/statistics', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'statistics'])->name('statistics');
+        Route::get('/documentation', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'documentation'])->name('documentation');
+        
+        Route::post('/users/{user}/generate-token', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'generateToken'])->name('generate-token');
+        Route::delete('/users/{user}/revoke-token', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'revokeToken'])->name('revoke-token');
+        Route::post('/test-endpoint', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'testEndpoint'])->name('test-endpoint');
+        Route::get('/export-epg', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'exportEpg'])->name('export-epg');
+        Route::get('/export-m3u/{user}', [\App\Http\Controllers\Admin\XtreamManagementController::class, 'exportM3u'])->name('export-m3u');
+    });
 });
