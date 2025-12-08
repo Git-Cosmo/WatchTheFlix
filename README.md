@@ -11,10 +11,15 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - 📺 TV Guide for UK and US channels (manual data seeding)
 - 🌐 Platform availability tracking (Netflix, Prime, Hulu, etc.)
 - 💬 Custom forum system with categories, threads, and subscriptions
-- 👤 User profiles with parental controls (PIN-protected)
+- 👤 User profiles with 2FA and parental controls (PIN-protected)
 - 🔐 Invite-only registration system
-- 👨‍💼 Comprehensive admin panel
+- 👨‍💼 Comprehensive admin panel with advanced analytics
 - 🎨 Dark theme with responsive design
+- 📡 Xtream Codes API for IPTV applications
+- 🎵 Playlist creation and management
+- 📊 Advanced search with multiple filters
+- 📧 Email notifications for important events
+- 🔗 Social sharing to Twitter, Facebook, LinkedIn, WhatsApp
 
 **Optional integrations:**
 - 🎬 TMDB API for rich metadata and automated content scraping
@@ -45,9 +50,21 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **First User Admin**: The first registered user automatically becomes an admin
 - **Rich User Profiles**: Customizable profiles with avatar, bio, and statistics
 - **Parental Controls**: PIN-protected content restrictions with 4-digit PIN
+- **Two-Factor Authentication (2FA)**: Google Authenticator support with recovery codes
 - **Session Management**: Secure authentication with remember me functionality
+- **Email Notifications**: Receive notifications via email for forum replies and important events
 - **In-App Notifications**: Real-time notification system with bell icon, unread indicators, and mark-as-read functionality
-  - *Note: Email notifications are not yet implemented (see [Roadmap](#roadmap))*
+
+### 📡 Xtream Codes API (IPTV Support)
+- **Full Xtream Codes Compatibility**: Backend API compatible with popular IPTV applications
+- **Player API**: Complete player_api.php implementation with all standard actions
+- **M3U Playlist Generation**: Auto-generated playlists for live TV and VOD content
+- **EPG XML Export**: XMLTV format electronic program guide data
+- **VOD Streaming API**: Movie and series streaming with category organization
+- **Authentication Tokens**: Secure API access with Laravel Sanctum tokens
+- **Compatible Players**: TiviMate, Perfect Player, GSE Smart IPTV, IPTV Smarters, Kodi, VLC
+- **Stream URLs**: Direct live TV and VOD stream access via Xtream format URLs
+- **Full Documentation**: See [XTREAM_API.md](XTREAM_API.md) for complete API reference
 
 ### 🎯 Real-Debrid Integration
 - **User-Level Integration**: Each user can enable/disable Real-Debrid
