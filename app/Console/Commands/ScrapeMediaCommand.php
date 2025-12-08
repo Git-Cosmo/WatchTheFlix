@@ -13,7 +13,7 @@ class ScrapeMediaCommand extends Command
      * @var string
      */
     protected $signature = 'media:scrape 
-                            {--type=all : Type of media to scrape (movies, tv, all)}
+                            {--type=all : Type of media to scrape (movies, tv, trending, all)}
                             {--limit=20 : Number of items to scrape per type}';
 
     /**
@@ -50,8 +50,15 @@ class ScrapeMediaCommand extends Command
                 $this->newLine();
             }
 
-            if (! in_array($type, ['all', 'movies', 'tv'])) {
-                $this->error('Invalid type. Use "movies", "tv", or "all".');
+            if ($type === 'all' || $type === 'trending') {
+                $this->info('Scraping trending content...');
+                $trendingStats = $scraperService->scrapeTrendingContent($limit);
+                $this->displayStats('Trending', $trendingStats);
+                $this->newLine();
+            }
+
+            if (! in_array($type, ['all', 'movies', 'tv', 'trending'])) {
+                $this->error('Invalid type. Use "movies", "tv", "trending", or "all".');
 
                 return self::FAILURE;
             }

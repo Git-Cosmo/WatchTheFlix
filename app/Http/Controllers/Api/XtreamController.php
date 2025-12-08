@@ -7,6 +7,12 @@ use App\Services\XtreamService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * ⚠️ FEATURE ON HOLD: Xtream Codes API
+ * 
+ * This API is currently postponed until a future release (no ETA).
+ * See README.md for information about the project's current focus.
+ */
 class XtreamController extends Controller
 {
     protected $xtreamService;
@@ -18,6 +24,8 @@ class XtreamController extends Controller
 
     /**
      * Main player_api.php endpoint - Xtream Codes compatible
+     * 
+     * ⚠️ NOTE: This API is on hold - see class documentation
      */
     public function playerApi(Request $request)
     {

@@ -1,9 +1,11 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Xtream Codes Management')
 
 @section('content')
 <div class="container mx-auto px-4 py-8">
+    <x-xtream-hold-notice />
+
     <div class="flex items-center justify-between mb-8">
         <h1 class="text-3xl font-bold">Xtream Codes API Management</h1>
         <div class="flex gap-3">

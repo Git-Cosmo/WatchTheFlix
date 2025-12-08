@@ -8,18 +8,32 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $featured = Media::published()
-            ->latest()
-            ->take(8)
-            ->get();
-
-        $trending = Media::published()
-            ->withCount('ratings')
-            ->orderBy('ratings_count', 'desc')
+        // Latest Movies - show recently added movies
+        $latestMovies = Media::published()
+            ->where('type', 'movie')
+            ->latest('created_at')
             ->take(12)
             ->get();
 
-        $recentlyAdded = Media::published()
+        // Latest TV Shows - show recently added TV series
+        $latestTvShows = Media::published()
+            ->where('type', 'series')
+            ->latest('created_at')
+            ->take(12)
+            ->get();
+
+        // Trending - based on ratings count and recent activity
+        $trending = Media::published()
+            ->withCount('ratings')
+            ->orderBy('ratings_count', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->take(12)
+            ->get();
+
+        // Featured content - highest rated recent additions
+        $featured = Media::published()
+            ->withAvg('ratings', 'rating')
+            ->having('ratings_avg_rating', '>', 7)
             ->latest('created_at')
             ->take(8)
             ->get();
@@ -35,6 +49,6 @@ class HomeController extends Controller
             ];
         }
 
-        return view('home', compact('featured', 'trending', 'recentlyAdded', 'stats'));
+        return view('home', compact('featured', 'trending', 'latestMovies', 'latestTvShows', 'stats'));
     }
 }

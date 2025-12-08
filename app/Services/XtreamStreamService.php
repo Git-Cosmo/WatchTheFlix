@@ -12,8 +12,12 @@ use Illuminate\Support\Str;
 /**
  * Xtream Stream URL Service
  * 
- * Handles stream URL generation, validation, and access control
- * Now enhanced with StreamTokenService for IP-bound secure tokens
+ * ⚠️ FEATURE ON HOLD: This service is currently postponed until a future release (no ETA).
+ * 
+ * Handles stream URL generation, validation, and access control.
+ * Originally enhanced with StreamTokenService for IP-bound secure tokens.
+ * 
+ * See README.md for information about the project's current focus.
  */
 class XtreamStreamService
 {

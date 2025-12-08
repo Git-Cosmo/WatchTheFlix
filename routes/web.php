@@ -193,4 +193,15 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::delete('/{job}', [\App\Http\Controllers\Admin\TranscodingController::class, 'destroy'])->name('destroy');
         Route::post('/generate-playlist/{media}', [\App\Http\Controllers\Admin\TranscodingController::class, 'generatePlaylist'])->name('generate-playlist');
     });
+
+    // TV Channel Management
+    Route::prefix('tv-channels')->name('tv-channels.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'store'])->name('store');
+        Route::get('/{channel}/edit', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'edit'])->name('edit');
+        Route::put('/{channel}', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'update'])->name('update');
+        Route::delete('/{channel}', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'destroy'])->name('destroy');
+        Route::post('/sync', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'sync'])->name('sync');
+    });
 });

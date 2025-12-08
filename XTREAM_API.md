@@ -1,6 +1,19 @@
 # Xtream Codes API Documentation
 
-WatchTheFlix now includes a fully compatible Xtream Codes API implementation for IPTV applications and players.
+> ⚠️ **FEATURE ON HOLD - IMPORTANT NOTICE**
+> 
+> **Xtream Codes API features are currently postponed until a future release (no ETA).**
+> 
+> This documentation remains available for reference, but the Xtream Codes functionality is not actively maintained or recommended for production use at this time. The project is currently focused on:
+> - TMDB-based content catalog with enhanced browsing
+> - Robust TV Guide scraping for UK and US channels
+> - Improved admin UI with better visual clarity
+> 
+> See the main README.md for information about current features and roadmap.
+
+---
+
+WatchTheFlix includes a fully compatible Xtream Codes API implementation for IPTV applications and players.
 
 ## Base URL
 

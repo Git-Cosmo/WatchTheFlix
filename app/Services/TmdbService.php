@@ -152,6 +152,24 @@ class TmdbService
     }
 
     /**
+     * Get trending content (movies and TV shows) for the week
+     */
+    public function getTrendingContent(string $timeWindow = 'week', int $page = 1): ?array
+    {
+        try {
+            $response = $this->makeRequest('GET', "/trending/all/{$timeWindow}", [
+                'page' => $page,
+            ]);
+
+            return $response->successful() ? $response->json() : null;
+        } catch (\Exception $e) {
+            Log::error('TMDB get trending content failed: '.$e->getMessage());
+
+            return null;
+        }
+    }
+
+    /**
      * Get movie watch providers (streaming platforms)
      */
     public function getMovieWatchProviders(int $tmdbId): ?array
