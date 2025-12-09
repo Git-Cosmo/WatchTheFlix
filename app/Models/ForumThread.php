@@ -105,8 +105,6 @@ class ForumThread extends Model
             'id' => $this->id,
             'title' => $this->title,
             'body' => $this->body,
-            'category_name' => $this->category->name ?? null,
-            'user_name' => $this->user->name ?? null,
         ];
     }
 }

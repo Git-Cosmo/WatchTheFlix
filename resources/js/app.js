@@ -62,3 +62,11 @@ document.addEventListener('click', function(event) {
         }
     });
 });
+
+// Carousel scrolling
+window.scrollCarousel = function(id, amount) {
+    const carousel = document.getElementById(id);
+    if (carousel) {
+        carousel.scrollBy({ left: amount, behavior: 'smooth' });
+    }
+};
