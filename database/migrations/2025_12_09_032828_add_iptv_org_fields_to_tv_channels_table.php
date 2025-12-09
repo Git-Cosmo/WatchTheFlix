@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tv_channels', function (Blueprint $table) {
-            $table->string('channel_id')->nullable()->after('slug')->unique(); // IPTV-ORG unique ID
+            $table->string('channel_id')->nullable()->after('slug')->index(); // IPTV-ORG unique ID
             $table->string('stream_url')->nullable()->after('logo_url'); // Stream URL if available
             $table->string('network')->nullable()->after('country'); // Network affiliation
             $table->json('owners')->nullable()->after('network'); // Channel owners

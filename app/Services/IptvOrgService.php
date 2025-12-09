@@ -191,7 +191,7 @@ class IptvOrgService
 
             // Include channels with popular categories
             if (! empty($channel['categories'])) {
-                $hasPopularCategory = !empty(array_intersect($channel['categories'], $popularCategories));
+                $hasPopularCategory = ! empty(array_intersect($channel['categories'], $popularCategories));
                 if ($hasPopularCategory) {
                     return true;
                 }

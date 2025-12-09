@@ -82,8 +82,8 @@ class TvProgramManagementController extends Controller
             'is_premiere' => 'boolean',
         ]);
 
-        $validated['is_repeat'] = $request->boolean('is_repeat', false);
-        $validated['is_premiere'] = $request->boolean('is_premiere', false);
+        $validated['is_repeat'] = $request->boolean('is_repeat');
+        $validated['is_premiere'] = $request->boolean('is_premiere');
 
         TvProgram::create($validated);
 

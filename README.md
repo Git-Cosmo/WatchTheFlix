@@ -842,7 +842,7 @@ https://iptv-org.github.io/iptv/logos/{channel_id}.png
 
 **Duplicate channels:**
 - Use `--force` flag to update existing channels
-- Channels are matched by `channel_id` or `name + country`
+- Channels are matched by `channel_id` or `name + country`.
 
 **Missing logos:**
 - Logos are automatically generated using IPTV-ORG CDN

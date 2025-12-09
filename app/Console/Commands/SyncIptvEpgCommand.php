@@ -16,10 +16,7 @@ class SyncIptvEpgCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'iptv:sync-epg 
-                            {--channel-id= : Specific channel ID to sync}
-                            {--limit=10 : Limit number of channels to sync (0 = all)}
-                            {--force : Force update existing programs}';
+    protected $signature = 'iptv:sync-epg {--channel-id= : Specific channel ID to sync} {--limit=10 : Limit number of channels to sync (0 = all)}';
 
     /**
      * The console command description.

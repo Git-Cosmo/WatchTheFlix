@@ -122,7 +122,7 @@
                                 <td class="px-6 py-4">
                                     <div class="text-sm font-medium text-white">{{ $program->title }}</div>
                                     @if($program->description)
-                                        <div class="text-sm text-dark-400 truncate max-w-md">{{ Str::limit($program->description, 100) }}</div>
+                                        <div class="text-sm text-dark-400 truncate max-w-md">{{ \Illuminate\Support\Str::limit($program->description, 100) }}</div>
                                     @endif
                                     @if($program->is_premiere)
                                         <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-900/50 text-yellow-300">

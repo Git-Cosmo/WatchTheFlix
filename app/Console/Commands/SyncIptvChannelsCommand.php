@@ -14,10 +14,7 @@ class SyncIptvChannelsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'iptv:sync-channels 
-                            {--country=* : Specific countries to sync (UK, US)}
-                            {--force : Force update existing channels}
-                            {--popular-us-only : Sync only popular US channels}';
+    protected $signature = 'iptv:sync-channels {--country=* : Specific countries to sync (UK, US)} {--force : Force update existing channels} {--popular-us-only : Sync only popular US channels}';
 
     /**
      * The console command description.
