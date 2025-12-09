@@ -7,24 +7,56 @@
     <div class="flex items-center justify-between mb-8">
         <div>
             <h1 class="text-3xl font-bold text-white">TV Channel Management</h1>
-            <p class="text-dark-400 mt-2">Manage TV channels and sync EPG data from external providers</p>
+            <p class="text-dark-400 mt-2">Manage TV channels and sync from IPTV-ORG API or EPG providers</p>
         </div>
         <div class="flex gap-3">
-            <form method="POST" action="{{ route('admin.tv-channels.sync') }}" class="inline">
-                @csrf
-                <button type="submit" class="btn-secondary">
-                    <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Sync EPG Data
-                </button>
-            </form>
+            <a href="{{ route('admin.tv-programs.index') }}" class="btn-secondary">
+                <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Manage Programs
+            </a>
             <a href="{{ route('admin.tv-channels.create') }}" class="btn-primary">
                 <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
                 Add Channel
             </a>
+        </div>
+    </div>
+
+    <!-- IPTV-ORG Sync Actions -->
+    <div class="card p-6 mb-6">
+        <h3 class="text-lg font-semibold text-white mb-4">IPTV-ORG API Sync</h3>
+        <p class="text-dark-400 mb-4">Sync channels and EPG data from the IPTV-ORG database (642 UK channels + popular US channels)</p>
+        <div class="flex gap-3">
+            <form method="POST" action="{{ route('admin.tv-channels.sync-iptv-channels') }}" class="inline">
+                @csrf
+                <button type="submit" class="btn-primary" onclick="return confirm('This will sync UK channels and popular US channels from IPTV-ORG. Continue?')">
+                    <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Sync Channels from IPTV-ORG
+                </button>
+            </form>
+            <form method="POST" action="{{ route('admin.tv-channels.sync-iptv-epg') }}" class="inline">
+                @csrf
+                <button type="submit" class="btn-secondary" onclick="return confirm('This will attempt to sync EPG guides for IPTV-ORG channels. Continue?')">
+                    <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Sync EPG Guides
+                </button>
+            </form>
+            <form method="POST" action="{{ route('admin.tv-channels.sync') }}" class="inline">
+                @csrf
+                <button type="submit" class="btn-secondary">
+                    <svg class="h-5 w-5 mr-2 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Sync EPG (XMLTV)
+                </button>
+            </form>
         </div>
     </div>
 
