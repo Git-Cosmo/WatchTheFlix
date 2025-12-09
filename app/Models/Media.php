@@ -209,11 +209,29 @@ class Media extends Model
             'title' => $this->title,
             'description' => $this->description,
             'type' => $this->type,
-            'genres' => $this->genres ? (is_array($this->genres) ? implode(' ', $this->genres) : $this->genres) : null,
+            'genres' => $this->formatGenresForSearch(),
             'release_year' => $this->release_year,
             'cast' => $this->cast ? implode(' ', array_column($this->cast, 'name')) : null,
             'crew' => $this->crew ? implode(' ', array_column($this->crew, 'name')) : null,
         ];
+    }
+
+    /**
+     * Format genres array for search indexing
+     *
+     * @return string|null
+     */
+    private function formatGenresForSearch(): ?string
+    {
+        if (!$this->genres) {
+            return null;
+        }
+
+        if (is_array($this->genres)) {
+            return implode(' ', $this->genres);
+        }
+
+        return $this->genres;
     }
 
     /**

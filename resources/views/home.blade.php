@@ -117,12 +117,12 @@
                 </h2>
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-gh-text-muted px-3 py-1 bg-gh-bg-light rounded-full">{{ $trending->count() }} items</span>
-                    <button onclick="scrollCarousel('trending-carousel', -300)" class="p-2 bg-gh-bg-light hover:bg-accent-500 rounded-full transition-colors duration-200">
+                    <button aria-label="Scroll left" onclick="scrollCarousel('trending-carousel', -300)" class="p-2 bg-gh-bg-light hover:bg-accent-500 rounded-full transition-colors duration-200">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                         </svg>
                     </button>
-                    <button onclick="scrollCarousel('trending-carousel', 300)" class="p-2 bg-gh-bg-light hover:bg-accent-500 rounded-full transition-colors duration-200">
+                    <button aria-label="Scroll right" onclick="scrollCarousel('trending-carousel', 300)" class="p-2 bg-gh-bg-light hover:bg-accent-500 rounded-full transition-colors duration-200">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
@@ -131,7 +131,7 @@
             </div>
             <div id="trending-carousel" class="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-thin scrollbar-thumb-accent-500 scrollbar-track-gh-bg-light rounded-lg" style="scrollbar-width: thin;">
                 @foreach($trending as $index => $item)
-                <a href="{{ $item->getRouteUrl() }}" class="group flex-shrink-0 block w-36 sm:w-44 md:w-52 snap-start">
+                <a href="{{ $item->getRouteUrl() }}" aria-label="View {{ $item->title }}" class="group flex-shrink-0 block w-36 sm:w-44 md:w-52 snap-start">
                     <div class="relative overflow-hidden rounded-xl aspect-[2/3] border-2 border-transparent hover:border-accent-500 transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:shadow-accent-500/40 hover:z-10 bg-gh-bg-secondary">
                         @if($item->poster_url)
                         <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
@@ -188,15 +188,6 @@
                 @endforeach
             </div>
         </section>
-        
-        <script>
-        function scrollCarousel(id, amount) {
-            const carousel = document.getElementById(id);
-            if (carousel) {
-                carousel.scrollBy({ left: amount, behavior: 'smooth' });
-            }
-        }
-        </script>
         @endif
         
         <!-- Featured & Latest in Compact Grid -->

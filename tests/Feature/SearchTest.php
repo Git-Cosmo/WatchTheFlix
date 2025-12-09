@@ -12,9 +12,9 @@ class SearchTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Test that media search does not cause SQL errors with tags field
+     * Test that media search handles all fields (including tags) without SQL errors
      */
-    public function test_media_search_does_not_error_on_tags_field(): void
+    public function test_media_search_handles_all_fields_without_sql_errors(): void
     {
         // Create test media
         $media = Media::create([
