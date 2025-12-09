@@ -19,17 +19,17 @@
         <div class="grid md:grid-cols-3 gap-6 mb-12">
             <div class="card p-6 text-center border-accent-700/30 hover:border-accent-500/50 transition-all">
                 <div class="text-4xl mb-3">📺</div>
-                <div class="text-3xl font-bold text-accent-400 mb-1">{{ \App\Models\TvChannel::active()->count() }}</div>
+                <div class="text-3xl font-bold text-accent-400 mb-1">{{ $stats['active_channels'] }}</div>
                 <div class="text-sm text-dark-400 uppercase tracking-wide">Active Channels</div>
             </div>
             <div class="card p-6 text-center border-accent-700/30 hover:border-accent-500/50 transition-all">
                 <div class="text-4xl mb-3">🎬</div>
-                <div class="text-3xl font-bold text-accent-400 mb-1">{{ \App\Models\TvProgram::where('start_time', '<=', now())->where('end_time', '>=', now())->count() }}</div>
+                <div class="text-3xl font-bold text-accent-400 mb-1">{{ $stats['currently_airing'] }}</div>
                 <div class="text-sm text-dark-400 uppercase tracking-wide">Currently Airing</div>
             </div>
             <div class="card p-6 text-center border-accent-700/30 hover:border-accent-500/50 transition-all">
                 <div class="text-4xl mb-3">🗓️</div>
-                <div class="text-3xl font-bold text-accent-400 mb-1">{{ \App\Models\TvProgram::where('start_time', '>', now())->where('start_time', '<=', now()->addDays(7))->count() }}</div>
+                <div class="text-3xl font-bold text-accent-400 mb-1">{{ $stats['upcoming_week'] }}</div>
                 <div class="text-sm text-dark-400 uppercase tracking-wide">Upcoming (7 Days)</div>
             </div>
         </div>
@@ -45,7 +45,7 @@
                         <h2 class="text-4xl font-bold mb-4 text-white group-hover:text-accent-400 transition-colors">UK TV Guide</h2>
                         <p class="text-gh-text-muted text-lg mb-6">BBC, ITV, Channel 4, Sky, and more</p>
                         <div class="inline-flex items-center text-accent-400 font-semibold">
-                            Browse {{ \App\Models\TvChannel::active()->where('country', 'UK')->count() }} channels
+                            Browse {{ $stats['uk_channels'] }} channels
                             <svg class="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>
@@ -63,7 +63,7 @@
                         <h2 class="text-4xl font-bold mb-4 text-white group-hover:text-accent-400 transition-colors">US TV Guide</h2>
                         <p class="text-gh-text-muted text-lg mb-6">ABC, CBS, NBC, FOX, CNN, and more</p>
                         <div class="inline-flex items-center text-accent-400 font-semibold">
-                            Browse {{ \App\Models\TvChannel::active()->where('country', 'US')->count() }} channels
+                            Browse {{ $stats['us_channels'] }} channels
                             <svg class="ml-2 h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                             </svg>

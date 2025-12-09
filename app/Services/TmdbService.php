@@ -383,6 +383,9 @@ class TmdbService
         }
 
         // Keywords (will be synced to tags)
+        // TMDB returns keywords in different structures for movies vs TV shows:
+        // - Movies: keywords are in $tmdbData['keywords']['keywords']
+        // - TV shows: keywords are in $tmdbData['keywords']['results']
         if (isset($tmdbData['keywords']['keywords'])) {
             $data['keywords'] = array_slice(array_column($tmdbData['keywords']['keywords'], 'name'), 0, 10);
         }

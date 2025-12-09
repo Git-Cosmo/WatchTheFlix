@@ -93,9 +93,7 @@
             <!-- Directors Section -->
             @if($media->crew && count($media->crew) > 0)
             @php
-                $directors = collect($media->crew)->filter(function($person) {
-                    return isset($person['job']) && $person['job'] === 'Director';
-                })->take(3);
+                $directors = $media->getDirectors();
             @endphp
             @if($directors->isNotEmpty())
             <div class="mb-6">
@@ -414,11 +412,7 @@
         </h2>
         <div class="aspect-video bg-dark-900 rounded-lg overflow-hidden">
             @php
-                // Extract YouTube video ID from URL
-                $videoId = null;
-                if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?\/]+)/', $media->trailer_url, $matches)) {
-                    $videoId = $matches[1];
-                }
+                $videoId = $media->getTrailerYoutubeId();
             @endphp
             @if($videoId)
             <iframe 

@@ -102,7 +102,7 @@ Route::get('/tv-guide/channel/{channel}', [TvGuideController::class, 'channel'])
 Route::get('/tv-guide/search', [TvGuideController::class, 'search'])->name('tv-guide.search');
 
 // Global Search (Public Access)
-Route::get(/search, [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
+Route::get('/search', [App\Http\Controllers\SearchController::class, 'index'])->name('search.index');
 
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

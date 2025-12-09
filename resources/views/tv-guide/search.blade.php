@@ -38,8 +38,8 @@
             >
             <select name="country" class="input-field md:w-48">
                 <option value="">All Countries</option>
-                <option value="uk" {{ $country === 'uk' ? 'selected' : '' }}>UK</option>
-                <option value="us" {{ $country === 'us' ? 'selected' : '' }}>US</option>
+                <option value="uk" {{ $country == 'uk' ? 'selected' : '' }}>UK</option>
+                <option value="us" {{ $country == 'us' ? 'selected' : '' }}>US</option>
             </select>
             <button type="submit" class="btn-primary px-8 whitespace-nowrap">
                 <svg class="h-5 w-5 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -18,7 +18,20 @@ class TvGuideController extends Controller
      */
     public function index()
     {
-        return view('tv-guide.index');
+        // Calculate statistics in controller for performance
+        $stats = [
+            'active_channels' => TvChannel::active()->count(),
+            'currently_airing' => TvProgram::where('start_time', '<=', now())
+                ->where('end_time', '>=', now())
+                ->count(),
+            'upcoming_week' => TvProgram::where('start_time', '>', now())
+                ->where('start_time', '<=', now()->addDays(7))
+                ->count(),
+            'uk_channels' => TvChannel::active()->where('country', 'UK')->count(),
+            'us_channels' => TvChannel::active()->where('country', 'US')->count(),
+        ];
+
+        return view('tv-guide.index', compact('stats'));
     }
 
     /**

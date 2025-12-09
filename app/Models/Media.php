@@ -218,22 +218,38 @@ class Media extends Model
     }
 
     /**
-     * Get the value used to index the model.
+     * Get directors from crew data
      *
-     * @return mixed
+     * @return \Illuminate\Support\Collection
      */
-    public function getScoutKey(): mixed
+    public function getDirectors()
     {
-        return $this->id;
+        if (!$this->crew || count($this->crew) === 0) {
+            return collect([]);
+        }
+
+        return collect($this->crew)
+            ->filter(function ($person) {
+                return isset($person['job']) && $person['job'] === 'Director';
+            })
+            ->take(3);
     }
 
     /**
-     * Get the key name used to index the model.
+     * Extract YouTube video ID from trailer URL
      *
-     * @return string
+     * @return string|null
      */
-    public function getScoutKeyName(): string
+    public function getTrailerYoutubeId(): ?string
     {
-        return 'id';
+        if (!$this->trailer_url) {
+            return null;
+        }
+
+        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?\/]+)/', $this->trailer_url, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }
