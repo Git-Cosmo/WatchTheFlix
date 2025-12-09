@@ -11,6 +11,166 @@ use Illuminate\Support\Facades\Auth;
 
 class MediaController extends Controller
 {
+    public function movies(Request $request)
+    {
+        $query = Media::published()->where('type', 'movie')->with('platforms');
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%'.$request->search.'%');
+        }
+
+        // Genre filter
+        if ($request->filled('genre')) {
+            $query->whereJsonContains('genres', $request->genre);
+        }
+
+        // Year range filter
+        if ($request->filled('year_from')) {
+            $query->where('release_year', '>=', $request->year_from);
+        }
+        if ($request->filled('year_to')) {
+            $query->where('release_year', '<=', $request->year_to);
+        }
+
+        // Rating filter (minimum IMDb rating)
+        if ($request->filled('min_rating')) {
+            $query->where('imdb_rating', '>=', $request->min_rating);
+        }
+
+        // Platform filter
+        if ($request->filled('platform')) {
+            $query->whereHas('platforms', function ($q) use ($request) {
+                $q->where('platforms.id', $request->platform);
+            });
+        }
+
+        // Add sorting
+        $sortBy = $request->get('sort', 'latest');
+        switch ($sortBy) {
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'rating':
+                $query->orderBy('imdb_rating', 'desc');
+                break;
+            case 'year':
+                $query->orderBy('release_year', 'desc');
+                break;
+            case 'oldest':
+                $query->oldest();
+                break;
+            default:
+                $query->latest();
+        }
+
+        $media = $query->paginate(24)->withQueryString();
+
+        // Get available genres for filter (cached for performance)
+        $allGenres = cache()->remember('movies_genres', 3600, function () {
+            return Media::published()
+                ->where('type', 'movie')
+                ->get()
+                ->pluck('genres')
+                ->flatten()
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values();
+        });
+
+        // Get available platforms for filter
+        $platforms = \App\Models\Platform::active()->ordered()->get();
+
+        // Get year range
+        $yearRange = [
+            'min' => Media::published()->where('type', 'movie')->min('release_year') ?? 1900,
+            'max' => Media::published()->where('type', 'movie')->max('release_year') ?? date('Y'),
+        ];
+
+        return view('media.movies', compact('media', 'allGenres', 'platforms', 'yearRange'));
+    }
+
+    public function tvShows(Request $request)
+    {
+        $query = Media::published()->where('type', 'series')->with('platforms');
+
+        // Search filter
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%'.$request->search.'%');
+        }
+
+        // Genre filter
+        if ($request->filled('genre')) {
+            $query->whereJsonContains('genres', $request->genre);
+        }
+
+        // Year range filter
+        if ($request->filled('year_from')) {
+            $query->where('release_year', '>=', $request->year_from);
+        }
+        if ($request->filled('year_to')) {
+            $query->where('release_year', '<=', $request->year_to);
+        }
+
+        // Rating filter (minimum IMDb rating)
+        if ($request->filled('min_rating')) {
+            $query->where('imdb_rating', '>=', $request->min_rating);
+        }
+
+        // Platform filter
+        if ($request->filled('platform')) {
+            $query->whereHas('platforms', function ($q) use ($request) {
+                $q->where('platforms.id', $request->platform);
+            });
+        }
+
+        // Add sorting
+        $sortBy = $request->get('sort', 'latest');
+        switch ($sortBy) {
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'rating':
+                $query->orderBy('imdb_rating', 'desc');
+                break;
+            case 'year':
+                $query->orderBy('release_year', 'desc');
+                break;
+            case 'oldest':
+                $query->oldest();
+                break;
+            default:
+                $query->latest();
+        }
+
+        $media = $query->paginate(24)->withQueryString();
+
+        // Get available genres for filter (cached for performance)
+        $allGenres = cache()->remember('tv_shows_genres', 3600, function () {
+            return Media::published()
+                ->where('type', 'series')
+                ->get()
+                ->pluck('genres')
+                ->flatten()
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values();
+        });
+
+        // Get available platforms for filter
+        $platforms = \App\Models\Platform::active()->ordered()->get();
+
+        // Get year range
+        $yearRange = [
+            'min' => Media::published()->where('type', 'series')->min('release_year') ?? 1900,
+            'max' => Media::published()->where('type', 'series')->max('release_year') ?? date('Y'),
+        ];
+
+        return view('media.tv-shows', compact('media', 'allGenres', 'platforms', 'yearRange'));
+    }
+
     public function index(Request $request)
     {
         $query = Media::published()->with('platforms');

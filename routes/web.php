@@ -33,6 +33,13 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Public Media Browsing (Guest Access)
+Route::get('/media', [MediaController::class, 'index'])->name('media.index');
+Route::get('/movies', [MediaController::class, 'movies'])->name('movies.index');
+Route::get('/tv-shows', [MediaController::class, 'tvShows'])->name('tv-shows.index');
+Route::get('/movies/{media:slug}', [MediaController::class, 'show'])->name('media.show');
+Route::get('/tv-show/{media:slug}', [MediaController::class, 'show'])->name('media.show.series');
+
 // Authenticated User Routes
 Route::middleware('auth')->group(function () {
     // Profile
@@ -50,10 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/recovery-codes/regenerate', [\App\Http\Controllers\TwoFactorAuthController::class, 'regenerateRecoveryCodes'])->name('recovery-codes.regenerate');
     });
 
-    // Media
-    Route::get('/media', [MediaController::class, 'index'])->name('media.index');
-    Route::get('/movies/{media:slug}', [MediaController::class, 'show'])->name('media.show');
-    Route::get('/tv-show/{media:slug}', [MediaController::class, 'show'])->name('media.show.series');
+    // Media Interactions (Auth Required)
     Route::post('/movies/{media:slug}/favorite', [MediaController::class, 'toggleFavorite'])->name('media.favorite');
     Route::post('/movies/{media:slug}/rate', [MediaController::class, 'rate'])->name('media.rate');
     Route::post('/movies/{media:slug}/comment', [MediaController::class, 'comment'])->name('media.comment');
@@ -86,16 +90,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/forum/thread/{thread:slug}/lock', [ForumController::class, 'toggleLock'])->name('forum.lock')->middleware('role:admin');
     Route::delete('/forum/thread/{thread:slug}', [ForumController::class, 'destroy'])->name('forum.destroy');
 
-    // TV Guide
-    Route::get('/tv-guide', [TvGuideController::class, 'index'])->name('tv-guide.index');
-    Route::get('/tv-guide/{country}', [TvGuideController::class, 'channels'])->name('tv-guide.channels');
-    Route::get('/tv-guide/channel/{channel}', [TvGuideController::class, 'channel'])->name('tv-guide.channel');
-    Route::get('/tv-guide/search', [TvGuideController::class, 'search'])->name('tv-guide.search');
-
     // Notifications
     Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])
         ->name('notifications.mark-all-read');
 });
+
+// TV Guide (Public Access)
+Route::get('/tv-guide', [TvGuideController::class, 'index'])->name('tv-guide.index');
+Route::get('/tv-guide/{country}', [TvGuideController::class, 'channels'])->name('tv-guide.channels');
+Route::get('/tv-guide/channel/{channel}', [TvGuideController::class, 'channel'])->name('tv-guide.channel');
+Route::get('/tv-guide/search', [TvGuideController::class, 'search'])->name('tv-guide.search');
 
 // Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {

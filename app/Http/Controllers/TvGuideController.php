@@ -50,12 +50,24 @@ class TvGuideController extends Controller
         $todayEnd = now()->endOfDay();
 
         $currentProgram = $channel->currentPrograms()->first();
+        
+        // Calculate progress for current program
+        $progress = 0;
+        if ($currentProgram) {
+            $now = now();
+            $total = $currentProgram->end_time->diffInMinutes($currentProgram->start_time);
+            $elapsed = $currentProgram->start_time->diffInMinutes($now);
+            if ($total > 0) {
+                $progress = min(100, round(($elapsed / $total) * 100));
+            }
+        }
+        
         $upcomingPrograms = $channel->upcomingPrograms()
             ->where('start_time', '<=', $todayEnd)
             ->take(10)
             ->get();
 
-        return view('tv-guide.channel', compact('channel', 'currentProgram', 'upcomingPrograms'));
+        return view('tv-guide.channel', compact('channel', 'currentProgram', 'upcomingPrograms', 'progress'));
     }
 
     /**

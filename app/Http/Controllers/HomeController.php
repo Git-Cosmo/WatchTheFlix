@@ -30,10 +30,9 @@ class HomeController extends Controller
             ->take(12)
             ->get();
 
-        // Featured content - highest rated recent additions
+        // Featured content - highest rated items with IMDB ratings
         $featured = Media::published()
-            ->withAvg('ratings', 'rating')
-            ->having('ratings_avg_rating', '>', 7)
+            ->where('imdb_rating', '>=', 7.0)
             ->latest('created_at')
             ->take(8)
             ->get();

@@ -42,6 +42,8 @@ export default {
                     'bg': '#0d1117',
                     'bg-secondary': '#161b22',
                     'bg-tertiary': '#21262d',
+                    'bg-light': '#32383f',
+                    'bg-lighter': '#424a53',
                     'border': '#30363d',
                     'border-muted': '#21262d',
                     'text': '#c9d1d9',
