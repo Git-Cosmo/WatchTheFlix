@@ -15,15 +15,31 @@ class TvChannel extends Model
     protected $fillable = [
         'name',
         'slug',
+        'channel_id',
         'country',
         'logo_url',
+        'stream_url',
         'channel_number',
         'description',
+        'network',
+        'owners',
+        'categories',
+        'website',
+        'launched',
+        'closed',
         'is_active',
+        'is_nsfw',
+        'last_synced_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_nsfw' => 'boolean',
+        'owners' => 'array',
+        'categories' => 'array',
+        'launched' => 'date',
+        'closed' => 'date',
+        'last_synced_at' => 'datetime',
     ];
 
     public function getSlugOptions(): SlugOptions

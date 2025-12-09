@@ -215,5 +215,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::put('/{channel}', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'update'])->name('update');
         Route::delete('/{channel}', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'destroy'])->name('destroy');
         Route::post('/sync', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'sync'])->name('sync');
+        Route::post('/sync-iptv-channels', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'syncIptvChannels'])->name('sync-iptv-channels');
+        Route::post('/sync-iptv-epg', [\App\Http\Controllers\Admin\TvChannelManagementController::class, 'syncIptvEpg'])->name('sync-iptv-epg');
+    });
+
+    // TV Program Management
+    Route::prefix('tv-programs')->name('tv-programs.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'index'])->name('index');
+        Route::get('/create', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'create'])->name('create');
+        Route::post('/', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'store'])->name('store');
+        Route::get('/{program}/edit', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'edit'])->name('edit');
+        Route::put('/{program}', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'update'])->name('update');
+        Route::delete('/{program}', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-delete-old', [\App\Http\Controllers\Admin\TvProgramManagementController::class, 'bulkDeleteOld'])->name('bulk-delete-old');
     });
 });
