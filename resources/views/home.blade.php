@@ -107,51 +107,96 @@
             </button>
         </div>
         
-        <!-- Trending Section - Horizontal Scroll -->
+        <!-- Trending Section - Modern Carousel -->
         @if($trending->count() > 0)
-        <section class="mb-6">
-            <div class="flex items-center justify-between mb-3">
-                <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                    <span class="text-xl">🔥</span> Trending Now
+        <section class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-2xl md:text-3xl font-bold text-white flex items-center gap-3">
+                    <span class="text-2xl md:text-3xl animate-pulse">🔥</span> 
+                    <span class="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Trending Now</span>
                 </h2>
-                <span class="text-xs text-gh-text-muted">{{ $trending->count() }} items</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-gh-text-muted px-3 py-1 bg-gh-bg-light rounded-full">{{ $trending->count() }} items</span>
+                    <button onclick="scrollCarousel('trending-carousel', -300)" class="p-2 bg-gh-bg-light hover:bg-accent-500 rounded-full transition-colors duration-200">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg>
+                    </button>
+                    <button onclick="scrollCarousel('trending-carousel', 300)" class="p-2 bg-gh-bg-light hover:bg-accent-500 rounded-full transition-colors duration-200">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div class="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-accent-500 scrollbar-track-gh-bg">
-                @foreach($trending as $item)
-                <a href="{{ $item->getRouteUrl() }}" class="group flex-shrink-0 block w-28 sm:w-32">
-                    <div class="relative overflow-hidden rounded-lg aspect-[2/3] border border-gh-border hover:border-accent-500 transition-all duration-200 hover:scale-105 hover:shadow-lg hover:shadow-accent-500/50">
+            <div id="trending-carousel" class="flex gap-4 overflow-x-auto pb-4 scroll-smooth snap-x snap-mandatory scrollbar-thin scrollbar-thumb-accent-500 scrollbar-track-gh-bg-light rounded-lg" style="scrollbar-width: thin;">
+                @foreach($trending as $index => $item)
+                <a href="{{ $item->getRouteUrl() }}" class="group flex-shrink-0 block w-36 sm:w-44 md:w-52 snap-start">
+                    <div class="relative overflow-hidden rounded-xl aspect-[2/3] border-2 border-transparent hover:border-accent-500 transition-all duration-300 hover:scale-110 hover:shadow-2xl hover:shadow-accent-500/40 hover:z-10 bg-gh-bg-secondary">
                         @if($item->poster_url)
                         <img src="{{ $item->poster_url }}" alt="{{ $item->title }}" class="w-full h-full object-cover" loading="lazy">
                         @else
-                        <div class="w-full h-full bg-gh-bg flex items-center justify-center">
-                            <span class="text-xl">🔥</span>
+                        <div class="w-full h-full bg-gradient-to-br from-accent-900 to-gh-bg flex items-center justify-center">
+                            <span class="text-4xl">🔥</span>
                         </div>
                         @endif
-                        <!-- Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
+                        
+                        <!-- Gradient Overlay -->
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-300"></div>
+                        
+                        <!-- Trending Rank Badge -->
+                        <div class="absolute top-2 left-2 w-10 h-10 flex items-center justify-center bg-gradient-to-br from-orange-500 via-red-500 to-pink-600 rounded-lg shadow-lg transform -rotate-6 group-hover:rotate-0 transition-transform duration-300">
+                            <span class="text-white font-black text-lg">{{ $index + 1 }}</span>
+                        </div>
+                        
                         <!-- Rating Badge -->
-                        @if($item->imdb_rating)
-                        <div class="absolute top-1 right-1 flex items-center gap-0.5 px-1 py-0.5 bg-black/90 backdrop-blur-sm rounded text-xs">
-                            <svg class="h-2.5 w-2.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                        @if($item->imdb_rating || $item->vote_average)
+                        <div class="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-black/90 backdrop-blur-md rounded-lg shadow-lg border border-yellow-500/30">
+                            <svg class="h-3.5 w-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
-                            <span class="font-bold text-white text-xs">{{ $item->imdb_rating }}</span>
+                            <span class="font-bold text-white text-sm">{{ number_format($item->imdb_rating ?? $item->vote_average, 1) }}</span>
                         </div>
                         @endif
-                        <!-- Quick Info on Hover -->
-                        <div class="absolute bottom-0 left-0 right-0 p-2 transform translate-y-full group-hover:translate-y-0 transition-transform duration-200">
-                            <h3 class="text-xs font-bold text-white line-clamp-2 mb-0.5">{{ $item->title }}</h3>
-                            <p class="text-xs text-gray-300">{{ $item->release_year }}</p>
+                        
+                        <!-- Content Info -->
+                        <div class="absolute bottom-0 left-0 right-0 p-3 transform translate-y-0 group-hover:translate-y-0 transition-transform duration-300">
+                            <h3 class="text-sm font-bold text-white line-clamp-2 mb-1 drop-shadow-lg">{{ $item->title }}</h3>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-gray-300 font-medium">{{ $item->release_year }}</span>
+                                @if($item->genres && is_array($item->genres) && count($item->genres) > 0)
+                                <span class="text-gray-400">{{ $item->genres[0] }}</span>
+                                @endif
+                            </div>
+                            <!-- Play Button on Hover -->
+                            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-2">
+                                <div class="flex items-center justify-center gap-2 bg-accent-500 hover:bg-accent-600 rounded-lg py-2 px-3 text-sm font-bold">
+                                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                                    </svg>
+                                    Watch
+                                </div>
+                            </div>
                         </div>
-                        <!-- Trending Badge -->
-                        <div class="absolute top-1 left-1 px-1.5 py-0.5 bg-gradient-to-r from-orange-500 to-red-500 rounded text-xs font-bold flex items-center gap-1">
-                            🔥
+                        
+                        <!-- Shine Effect on Hover -->
+                        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 group-hover:translate-x-full transition-transform duration-1000"></div>
                         </div>
                     </div>
                 </a>
                 @endforeach
             </div>
         </section>
+        
+        <script>
+        function scrollCarousel(id, amount) {
+            const carousel = document.getElementById(id);
+            if (carousel) {
+                carousel.scrollBy({ left: amount, behavior: 'smooth' });
+            }
+        }
+        </script>
         @endif
         
         <!-- Featured & Latest in Compact Grid -->

@@ -87,6 +87,75 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - Fixed SQLite compatibility in featured content queries
 - Resolved Blade syntax errors in navigation
 
+### 🎉 Latest Updates - TMDB Import & Search Improvements
+
+#### TMDB Data Import & Display Enhancements
+- **Complete TMDB Data Import**: All available TMDB fields are now imported and stored:
+  - Basic info: title, original title, description, release date, runtime, genres
+  - Media assets: poster, backdrop, trailer (YouTube), logos (up to 5), additional posters/backdrops (up to 10 each)
+  - Cast & crew: Up to 20 cast members with profile photos and character names, crew with roles
+  - Production details: Companies with logos, countries, spoken languages
+  - Financial data: Budget, revenue, box office performance
+  - Ratings: TMDB vote average and count, popularity score
+  - Social links: IMDb ID, Facebook, Instagram, Twitter profiles
+  - Additional metadata: Status, tagline, original language
+  - TV-specific: Number of seasons, episodes, first/last air dates
+  - Keywords: Auto-synced as searchable tags for better discovery
+
+- **Rich Media Display Pages**: All imported data is now fully displayed on show pages:
+  - Dual rating display (TMDB + IMDb if available)
+  - Cast grid with profile photos and character names
+  - Production company logos
+  - Budget/revenue statistics
+  - Social media links with branded icons
+  - External links section (IMDb, Facebook, Instagram, Twitter)
+  - Keywords/tags section for discovery
+  - Director highlights with dedicated section
+  - Enhanced metadata grid (language, status, seasons/episodes for TV)
+
+#### Platform Availability Features
+- **Streaming Platform Info**: Full integration with TMDB watch providers
+  - Automatically attaches platforms during seeding (Netflix, Prime, Hulu, Disney+, HBO Max, etc.)
+  - Display section on media pages showing where content is available
+  - Platform logos and subscription requirements clearly indicated
+  - Direct links to content on each streaming service
+  - Supports 9 major streaming platforms with easy expansion
+
+#### Modern Trending Carousel
+- **Completely Redesigned Trending Section**:
+  - Larger, more prominent cards (36-52 units wide vs 28-32)
+  - Animated gradient title with pulsing fire emoji
+  - Numbered ranking badges (1-N) with rotating animation on hover
+  - Navigation arrows for smooth carousel scrolling
+  - Smooth scroll behavior with snap points
+  - Enhanced hover effects:
+    - 110% scale on hover with smooth transitions
+    - Dramatic shadow effects (accent-500/40)
+    - Gradient overlays intensify on interaction
+    - "Watch" button appears with play icon
+    - Shine/shimmer effect animation
+  - Rank badges with gradient (orange→red→pink) and rotation effect
+  - Genre display alongside year
+  - Better rating badges with backdrop blur and border
+  - Comprehensive metadata display (title, year, genre, rating)
+  - Scroll controls for easy navigation
+
+#### Search Error Fix
+- **Fixed Scout Database Driver Compatibility**: 
+  - Removed `tags` field from `toSearchableArray()` method which was causing SQL errors
+  - Error was: `SQLSTATE[42S22]: Column not found: 1054 Unknown column 'media.tags'`
+  - Tags are stored in separate table via Spatie Tags package, not as column
+  - Converted array fields (genres, cast, crew) to strings for proper database searching
+  - Search now works flawlessly across title, description, type, genres, year, cast, and crew
+  - Maintains full search functionality with proper Scout database driver support
+
+#### Documentation Updates
+- Complete TMDB field documentation in README
+- Platform availability feature description
+- Trending carousel showcase
+- Search troubleshooting guide
+- Seeding instructions with TMDB integration details
+
 ## Features
 
 ### 🔍 Search & Discovery
@@ -1011,6 +1080,32 @@ chmod -R 755 storage bootstrap/cache
 - Verify API key at themoviedb.org/settings/api
 - Check API key is entered correctly in Admin Settings
 - Ensure no extra spaces or characters in the API key
+
+**Search not working / SQL column error**
+- **Symptom**: Error message like `Column not found: 1054 Unknown column 'media.tags'`
+- **Cause**: Scout database driver trying to search non-existent columns
+- **Fix**: This has been fixed in the latest version. Ensure you're running the latest code where `Media::toSearchableArray()` properly converts array fields to strings
+- **Alternative**: If using production, consider using Meilisearch or Algolia instead of the database driver:
+  ```env
+  SCOUT_DRIVER=meilisearch  # or algolia
+  ```
+- Clear search index if issues persist:
+  ```bash
+  php artisan scout:flush "App\Models\Media"
+  php artisan scout:import "App\Models\Media"
+  ```
+
+**Platform availability not showing**
+- Ensure TMDB API key is configured
+- Re-run seeder to import media with platform data: `php artisan db:seed --class=TmdbMediaSeeder`
+- Check that Platform model has records: `php artisan tinker` → `App\Models\Platform::count()`
+- Verify `media_platform` pivot table has records
+
+**Trending carousel not appearing**
+- Ensure media records exist with `popularity` or `imdb_rating` values
+- Check `$trending` variable is passed to home view in HomeController
+- Clear view cache: `php artisan view:clear`
+- Verify JavaScript is enabled in browser
 
 ## Contributing
 
