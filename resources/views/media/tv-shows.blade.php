@@ -149,13 +149,7 @@
                         <span>{{ $item->runtime }} min</span>
                         @endif
                     </div>
-                    @if($item->genres && is_array($item->genres) && count($item->genres) > 0)
-                    <div class="flex flex-wrap gap-1 pt-1">
-                        @foreach(array_slice($item->genres, 0, 2) as $genre)
-                        <span class="text-xs px-2 py-0.5 bg-gh-bg-tertiary rounded-full text-gh-text-muted">{{ $genre }}</span>
-                        @endforeach
-                    </div>
-                    @endif
+                    <x-genre-badges :genres="$item->genres" :limit="2" />
                 </div>
             </div>
         </a>

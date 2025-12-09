@@ -66,15 +66,18 @@ class MediaController extends Controller
 
         $media = $query->paginate(24)->withQueryString();
 
-        // Get available genres for filter
-        $allGenres = Media::published()
-            ->where('type', 'movie')
-            ->get()
-            ->pluck('genres')
-            ->flatten()
-            ->unique()
-            ->sort()
-            ->values();
+        // Get available genres for filter (cached for performance)
+        $allGenres = cache()->remember('movies_genres', 3600, function () {
+            return Media::published()
+                ->where('type', 'movie')
+                ->get()
+                ->pluck('genres')
+                ->flatten()
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values();
+        });
 
         // Get available platforms for filter
         $platforms = \App\Models\Platform::active()->ordered()->get();
@@ -143,15 +146,18 @@ class MediaController extends Controller
 
         $media = $query->paginate(24)->withQueryString();
 
-        // Get available genres for filter
-        $allGenres = Media::published()
-            ->where('type', 'series')
-            ->get()
-            ->pluck('genres')
-            ->flatten()
-            ->unique()
-            ->sort()
-            ->values();
+        // Get available genres for filter (cached for performance)
+        $allGenres = cache()->remember('tv_shows_genres', 3600, function () {
+            return Media::published()
+                ->where('type', 'series')
+                ->get()
+                ->pluck('genres')
+                ->flatten()
+                ->filter()
+                ->unique()
+                ->sort()
+                ->values();
+        });
 
         // Get available platforms for filter
         $platforms = \App\Models\Platform::active()->ordered()->get();

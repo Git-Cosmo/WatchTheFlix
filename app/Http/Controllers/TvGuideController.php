@@ -56,7 +56,7 @@ class TvGuideController extends Controller
         if ($currentProgram) {
             $now = now();
             $total = $currentProgram->end_time->diffInMinutes($currentProgram->start_time);
-            $elapsed = $now->diffInMinutes($currentProgram->start_time);
+            $elapsed = $currentProgram->start_time->diffInMinutes($now);
             if ($total > 0) {
                 $progress = min(100, round(($elapsed / $total) * 100));
             }
