@@ -235,15 +235,36 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 - **Channel Information**: Access channel numbers, descriptions, and logos
 - **Search Functionality**: Find specific programs across all channels
 - **Country Filtering**: Filter programs by country (UK/US)
+- **IPTV-ORG API Integration**: ✨ **NEW** - Sync channels from iptv-org database
+  - **642 UK Channels**: Full UK channel catalog from IPTV-ORG
+  - **Popular US Channels**: Curated selection of mainstream US channels
+  - **Rich Metadata**: Network affiliations, categories, owners, launch dates
+  - **Channel Logos**: Automatic logo URLs from IPTV-ORG CDN
+  - **Smart Filtering**: Filters out NSFW content and closed channels
+  - **One-Click Sync**: Admin UI buttons for instant channel import
+  - **Idempotent Updates**: Safely re-sync without duplicates
+  - **EPG Guide Discovery**: Automatic EPG guide detection for channels
 - **Admin Channel Management**: Full CRUD interface for TV channels
-  - Add, edit, and remove channels
-  - Bulk EPG sync from external providers
+  - Add, edit, and remove channels manually
+  - Bulk channel sync from IPTV-ORG API (`php artisan iptv:sync-channels`)
+  - Bulk EPG sync from IPTV-ORG guides (`php artisan iptv:sync-epg`)
+  - Bulk EPG sync from XMLTV providers (`php artisan epg:update`)
   - Channel statistics and program counts
   - Active/inactive status management
-- **Automated EPG Updates**: Scheduled XMLTV data fetching (daily at 3:00 AM)
-  - Configure via `EPG_PROVIDER_URL` in `.env`
-  - Manual updates: `php artisan epg:update`
-  - Admin UI sync button for on-demand updates
+  - Last sync timestamp tracking
+- **Admin Program Management**: ✨ **NEW** - Complete EPG program CRUD
+  - View all EPG programs with filtering
+  - Filter by channel, genre, date range
+  - Create, edit, delete individual programs
+  - Bulk delete old programs (configurable age)
+  - Program status indicators (On Air, Upcoming, Ended)
+  - Series information support (season/episode numbers)
+  - Premiere and repeat flags
+- **Automated EPG Updates**: Multiple sync options
+  - **IPTV-ORG Sync**: `php artisan iptv:sync-channels` and `php artisan iptv:sync-epg`
+  - **XMLTV Sync**: Scheduled XMLTV data fetching (daily at 3:00 AM via `php artisan epg:update`)
+  - Configure XMLTV via `EPG_PROVIDER_URL` in `.env`
+  - Admin UI sync buttons for on-demand updates
   - See [EPG_SETUP.md](EPG_SETUP.md) for detailed configuration
 
 ### 🎯 Platform Availability
@@ -669,6 +690,164 @@ WatchTheFlix supports standard **XMLTV format** EPG data. The EPG service:
 - ⏰ **EPG Reminders**: Set reminders for upcoming programs
 
 **For detailed EPG setup instructions, see [EPG_SETUP.md](EPG_SETUP.md)**
+
+### IPTV-ORG API Integration ✅ NEW
+
+WatchTheFlix now integrates with the [IPTV-ORG database](https://github.com/iptv-org/api) to provide comprehensive channel metadata and EPG guide discovery.
+
+#### What is IPTV-ORG?
+
+IPTV-ORG is a community-maintained database of TV channels worldwide with rich metadata including:
+- Channel names, logos, and IDs
+- Network affiliations and ownership
+- Categories and launch dates
+- Stream URLs and EPG guide information
+- Country and language data
+
+#### Features
+
+- 🇬🇧 **642 UK Channels**: Complete UK channel catalog
+- 🇺🇸 **Popular US Channels**: Curated mainstream US channels (filtered)
+- 🎯 **Smart Filtering**: Automatically excludes NSFW and closed channels
+- 🔄 **One-Click Sync**: Import channels directly from admin panel
+- 📊 **Rich Metadata**: Network, owners, categories, launch dates
+- 🖼️ **Automatic Logos**: Channel logos from IPTV-ORG CDN
+- 📺 **EPG Discovery**: Find EPG guides for imported channels
+- ⚡ **Idempotent Updates**: Safe to re-sync without duplicates
+
+#### Setup
+
+No configuration needed! The IPTV-ORG API is public and doesn't require authentication.
+
+#### Sync Channels
+
+**Option 1: Admin Panel (Recommended)**
+
+1. Log in as admin
+2. Navigate to **Admin → TV Channels**
+3. Click **"Sync Channels from IPTV-ORG"** button
+4. Wait for sync to complete
+
+**Option 2: Artisan Commands**
+
+```bash
+# Sync all UK channels and popular US channels (default)
+php artisan iptv:sync-channels --popular-us-only
+
+# Sync specific countries
+php artisan iptv:sync-channels --country=UK --country=US
+
+# Force update existing channels
+php artisan iptv:sync-channels --force
+
+# Sync only UK channels
+php artisan iptv:sync-channels --country=UK
+```
+
+#### Sync EPG Guides
+
+```bash
+# Discover EPG guides for all synced channels
+php artisan iptv:sync-epg
+
+# Limit to first 50 channels
+php artisan iptv:sync-epg --limit=50
+
+# Sync specific channel
+php artisan iptv:sync-epg --channel-id=BBCOne.uk
+```
+
+**Note**: IPTV-ORG provides EPG guide metadata but not the actual program data. For full EPG data, configure `EPG_PROVIDER_URL` and use `php artisan epg:update`.
+
+#### Popular US Channel Criteria
+
+US channels are filtered using these criteria to ensure quality:
+- ✅ Non-NSFW content only
+- ✅ Active channels (not closed)
+- ✅ Major categories: news, sports, entertainment, general, business, documentary
+- ✅ Has network or owner information (indicates mainstream channel)
+
+This ensures you get high-quality, mainstream channels without inappropriate content.
+
+#### Command Options
+
+**`iptv:sync-channels`**
+- `--country=COUNTRY`: Specify countries to sync (UK, US) - repeatable
+- `--popular-us-only`: Apply filtering for US channels
+- `--force`: Force update existing channels
+
+**`iptv:sync-epg`**
+- `--channel-id=ID`: Sync specific channel only
+- `--limit=N`: Limit number of channels to process
+
+#### Admin Panel Features
+
+**TV Channels Management**
+- View all channels with country, status, and sync date
+- Create, edit, delete channels manually
+- One-click IPTV-ORG sync buttons
+- Filter and search channels
+- View channel statistics
+
+**TV Programs Management** (NEW)
+- View all EPG programs with filters
+- Filter by channel, genre, date range
+- Create, edit, delete programs manually
+- Bulk delete old programs
+- Program status indicators (On Air, Upcoming, Ended)
+- Series information support
+
+#### Integration Benefits
+
+- 🎯 **No Manual Entry**: Instantly import 642+ UK channels
+- ✨ **Rich Metadata**: Get network, categories, and more
+- 🔄 **Stay Updated**: Re-sync to get latest channel info
+- 🖼️ **Professional Logos**: Automatic logo URLs
+- 📺 **EPG Ready**: Discover EPG guides for channels
+- ⚡ **Fast Setup**: Get comprehensive channel list in minutes
+
+#### Technical Details
+
+**Data Stored:**
+- Channel ID (IPTV-ORG unique identifier)
+- Channel name and slug
+- Country code (UK, US)
+- Logo URL
+- Stream URL (if available)
+- Network affiliation
+- Owners (array)
+- Categories (array)
+- Website URL
+- Launch date
+- Closed date
+- Is NSFW flag
+- Last synced timestamp
+
+**API Endpoints Used:**
+- `https://iptv-org.github.io/api/channels.json` - Channel data
+- `https://iptv-org.github.io/api/guides.json` - EPG guide metadata
+- `https://iptv-org.github.io/api/streams.json` - Stream URLs
+
+**Logo URL Format:**
+```
+https://iptv-org.github.io/iptv/logos/{channel_id}.png
+```
+
+#### Troubleshooting
+
+**No channels imported:**
+- Check internet connection
+- Verify IPTV-ORG API is accessible: `curl https://iptv-org.github.io/api/channels.json`
+- Check Laravel logs in `storage/logs/laravel.log`
+
+**Duplicate channels:**
+- Use `--force` flag to update existing channels
+- Channels are matched by `channel_id` or `name + country`
+
+**Missing logos:**
+- Logos are automatically generated using IPTV-ORG CDN
+- Some channels may not have logos in the database
+- You can manually upload logos via admin panel
 
 ### SEO Features ✅ NEW
 
