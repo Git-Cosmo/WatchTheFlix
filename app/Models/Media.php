@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Sluggable\HasSlug;
@@ -13,7 +14,7 @@ use Spatie\Tags\HasTags;
 
 class Media extends Model
 {
-    use HasFactory, HasSlug, HasTags, LogsActivity, SoftDeletes;
+    use HasFactory, HasSlug, HasTags, LogsActivity, Searchable, SoftDeletes;
 
     protected $fillable = [
         'title',
@@ -194,5 +195,61 @@ class Media extends Model
         // Both 'series' and 'episode' types use the series route name
         // This maintains a clean URL structure for all episodic content
         return 'media.show.series';
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'type' => $this->type,
+            'genres' => $this->genres,
+            'release_year' => $this->release_year,
+            'cast' => $this->cast ? array_column($this->cast, 'name') : [],
+            'crew' => $this->crew ? array_column($this->crew, 'name') : [],
+            'tags' => $this->tags->pluck('name')->toArray(),
+        ];
+    }
+
+    /**
+     * Get directors from crew data
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDirectors()
+    {
+        if (!$this->crew || count($this->crew) === 0) {
+            return collect([]);
+        }
+
+        return collect($this->crew)
+            ->filter(function ($person) {
+                return isset($person['job']) && $person['job'] === 'Director';
+            })
+            ->take(3);
+    }
+
+    /**
+     * Extract YouTube video ID from trailer URL
+     *
+     * @return string|null
+     */
+    public function getTrailerYoutubeId(): ?string
+    {
+        if (!$this->trailer_url) {
+            return null;
+        }
+
+        if (preg_match('/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\?\/]+)/', $this->trailer_url, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }

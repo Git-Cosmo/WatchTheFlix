@@ -68,6 +68,12 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 ## Recent Updates (December 2025)
 
+### 🔍 Major Search & Discovery Enhancements
+- **Site-Wide Search**: Comprehensive Laravel Scout-powered search across all content types
+- **Smart Search Results**: Categorized results for movies, TV shows, channels, programs, and forum threads
+- **Enhanced Media Pages**: TMDB-style layouts with trailers, directors, keywords, and comprehensive metadata
+- **Rich TV Guide**: Live statistics, enhanced program cards, and better visual design
+
 ### 🎨 Major UI Overhaul
 - **Netflix-Inspired Homepage**: Immersive hero section with featured content backdrop, large titles, and action buttons
 - **Separate Navigation**: Distinct "Movies" and "TV Shows" menu items replacing generic "Browse"
@@ -83,12 +89,31 @@ A full-featured Laravel 12 streaming platform inspired by Stremio, with Real-Deb
 
 ## Features
 
+### 🔍 Search & Discovery
+- **Site-Wide Search**: Laravel Scout-powered search across all content
+  - Search movies, TV shows, channels, programs, forum threads, and users
+  - Categorized results with type filters
+  - Fast, indexed search for instant results
+  - Smart relevance ranking
+- **Advanced Filtering**: Genre, year, rating, and platform-based filters
+- **Quick Search**: Navbar search with instant access from any page
+
 ### 🎬 Core Streaming Features
 - **Media Catalog**: Browse movies, TV series, and episodes with rich metadata
   - **Dedicated Pages**: Separate /movies and /tv-shows routes with filtered content
   - **Public Access**: Guests can browse all content without signing up
+  - **Enhanced Details**: TMDB-style layout with overview, cast, crew, trailers, and keywords
+  - **Director Highlights**: Key crew members prominently displayed
+  - **Keyword Tags**: Searchable tags imported from TMDB for better discovery
+  - **Trailer Integration**: Embedded YouTube trailers on media pages
+  - **Multiple Images**: Access to posters, backdrops, and logos
+  - **Comprehensive Metadata**: Status, tagline, budget, revenue, production details
 - **Platform Availability**: See which streaming services (Netflix, Prime, Hulu, etc.) offer each title
 - **TV Guide**: Browse UK and US TV channels with program schedules
+  - **Live Statistics**: Real-time counts of active channels and current programs
+  - **Enhanced Program Cards**: Rich metadata display with genres, ratings, and descriptions
+  - **"Live Now" Indicators**: Visual indicators for currently airing programs
+  - **Smart Search**: Search across all TV programs with filters
 - **Watchlists**: Create and manage personal watchlists
 - **Favorites**: Mark your favorite content
 - **Ratings**: Rate content on a 1-10 scale
@@ -281,6 +306,9 @@ WatchTheFlix is production-ready with the following infrastructure:
 ### Infrastructure Packages ✅
 - ✅ **Laravel Sanctum**: API token authentication for Xtream Codes and external integrations
 - ✅ **Laravel Scout**: Full-text search capabilities (database/Meilisearch/Algolia support)
+  - Enabled on Media, TvChannel, TvProgram, ForumThread, and User models
+  - Database driver by default (no additional setup required)
+  - Optional Meilisearch/Algolia for production performance
 - ✅ **Intervention Image**: Automatic image optimization and processing
 - ✅ **Redis Support**: Production-ready caching, sessions, and queue management
 - ✅ **Video.js Player**: Professional HTML5 video player with HLS/DASH streaming
@@ -623,6 +651,85 @@ Real-Debrid integration is **optional** - the platform works fully without it. E
 5. Save settings
 
 **Note**: Real-Debrid is a user-level setting. Each user decides whether to enable it for their account.
+
+### Laravel Scout Configuration
+
+WatchTheFlix uses Laravel Scout for site-wide search across media, channels, programs, forum threads, and users.
+
+#### Default Configuration (Database Driver)
+
+By default, Scout uses the `database` driver which requires **no additional setup**. This works well for:
+- Development environments
+- Small to medium deployments (< 10,000 records)
+- Quick prototyping
+
+Search is enabled on:
+- **Media**: Movies and TV shows (title, description, genres, cast, crew, tags)
+- **TV Channels**: Channel names and descriptions
+- **TV Programs**: Program titles, descriptions, genres
+- **Forum Threads**: Thread titles and bodies
+- **Users**: Names, emails, bios (admin search only)
+
+#### Production Configuration (Meilisearch/Algolia)
+
+For production deployments with large datasets, use Meilisearch or Algolia for better performance:
+
+**Meilisearch Setup**:
+```bash
+# Install Meilisearch (via Docker)
+docker run -d -p 7700:7700 getmeili/meilisearch:latest
+
+# Update .env
+SCOUT_DRIVER=meilisearch
+MEILISEARCH_HOST=http://127.0.0.1:7700
+MEILISEARCH_KEY=your_master_key
+
+# Index existing data
+php artisan scout:import "App\Models\Media"
+php artisan scout:import "App\Models\TvChannel"
+php artisan scout:import "App\Models\TvProgram"
+php artisan scout:import "App\Models\ForumThread"
+```
+
+**Algolia Setup**:
+```bash
+# Update .env
+SCOUT_DRIVER=algolia
+ALGOLIA_APP_ID=your_app_id
+ALGOLIA_SECRET=your_admin_api_key
+
+# Index existing data
+php artisan scout:import "App\Models\Media"
+php artisan scout:import "App\Models\TvChannel"
+php artisan scout:import "App\Models\TvProgram"
+php artisan scout:import "App\Models\ForumThread"
+```
+
+#### Search Features
+
+- **Site-Wide Search**: Access via `/search?q=query`
+- **Type Filtering**: Filter by media, channels, programs, forum threads
+- **Relevance Ranking**: Results sorted by relevance automatically
+- **Pagination**: Each result type paginated independently
+- **Real-Time Updates**: New content automatically indexed
+- **Fast Performance**: Sub-100ms search queries with Meilisearch/Algolia
+
+#### Reindexing
+
+When you need to rebuild search indexes:
+```bash
+# Flush all indexes
+php artisan scout:flush "App\Models\Media"
+php artisan scout:flush "App\Models\TvChannel"
+php artisan scout:flush "App\Models\TvProgram"
+php artisan scout:flush "App\Models\ForumThread"
+
+# Re-import all data
+php artisan scout:import "App\Models\Media"
+php artisan scout:import "App\Models\TvChannel"
+php artisan scout:import "App\Models\TvProgram"
+php artisan scout:import "App\Models\ForumThread"
+```
 
 ### Admin Features
 

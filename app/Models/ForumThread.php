@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Sluggable\HasSlug;
@@ -11,7 +12,7 @@ use Spatie\Sluggable\SlugOptions;
 
 class ForumThread extends Model
 {
-    use HasFactory, HasSlug, LogsActivity;
+    use HasFactory, HasSlug, LogsActivity, Searchable;
 
     protected $fillable = [
         'category_id',
@@ -91,5 +92,21 @@ class ForumThread extends Model
     public function scopeNotPinned($query)
     {
         return $query->where('is_pinned', false);
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'body' => $this->body,
+            'category_name' => $this->category->name ?? null,
+            'user_name' => $this->user->name ?? null,
+        ];
     }
 }

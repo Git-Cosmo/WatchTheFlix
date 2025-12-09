@@ -382,6 +382,14 @@ class TmdbService
             }
         }
 
+        // Keywords (will be synced to tags)
+        // TMDB returns keywords in different structures for movies vs TV shows:
+        // - Movies: keywords are in $tmdbData['keywords']['keywords']
+        // - TV shows: keywords are in $tmdbData['keywords']['results']
+        if (isset($tmdbData['keywords']['keywords'])) {
+            $data['keywords'] = array_slice(array_column($tmdbData['keywords']['keywords'], 'name'), 0, 10);
+        }
+
         // SEO fields
         $data['meta_description'] = $data['description'] ? substr($data['description'], 0, 160) : null;
         $data['meta_keywords'] = implode(', ', array_slice($data['genres'], 0, 5));
@@ -490,6 +498,11 @@ class TmdbService
                     break;
                 }
             }
+        }
+
+        // Keywords (will be synced to tags) - Note: TV shows use 'results' not 'keywords'
+        if (isset($tmdbData['keywords']['results'])) {
+            $data['keywords'] = array_slice(array_column($tmdbData['keywords']['results'], 'name'), 0, 10);
         }
 
         // SEO fields

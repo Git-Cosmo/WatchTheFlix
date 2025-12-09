@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Laravel\Scout\Searchable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, HasRoles, LogsActivity, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, LogsActivity, Notifiable, Searchable;
 
     protected $fillable = [
         'name',
@@ -132,5 +133,20 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getSubscriptionPlan(): ?SubscriptionPlan
     {
         return $this->currentSubscription?->plan;
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'bio' => $this->bio,
+        ];
     }
 }

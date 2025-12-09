@@ -77,6 +77,11 @@ class TmdbMediaSeeder extends Seeder
                     // Create media record
                     $media = Media::create($mediaData);
 
+                    // Sync keywords as tags if available
+                    if (isset($mediaData['keywords']) && !empty($mediaData['keywords'])) {
+                        $media->syncTags($mediaData['keywords']);
+                    }
+
                     // Attach platforms/providers if available
                     $this->attachPlatforms($media, $fullDetails['watch/providers'] ?? null);
 
@@ -137,6 +142,11 @@ class TmdbMediaSeeder extends Seeder
 
                     // Create media record
                     $media = Media::create($mediaData);
+
+                    // Sync keywords as tags if available
+                    if (isset($mediaData['keywords']) && !empty($mediaData['keywords'])) {
+                        $media->syncTags($mediaData['keywords']);
+                    }
 
                     // Attach platforms/providers if available
                     $this->attachPlatforms($media, $fullDetails['watch/providers'] ?? null);

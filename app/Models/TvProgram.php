@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class TvProgram extends Model
 {
-    use HasFactory;
+    use HasFactory, Searchable;
 
     protected $fillable = [
         'tv_channel_id',
@@ -123,5 +124,23 @@ class TvProgram extends Model
         }
 
         return $title;
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array<string, mixed>
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'genre' => $this->genre,
+            'channel_name' => $this->channel->name ?? null,
+            'cast' => $this->cast,
+            'director' => $this->director,
+        ];
     }
 }

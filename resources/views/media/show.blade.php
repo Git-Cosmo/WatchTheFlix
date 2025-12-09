@@ -38,7 +38,12 @@
         </div>
 
         <div class="lg:col-span-2">
-            <h1 class="text-4xl font-bold mb-4">{{ $media->title }}</h1>
+            <h1 class="text-4xl font-bold mb-4">
+                {{ $media->title }}
+                @if($media->original_title && $media->original_title !== $media->title)
+                    <span class="text-2xl text-dark-400 font-normal ml-2">({{ $media->original_title }})</span>
+                @endif
+            </h1>
             
             <div class="flex flex-wrap gap-4 mb-6 text-sm text-dark-300">
                 @if($media->release_year)
@@ -53,15 +58,57 @@
                 <span>• {{ ucfirst($media->type) }}</span>
             </div>
 
-            @if($media->imdb_rating)
-            <div class="mb-6">
-                <span class="text-accent-500 text-xl">⭐ {{ $media->imdb_rating }}/10</span>
-                <span class="text-dark-400 text-sm ml-2">({{ $media->ratings_count }} ratings)</span>
+            @if($media->imdb_rating || $media->vote_average)
+            <div class="mb-6 flex items-center gap-6">
+                @if($media->imdb_rating)
+                <div>
+                    <span class="text-accent-500 text-xl font-bold">⭐ {{ $media->imdb_rating }}</span>
+                    <span class="text-dark-400 text-sm ml-1">/10</span>
+                    @if($media->ratings_count)
+                    <span class="text-dark-400 text-xs ml-2">({{ number_format($media->ratings_count) }} votes)</span>
+                    @endif
+                </div>
+                @endif
+                @if($media->vote_average && $media->vote_average != $media->imdb_rating)
+                <div>
+                    <span class="text-xs text-dark-400 uppercase tracking-wide">TMDB</span>
+                    <span class="text-accent-400 text-lg font-bold ml-2">{{ $media->vote_average }}</span>
+                    <span class="text-dark-400 text-sm">/10</span>
+                    @if($media->vote_count)
+                    <span class="text-dark-400 text-xs ml-2">({{ number_format($media->vote_count) }})</span>
+                    @endif
+                </div>
+                @endif
             </div>
             @endif
 
+            <!-- Overview Section -->
             @if($media->description)
-            <p class="text-dark-300 mb-6">{{ $media->description }}</p>
+            <div class="mb-6">
+                <h2 class="text-xl font-bold mb-3">Overview</h2>
+                <p class="text-dark-200 leading-relaxed">{{ $media->description }}</p>
+            </div>
+            @endif
+
+            <!-- Directors Section -->
+            @if($media->crew && count($media->crew) > 0)
+            @php
+                $directors = $media->getDirectors();
+            @endphp
+            @if($directors->isNotEmpty())
+            <div class="mb-6">
+                <h3 class="text-sm font-semibold text-dark-400 mb-2">
+                    Director{{ $directors->count() > 1 ? 's' : '' }}
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($directors as $director)
+                    <span class="px-3 py-1 bg-dark-800 rounded-full text-sm font-medium">
+                        {{ $director['name'] }}
+                    </span>
+                    @endforeach
+                </div>
+            </div>
+            @endif
             @endif
 
             <!-- Actions -->
@@ -178,6 +225,20 @@
                        class="px-3 py-1 bg-dark-800 hover:bg-dark-700 rounded-full text-sm transition-colors border border-dark-700 hover:border-accent-500">
                         {{ $genre }}
                     </a>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+
+            <!-- Keywords/Tags Section -->
+            @if($media->tags && $media->tags->isNotEmpty())
+            <div class="mb-6">
+                <h3 class="text-lg font-semibold mb-2">Keywords</h3>
+                <div class="flex flex-wrap gap-2">
+                    @foreach($media->tags as $tag)
+                    <span class="px-3 py-1 bg-accent-900/30 text-accent-300 rounded-full text-xs border border-accent-700/50">
+                        {{ $tag->name }}
+                    </span>
                     @endforeach
                 </div>
             </div>
@@ -338,6 +399,39 @@
             @endif
         </div>
     </div>
+
+    <!-- Trailer Section -->
+    @if($media->trailer_url)
+    <div class="card p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-4">
+            <svg class="h-6 w-6 inline-block mr-2 text-accent-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Trailer
+        </h2>
+        <div class="aspect-video bg-dark-900 rounded-lg overflow-hidden">
+            @php
+                $videoId = $media->getTrailerYoutubeId();
+            @endphp
+            @if($videoId)
+            <iframe 
+                class="w-full h-full" 
+                src="https://www.youtube.com/embed/{{ $videoId }}" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+            @else
+            <div class="flex items-center justify-center h-full">
+                <a href="{{ $media->trailer_url }}" target="_blank" class="btn-primary">
+                    Watch Trailer
+                </a>
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
 
     <!-- Rating Section -->
     @auth
