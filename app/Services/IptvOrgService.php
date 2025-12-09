@@ -159,4 +159,120 @@ class IptvOrgService
 
         return null;
     }
+
+    /**
+     * Get popular US channels with filtering criteria
+     * Filters by:
+     * - Major categories (news, sports, entertainment, general)
+     * - Non-NSFW content
+     * - Active channels (not closed)
+     * - Has network or owner information (indicates mainstream channel)
+     */
+    public function getPopularUSChannels(): ?array
+    {
+        $usChannels = $this->getChannelsByCountry('US');
+
+        if (! $usChannels) {
+            return null;
+        }
+
+        $popularCategories = ['news', 'sports', 'entertainment', 'general', 'business', 'documentary'];
+
+        return array_filter($usChannels, function ($channel) use ($popularCategories) {
+            // Filter out NSFW content
+            if (! empty($channel['is_nsfw'])) {
+                return false;
+            }
+
+            // Filter out closed channels
+            if (! empty($channel['closed'])) {
+                return false;
+            }
+
+            // Include channels with popular categories
+            if (! empty($channel['categories'])) {
+                $hasPopularCategory = ! empty(array_intersect($channel['categories'], $popularCategories));
+                if ($hasPopularCategory) {
+                    return true;
+                }
+            }
+
+            // Include major network channels (has network or owners)
+            if (! empty($channel['network']) || ! empty($channel['owners'])) {
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    /**
+     * Get EPG guides for a specific channel
+     */
+    public function getGuidesForChannel(string $channelId): ?array
+    {
+        $guides = $this->getGuides();
+
+        if (! $guides) {
+            return null;
+        }
+
+        return array_filter($guides, function ($guide) use ($channelId) {
+            return isset($guide['channel']) && $guide['channel'] === $channelId;
+        });
+    }
+
+    /**
+     * Get streams for a specific channel
+     */
+    public function getStreamsForChannel(string $channelId): ?array
+    {
+        $streams = $this->getStreams();
+
+        if (! $streams) {
+            return null;
+        }
+
+        return array_filter($streams, function ($stream) use ($channelId) {
+            return isset($stream['channel']) && $stream['channel'] === $channelId;
+        });
+    }
+
+    /**
+     * Get guides by country
+     */
+    public function getGuidesByCountry(string $countryCode): ?array
+    {
+        $guides = $this->getGuides();
+        $channels = $this->getChannelsByCountry($countryCode);
+
+        if (! $guides || ! $channels) {
+            return null;
+        }
+
+        $channelIds = array_column($channels, 'id');
+
+        return array_filter($guides, function ($guide) use ($channelIds) {
+            return isset($guide['channel']) && in_array($guide['channel'], $channelIds);
+        });
+    }
+
+    /**
+     * Fetch EPG XML data from a guide URL
+     */
+    public function fetchEpgXml(string $url): ?string
+    {
+        try {
+            $response = Http::timeout(60)->get($url);
+
+            return $response->successful() ? $response->body() : null;
+        } catch (\Exception $e) {
+            Log::error('IPTV-ORG EPG fetch failed', [
+                'url' => $url,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
+    }
 }

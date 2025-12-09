@@ -131,4 +131,38 @@ class TvChannelManagementController extends Controller
                 ->with('error', 'EPG sync failed: '.$e->getMessage());
         }
     }
+
+    /**
+     * Sync channels from IPTV-ORG API
+     */
+    public function syncIptvChannels()
+    {
+        try {
+            Artisan::call('iptv:sync-channels', ['--popular-us-only' => true]);
+            $output = Artisan::output();
+
+            return redirect()->route('admin.tv-channels.index')
+                ->with('success', 'IPTV-ORG channel sync started successfully! Check the output for details.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.tv-channels.index')
+                ->with('error', 'IPTV-ORG channel sync failed: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Sync EPG from IPTV-ORG guides
+     */
+    public function syncIptvEpg()
+    {
+        try {
+            Artisan::call('iptv:sync-epg', ['--limit' => 50]);
+            $output = Artisan::output();
+
+            return redirect()->route('admin.tv-channels.index')
+                ->with('success', 'IPTV-ORG EPG sync started successfully! Check the output for details.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.tv-channels.index')
+                ->with('error', 'IPTV-ORG EPG sync failed: '.$e->getMessage());
+        }
+    }
 }
