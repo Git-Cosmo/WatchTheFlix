@@ -138,7 +138,6 @@ class TvProgram extends Model
             'title' => $this->title,
             'description' => $this->description,
             'genre' => $this->genre,
-            'channel_name' => $this->channel->name ?? null,
             'cast' => $this->cast,
             'director' => $this->director,
         ];
